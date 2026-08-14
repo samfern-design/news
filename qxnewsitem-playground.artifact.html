@@ -1,0 +1,2567 @@
+<title>QX-NewsItem Playground</title>
+<style>
+/* ===== Qmodii design tokens ===== */
+/* Qmodii ships Roboto (UI) as the brand family (font.Family = "Roboto" in the
+   Figma tokens). In production, self-host the Roboto woff2 binaries and declare
+   them with @font-face here.
+
+   This prototype runs in a network-restricted environment (no Google Fonts /
+   CDN egress), so the import is intentionally omitted — the token stack in
+   --qx-font-sans falls back to system-ui, which keeps the layout honest without
+   an external request. Restore the line below when Roboto is vendored locally:
+
+   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+*/
+
+/* ============================================================
+   Qmodii — PRIMITIVE PALETTE
+   Raw color scales. Do not use directly in product code; reference
+   the semantic aliases in semantic.css instead. Values are lifted
+   verbatim from the Figma "qmodii/primative" + "qmodii/semantic light"
+   variable sets.
+   ============================================================ */
+.qx-root {
+  /* -- Brand ramp (the single source of the primary hue) --
+     Override --qx-brand-* (e.g. in themes/whitelabel.css) to reskin the whole UI:
+     --qm-blue-* alias these, and every primary/link/focus/selected/tag/tab
+     token resolves through them. Qmodii's own blue is just the default theme. */
+  --qx-brand-50:  #F2F8FE;
+  --qx-brand-100: #C0DEF7;
+  --qx-brand-200: #A5D0F3;
+  --qx-brand-300: #89C1EF;
+  --qx-brand-400: #53A4E4;
+  --qx-brand-500: #3795DE;
+  --qx-brand-600: #1D86D8;
+  --qx-brand-700: #0477D1;   /* brand color */
+  --qx-brand-800: #00407F;
+  --qx-brand-900: #002C5A;
+  --qx-brand-950: #001831;
+
+  /* -- QM Blue (brand / primary) — alias the brand ramp -- */
+  --qx-blue-50:  var(--qx-brand-50);
+  --qx-blue-100: var(--qx-brand-100);
+  --qx-blue-200: var(--qx-brand-200);
+  --qx-blue-300: var(--qx-brand-300);
+  --qx-blue-400: var(--qx-brand-400);
+  --qx-blue-500: var(--qx-brand-500);
+  --qx-blue-600: var(--qx-brand-600);
+  --qx-blue-700: var(--qx-brand-700);   /* brand color */
+  --qx-blue-800: var(--qx-brand-800);
+  --qx-blue-900: var(--qx-brand-900);
+  --qx-blue-950: var(--qx-brand-950);
+
+  /* -- Neutral (surface / grays) -- */
+  --qx-neutral-0:   #FFFFFF;
+  --qx-neutral-50:  #F6F6F6;
+  --qx-neutral-100: #EEEEEE;
+  --qx-neutral-200: #E3E3E3;
+  --qx-neutral-300: #A7A7A7;
+  --qx-neutral-400: #707070;
+  --qx-neutral-500: #575757;
+  --qx-neutral-600: #444444;
+  --qx-neutral-700: #2F2F2F;
+  --qx-neutral-800: #222222;
+  --qx-neutral-900: #1E1E1E;
+  --qx-neutral-950: #111111;
+
+  /* -- Market up (positive / buy / success) --
+     Built around #2B7F45, the colour every price delta already used. Chosen over
+     the old pure-hue #007600 because its blue undertone supports a ramp either
+     side of it, and because #5DB678 was already in the system as its light step.
+     There is ONE green in the system: market up and status success are the same
+     ramp, since a system with two greens makes a rising price and a valid field
+     look like different kinds of good. */
+  --qx-up-50:  #F1F8F4;
+  --qx-up-100: #D6EBDE;
+  --qx-up-200: #B4DBC3;
+  --qx-up-300: #8ECBA5;
+  --qx-up-400: #5DB678;   /* fill / light step — the only green usable on dark */
+  --qx-up-500: #2B7F45;   /* base — up text, 5.4:1 on white */
+  --qx-up-600: #236839;
+  --qx-up-700: #1B522C;
+  --qx-up-800: #143C21;
+  --qx-up-900: #0D2716;
+  --qx-up-950: #061309;
+
+  /* -- Market down (negative / sell / danger) --
+     Built around #2B7F45's counterpart #D02A48. The previous --red-* ramp was
+     orange-leaning and contained neither of the two reds actually in use, which
+     is why a down row, a down spark and a down candle were three colours. */
+  --qx-down-50:  #FDEEF1;
+  --qx-down-100: #FAD3DB;
+  --qx-down-200: #F4AEBC;
+  --qx-down-300: #EC8598;
+  --qx-down-400: #E04E6E;   /* fill / light step */
+  --qx-down-500: #D02A48;   /* base — down text, 4.9:1 on white */
+  --qx-down-600: #B02240;
+  --qx-down-700: #8E1B33;
+  --qx-down-800: #6C1426;
+  --qx-down-900: #4A0D1A;
+  --qx-down-950: #2A070F;
+  /* Hotter than the base rather than lighter — a hover accent, not a ramp step,
+     so it sits outside the numbered scale. */
+  --qx-down-hot: #F14668;
+
+  /* -- Green / Red — alias the market ramps --
+     Kept so existing --green-… / --red-… references keep resolving. Override the
+     market ramp, not these. */
+  --qx-green-50:  var(--qx-up-50);
+  --qx-green-100: var(--qx-up-100);
+  --qx-green-200: var(--qx-up-200);
+  --qx-green-300: var(--qx-up-300);
+  --qx-green-400: var(--qx-up-400);
+  --qx-green-500: var(--qx-up-500);
+  --qx-green-600: var(--qx-up-600);
+  --qx-green-700: var(--qx-up-700);
+  --qx-green-800: var(--qx-up-800);
+  --qx-green-900: var(--qx-up-900);
+  --qx-green-950: var(--qx-up-950);
+
+  --qx-red-50:  var(--qx-down-50);
+  --qx-red-100: var(--qx-down-100);
+  --qx-red-200: var(--qx-down-200);
+  --qx-red-300: var(--qx-down-300);
+  --qx-red-400: var(--qx-down-400);
+  --qx-red-500: var(--qx-down-500);
+  --qx-red-600: var(--qx-down-600);
+  --qx-red-700: var(--qx-down-700);
+  --qx-red-800: var(--qx-down-800);
+  --qx-red-900: var(--qx-down-900);
+  --qx-red-950: var(--qx-down-950);
+
+  /* -- Amber (warning) -- */
+  --qx-amber-50:  #FFFBEB;
+  --qx-amber-100: #FEF3C7;
+  --qx-amber-200: #FDE68A;
+  --qx-amber-300: #FCD34D;
+  --qx-amber-400: #FBBF24;
+  --qx-amber-500: #F59E0B;
+  --qx-amber-600: #D97706;
+  --qx-amber-700: #B45309;
+  --qx-amber-800: #92400E;
+  --qx-amber-900: #78350F;
+
+  /* -- Yellow — alias the amber ramp --
+     One warning family, not two. The old --yellow-* values were within a step of
+     their amber equivalents and only existed because Message and Tag were built
+     before the amber ramp landed. */
+  --qx-yellow-100: var(--qx-amber-100);
+  --qx-yellow-500: var(--qx-amber-500);
+  --qx-yellow-600: var(--qx-amber-600);
+
+  /* -- Hold / neutral rating --
+     The warm gold that means "neither" — rating hold, the mid stop on a range
+     gradient, the moderate score band. Deliberately not on the amber ramp:
+     amber means warning, and a hold rating is not a warning. */
+  --qx-hold-300: #F7D66E;
+  --qx-hold-400: #F5C63F;   /* base */
+  --qx-hold-500: #E3B12E;   /* border step */
+
+  /* -- Sky (info accents) -- */
+  --qx-sky-100:  #E0F2FE;   /* tag.info bg */
+  --qx-sky-700:  #0369A1;   /* tag.info fg */
+
+  /* -- Slate (chart dormant / reference / session state) --
+     A blue-grey family, distinct from --neutral-* on purpose: a market-closed
+     band and a disabled control should not be the same grey. */
+  --qx-slate-100: #EEF1F7;
+  --qx-slate-200: #E3E9F5;
+  --qx-slate-300: #C6D0E4;
+  --qx-slate-400: #9193AC;
+  --qx-slate-600: #535863;
+
+}
+
+/* ============================================================
+   Qmodii — SEMANTIC ALIASES (light theme)
+   The vocabulary product code should use. Every value resolves to a
+   primitive in palette.css. Mirrors the Figma "qmodii/semantic light"
+   and component token sets.
+   ============================================================ */
+.qx-root {
+  /* -- Brand / primary -- */
+  --qx-primary:            var(--qx-blue-700);   /* #0477D1 */
+  --qx-primary-hover:      var(--qx-blue-600);   /* #1D86D8 */
+  --qx-primary-active:     var(--qx-blue-700);
+  --qx-primary-contrast:   #FFFFFF;              /* text/icon on primary — meets 3:1 */
+  --qx-primary-subtle:     var(--qx-blue-50);    /* tinted hover/selected bg */
+  --qx-primary-subtle-2:   var(--qx-blue-100);   /* pressed tint */
+
+  /* -- Surfaces -- */
+  --qx-surface-ground: var(--qx-neutral-50);   /* dashboard / app canvas behind a group of cards */
+  --qx-surface-0:    var(--qx-neutral-0);    /* page / card base */
+  --qx-surface-50:   var(--qx-neutral-50);   /* hover row, subtle fill */
+  --qx-surface-100:  var(--qx-neutral-100);  /* secondary button, chips */
+  --qx-surface-200:  var(--qx-neutral-200);  /* borders, dividers */
+  --qx-surface-300:  var(--qx-neutral-300);  /* hover borders, disabled fill */
+  --qx-surface-400:  var(--qx-neutral-400);
+  --qx-surface-500:  var(--qx-neutral-500);
+  --qx-surface-600:  var(--qx-neutral-600);
+  --qx-surface-700:  var(--qx-neutral-700);
+  --qx-surface-800:  var(--qx-neutral-800);
+  --qx-surface-900:  var(--qx-neutral-900);
+  --qx-surface-950:  var(--qx-neutral-950);
+
+  /* -- Text -- */
+  --qx-text-primary:    var(--qx-neutral-800);   /* #222222 */
+  --qx-text-secondary:  var(--qx-neutral-500);   /* #575757 */
+  --qx-text-muted:      var(--qx-neutral-400);   /* #707070 */
+  --qx-text-link:       var(--qx-blue-900);   /* #002C5A — QM's link color */
+  /* Links lighten toward brand on hover rather than darkening — the resting
+     colour is already the darkest blue in the ramp. Matches what every card in
+     the system was doing inline before this had a name. */
+  --qx-text-link-hover: var(--qx-primary);    /* #0477D1 */
+  --qx-text-on-primary: #FFFFFF;
+
+  /* -- Status text / accents -- */
+  --qx-text-positive:  var(--qx-market-up);     /* #2B7F45 */
+  --qx-text-negative:  var(--qx-market-down);   /* #D02A48 */
+
+  /* -- Score / quality bands (0–100 scoring bars — reusable across tools) --
+     Thresholds: 67–100 strong, 33–67 moderate, 0–33 weak. */
+  --qx-score-strong:   var(--qx-market-up-fill);     /* #5DB678 — favorable */
+  --qx-score-moderate: var(--qx-market-hold);        /* #F5C63F */
+  --qx-score-weak:     var(--qx-market-down-fill);   /* #E04E6E — unfavorable */
+  /* Same hue, darker — the border on a filled band so a pale fill still has an
+     edge against the track. Mixed, not hand-picked, so retinting a band brings
+     its border with it. */
+  --qx-score-strong-border:   color-mix(in srgb, var(--qx-score-strong) 76%, #000);
+  --qx-score-moderate-border: color-mix(in srgb, var(--qx-score-moderate) 76%, #000);
+  --qx-score-weak-border:     color-mix(in srgb, var(--qx-score-weak) 76%, #000);
+  /* Shared score track — one bordered track for every score treatment
+     (row bar, filling H-bar, table cell). */
+  --qx-score-track-bg:     var(--qx-surface-100);
+  --qx-score-track-border: var(--qx-surface-200);
+  /* At-par: a peer diff inside the epsilon band is neither good nor bad, and
+     colouring it green or red invents a signal that is not there. */
+  --qx-score-par-fg: var(--qx-text-secondary);
+
+  /* -- Shared row height --
+     List rows and table rows must agree, or switching layout makes the content
+     jump. Both read these; nothing else should hardcode a row height. */
+  --qx-row-height:         48px;   /* @kind spacing */
+  --qx-row-height-compact: 36px;   /* @kind spacing */
+
+  /* -- Borders & dividers -- */
+  --qx-border-color:        var(--qx-surface-200);   /* default 1px border */
+  --qx-border-color-hover:  var(--qx-surface-300);
+  --qx-border-color-strong: var(--qx-surface-300);
+
+  /* -- Fills for status surfaces (Message / Tag backgrounds) -- */
+  --qx-info-bg:     var(--qx-blue-50);   --qx-info-fg: var(--qx-blue-700);   --qx-info-border: var(--qx-blue-200);
+  --qx-success-bg:  var(--qx-green-50);     --qx-success-fg: var(--qx-green-600);  --qx-success-border: var(--qx-green-200);
+  /* warn-fg is amber-700, not -600: at 14px/400 on the pale warn fill the 600
+     step measures 3.19:1, short of AA's 4.5:1. -700 clears it at ~5:1. Warning
+     text is the one status colour where the accessible step is not the vivid
+     one — the border keeps -600 so the callout still reads as amber. */
+  --qx-warn-bg:     var(--qx-yellow-100);   --qx-warn-fg: var(--qx-amber-700);    --qx-warn-border: var(--qx-yellow-600);
+  --qx-danger-bg:   var(--qx-red-50);       --qx-danger-fg: var(--qx-red-700);     --qx-danger-border: var(--qx-red-300);
+
+  /* -- Component surfaces -- */
+  --qx-overlay-bg:     var(--qx-surface-0);
+  --qx-overlay-border: var(--qx-surface-200);
+
+  /* -- Interaction states --
+     ONE recipe for hover / selected across every row, option, chip and button.
+     Components alias these; they only redeclare a value when they genuinely
+     need to diverge. Change the hover tint here, not in fifteen places. */
+  --qx-state-hover-bg:          var(--qx-surface-50);
+  --qx-state-hover-border:      var(--qx-surface-300);
+  --qx-state-selected-bg:       var(--qx-primary-subtle);
+  --qx-state-selected-fg:       var(--qx-blue-900);
+  --qx-state-selected-fg-strong: var(--qx-blue-950);   /* selected AND focused */
+  --qx-state-selected-border:   var(--qx-blue-200);
+
+  /* -- Shared row padding --
+     Menu items, select options, list items and multiselect options are the
+     same row; they had five spellings of it. Section labels are the second. */
+  --qx-row-padding:       var(--qx-space-xxs-plus) var(--qx-space-sm-plus);                 /* 6px 10px */
+  --qx-row-group-padding: var(--qx-space-sm) var(--qx-space-sm-plus) var(--qx-space-xs);       /* 8px 10px 4px */
+
+  /* -- Data-visualisation fills --
+     RangeBar and BarList plot the same tones; one set serves both, and a CVD
+     ramp or WMID theme is a single override here. */
+  --qx-viz-fill-accent:     var(--qx-primary);
+  --qx-viz-fill-positive:   var(--qx-market-up-fill);
+  --qx-viz-fill-negative:   var(--qx-market-down-fill);
+  --qx-viz-fill-neutral:    var(--qx-surface-400);
+  --qx-viz-fill-comparison: var(--qx-surface-500);   /* the grey "previous period" bar */
+
+  /* -- Data-visualisation series ramp --
+     8-step, colour-vision-deficient-safe categorical ramp. Series identity for
+     any comparison overlay: chart line stroke, ChartTip swatch, ChartStrip
+     rule, BarList bar, legend dot. Nothing about it is chart-specific, so it
+     sits here beside --viz-fill-*; --chart-series-* aliases it for continuity.
+     One of only two ramps a WMID may override (see WHITELABEL.md). */
+  --qx-viz-series-1: var(--qx-primary);   /* base symbol — brand */
+  --qx-viz-series-2: #7B3FBF;
+  --qx-viz-series-3: #E07B00;
+  --qx-viz-series-4: #0F8A8A;
+  --qx-viz-series-5: #C2185B;
+  --qx-viz-series-6: #4A6FD4;
+  --qx-viz-series-7: #7A8B00;
+  --qx-viz-series-8: #A14300;
+
+  /* -- Directional plot lines + area stops --
+     One hue per state; the gradient stops are mixed from it, so retinting a
+     direction is one line rather than three. Deliberately darker than the
+     --viz-fill-* set: these are hairlines on white, not filled bars. */
+  --qx-viz-line-positive: var(--qx-text-positive);   /* #2B7F45 */
+  --qx-viz-line-negative: var(--qx-text-negative);   /* #D02A48 */
+  --qx-viz-line-dormant:  var(--qx-slate-600);    /* market closed — slate, not neutral grey */
+  --qx-viz-area-top:      30%;   /* alpha of the line hue at the top stop @kind other */
+  --qx-viz-area-bottom:   10%;   /* … and at the baseline @kind other */
+
+  /* -- Reference rules --
+     Previous close, target, average: a line the data is measured against, not
+     data itself. Same slate family as --qx-viz-line-dormant, one step lighter. */
+  --qx-viz-reference-line: var(--qx-slate-400);
+
+  /* -- Session state --
+     The tint behind pre-market / post-market / halted extents. Regular hours
+     take the plot background, so only the dormant tint needs a name.
+     -strong is the same tint pushed for small plots: at sparkline height a
+     band is 26px of very pale fill with no room for an axis label, so it needs
+     more separation than it does across a full chart. -edge is the hairline at
+     the session boundary — the cue that survives at any size. */
+  --qx-session-dormant-bg: var(--qx-slate-100);
+  --qx-session-dormant-bg-strong: var(--qx-slate-200);
+  --qx-viz-session-edge: var(--qx-slate-300);
+
+  /* -- Absent data + loading -- */
+  --qx-value-null-color: var(--qx-text-muted);    /* the em-dash for data that is not there */
+  --qx-skeleton-bg:      var(--qx-surface-100);
+  --qx-skeleton-sheen:   var(--qx-surface-50);
+
+  /* -- Icons -- */
+  --qx-icon-primary:   var(--qx-text-primary);
+  --qx-icon-secondary: var(--qx-text-secondary);
+  --qx-icon-muted:     var(--qx-text-muted);
+
+  /* -- Form fields (semantic `form.field` set) -- */
+  --qx-form-field-bg:            var(--qx-surface-0);
+  --qx-form-field-fg:         var(--qx-surface-800);
+  --qx-form-field-border-color:  var(--qx-surface-200);
+  --qx-form-field-border-radius: var(--qx-radius-sm);          /* 4px */
+  --qx-form-field-padding-x:     var(--qx-space-sm);           /* 8px */
+  --qx-form-field-padding-y:     5px;                        /* desired output — centers text in 32px control */
+  --qx-form-field-height:        var(--qx-control-height);      /* 32px */
+  --qx-form-field-gap:           var(--qx-gap-md);              /* 8px */
+  --qx-form-field-placeholder:   var(--qx-surface-500);
+  --qx-form-field-icon-color:    var(--qx-surface-500);
+
+  /* states */
+  --qx-form-field-hover-border:      var(--qx-surface-300);
+  --qx-form-field-focus-border:      var(--qx-primary);
+  --qx-form-field-focus-ring-width:  0px;  /* @kind spacing */
+  --qx-form-field-invalid-border:      var(--qx-red-400);       /* #E57969 */
+  --qx-form-field-invalid-placeholder: var(--qx-red-600);       /* #D4442E */
+  --qx-form-field-disabled-bg:       var(--qx-surface-0);
+  --qx-form-field-disabled-fg:    var(--qx-surface-500);
+  --qx-form-field-float-label:       var(--qx-surface-500);
+  --qx-form-field-shadow:            rgba(18, 18, 23, 0.05);
+
+  /* sizes */
+  --qx-form-field-sm-height:     var(--qx-control-height-sm);   /* 28px */
+  --qx-form-field-sm-font:       var(--qx-text-base);           /* 14px */
+  --qx-form-field-sm-padding-x:  10px;
+  --qx-form-field-sm-padding-y:  4px;
+  --qx-form-field-lg-height:     var(--qx-control-height-lg);   /* 38px */
+  --qx-form-field-lg-font:       var(--qx-text-xl);             /* 18px */
+  --qx-form-field-lg-padding-x:  14px;
+  --qx-form-field-lg-padding-y:  7px;
+
+  /* -- Form label + helper text -- */
+  --qx-form-label-fg:    var(--qx-surface-800);      /* #222 — label text */
+  --qx-form-label-size:     var(--qx-text-base);         /* 14px */
+  --qx-form-label-weight:   var(--qx-weight-semibold);
+  --qx-form-label-line-height: var(--qx-leading-xtight); /* 1.2 */
+  --qx-form-label-gap:      var(--qx-gap-sm);            /* 4px — label ↔ field ↔ helper */
+  --qx-form-helper-size:    var(--qx-text-sm);           /* 12px */
+  --qx-form-helper-line-height: var(--qx-leading-snug);  /* 1.3 */
+  --qx-form-helper-neutral: var(--qx-surface-500);       /* #575757 — neutral hint */
+  --qx-form-helper-error:   var(--qx-red-600);           /* #D4442E */
+  --qx-form-helper-positive: var(--qx-market-up);        /* #2B7F45 */
+
+  /* -- Market / financial state (semantic) --
+     THE up/down contract. Everything directional in the system resolves through
+     these four — delta text, direction triangles, spark lines, candlesticks,
+     score bands, rating pills, tag fills. Retint the --up-… / --down-… ramps in
+     palette.css and every one of them follows. */
+  --qx-market-up:          var(--qx-up-500);    /* up / buy text */
+  --qx-market-up-fill:     var(--qx-up-400);    /* fills, dorito, candle border */
+  --qx-market-up-subtle:   var(--qx-up-100);    /* tinted band / candle body */
+  --qx-market-down:        var(--qx-down-500);  /* down / sell text */
+  --qx-market-down-fill:   var(--qx-down-400);
+  --qx-market-down-subtle: var(--qx-down-100);
+  --qx-market-down-hot:    var(--qx-down-hot);  /* hover accent, hotter not lighter */
+  --qx-market-hold:        var(--qx-hold-400);  /* neutral / hold — neither up nor down */
+  --qx-market-hold-fill:   var(--qx-hold-300);
+  --qx-market-hold-border: var(--qx-hold-500);
+
+  /* Legacy names, kept so existing references resolve. Prefer --market-* above. */
+  --qx-buy:        var(--qx-market-up);
+  --qx-buy-fill:   var(--qx-market-up-fill);
+  --qx-sell:       var(--qx-market-down);
+  --qx-sell-fill:  var(--qx-market-down-fill);
+  --qx-sell-hot:   var(--qx-market-down-hot);
+
+  /* -- Text interaction states -- */
+  --qx-text-hover:        var(--qx-surface-800);   /* #222 — hovered text/menu item */
+  --qx-text-hover-muted:  var(--qx-surface-600);
+
+  /* -- Icon size / anchor -- */
+  --qx-icon-size:     16px;
+  --qx-icon-size-sm:  14px;                      /* menu / submenu icons */
+  --qx-anchor-gutter: 2px;
+
+  /* -- Highlight (text selection / search match / selected option) -- */
+  --qx-highlight-bg:        var(--qx-primary-subtle);   /* primary.50 */
+  --qx-highlight-fg:        var(--qx-blue-900);       /* primary.900 */
+  --qx-highlight-focus-bg:  var(--qx-primary-subtle);
+  --qx-highlight-focus-fg:  var(--qx-blue-950);       /* primary.950 */
+
+  /* -- Content surface (generic bordered content region) -- */
+  --qx-content-bg:        var(--qx-surface-0);
+  --qx-content-fg:        var(--qx-text-primary);
+  --qx-content-border:    var(--qx-surface-200);
+  --qx-content-radius:    var(--qx-radius-sm);
+  --qx-content-hover-bg:  var(--qx-surface-50);
+  --qx-content-hover-fg:  var(--qx-text-hover);
+
+  /* -- Overlay panels (select / popover / modal / menu) -- */
+  --qx-overlay-fg:     var(--qx-text-primary);
+  --qx-overlay-radius:    var(--qx-radius-sm);
+  --qx-overlay-shadow:    var(--qx-shadow-overlay);
+  --qx-popover-padding:   var(--qx-space-lg);       /* 16px */
+  --qx-modal-padding-sm:  var(--qx-space-sm);        /* 8px */
+  --qx-modal-padding-md:  var(--qx-space-lg);        /* 16px */
+  --qx-modal-padding-lg:  var(--qx-space-xl);        /* 24px */
+
+  /* -- List / menu options -- */
+  --qx-list-gap:                 var(--qx-gap-xs);   /* 2px */
+  --qx-list-option-fg:           var(--qx-text-primary);
+  --qx-list-option-radius:       var(--qx-radius-sm);
+  --qx-list-option-focus-bg:     var(--qx-surface-50);
+  --qx-list-option-focus-fg:     var(--qx-text-hover);
+  --qx-list-option-selected-bg:  var(--qx-highlight-bg);
+  --qx-list-option-selected-fg:  var(--qx-highlight-fg);
+  --qx-list-option-icon:         var(--qx-surface-400);
+  --qx-list-group-fg:            var(--qx-text-secondary);
+  --qx-list-group-weight:        var(--qx-weight-semibold);
+
+  /* -- Navigation items (menu / sidebar) -- */
+  --qx-nav-list-gap:             var(--qx-gap-xs);   /* 2px */
+  --qx-nav-item-gap:             var(--qx-gap-md);   /* 8px */
+  --qx-nav-item-fg:              var(--qx-text-primary);
+  --qx-nav-item-radius:          var(--qx-radius-sm);
+  --qx-nav-item-focus-bg:        var(--qx-surface-50);
+  --qx-nav-item-focus-fg:        var(--qx-text-hover);
+  --qx-nav-item-active-bg:       var(--qx-highlight-bg);
+  --qx-nav-item-active-fg:       var(--qx-highlight-fg);
+  --qx-nav-item-icon:            var(--qx-surface-500);
+  --qx-nav-submenu-label-fg:     var(--qx-text-secondary);
+  --qx-nav-submenu-label-weight: var(--qx-weight-semibold);
+  --qx-nav-submenu-icon:         var(--qx-surface-400);
+}
+
+/* ============================================================
+   Qmodii — TYPOGRAPHY
+   Family: Roboto (per Figma font.Family). Base UI size 14px.
+   Line-heights in the Figma tokens are set equal to font-size (tight,
+   for single-line controls); for multi-line content use the --leading-*
+   aliases below.
+   ============================================================ */
+.qx-root {
+  --qx-font-sans: 'Roboto', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  /* No monospace family is shipped — tabular/numeric alignment uses Roboto's own
+     tabular figures via font-variant-numeric: tabular-nums. */
+
+  /* Sizes (px, from font tokens) */
+  --qx-text-xs:   11px;   /* micro — weekday heads, group/section labels, badges */
+  --qx-text-sm:   12px;   /* font.sm.size — captions, meta, dense tables */
+  --qx-text-base: 14px;   /* font.size    — default UI text */
+  --qx-text-lg:   16px;   /* font.lg.size — card titles, section labels */
+  --qx-text-xl:   18px;   /* form lg / headings */
+  --qx-text-2xl:  22px;   /* page headings */
+  --qx-text-3xl:  28px;   /* display */
+
+  /* Weights */
+  --qx-weight-regular:  400;
+  --qx-weight-medium:   500;   /* card titles, toggle labels */
+  --qx-weight-semibold: 600;   /* group labels, nav headers, active tabs */
+  --qx-weight-bold:     700;   /* tags, emphasis */
+
+  /* Line-heights — fixed px so wrapping text keeps a predictable rhythm.
+     Pair each with its font-size: sm 12→16, base 14→20, lg 16→24. */
+  --qx-leading-sm:   16px;   /* 12px text */
+  --qx-leading-base: 20px;   /* 14px default text — handles 2-line wrapping */
+  --qx-leading-lg:   24px;   /* 16px text */
+
+  --qx-leading-none:   1;      /* single-glyph / icon-only contexts */
+  --qx-leading-tight:  1.25;
+  --qx-leading-snug:   1.3;    /* subtitles / helper copy */
+  --qx-leading-relaxed: 1.4;   /* multi-line tooltips */
+  --qx-leading-xtight: 1.2;    /* dense single-line labels */
+  --qx-leading-normal: 20px;   /* body copy default = --qx-leading-base */
+}
+
+/* ============================================================
+   Qmodii — SPACING & GAP  (px, from qmodii/primative)
+   ============================================================ */
+.qx-root {
+  /* Spacing scale — padding / margins */
+  --qx-space-0:   0;
+  --qx-space-xxs: 2px;
+  --qx-space-xs:  4px;
+  --qx-space-xxs-plus: 6px;   /* dense row padding — between xs and sm, used constantly */
+  --qx-space-sm:  8px;
+  --qx-space-sm-plus: 10px;   /* dense row padding-x — between sm and md */
+  --qx-space-md:  12px;
+  --qx-space-lg:  16px;
+  --qx-space-xl:  24px;
+  --qx-space-2xl: 32px;
+
+  /* Gap scale — flex/grid gaps between related items */
+  --qx-gap-none: 0;
+  --qx-gap-xs:   2px;   /* list / nav item gaps */
+  --qx-gap-sm:   4px;
+  --qx-gap-md:   8px;   /* default control gap (icon↔label) */
+  --qx-gap-lg:   12px;
+
+  /* Common control heights (density-driven) */
+  --qx-control-height:    32px;  /* default field / button / tab height */
+  --qx-control-height-sm: 28px;
+  --qx-control-height-lg: 38px;
+}
+
+/* ============================================================
+   Qmodii — RADIUS & BORDERS  (px, from qmodii/primative)
+   ============================================================ */
+.qx-root {
+  --qx-radius-none: 0;
+  --qx-radius-xs:   2px;   /* tags */
+  --qx-radius-sm:   4px;   /* DEFAULT — fields, buttons, cards, menus */
+  --qx-radius-md:   6px;
+  --qx-radius-lg:   8px;
+  --qx-radius-xl:   12px;  /* rounded tags / pills small */
+  --qx-radius-full: 9999px;
+
+  /* Border widths */
+  --qx-border-thin:   1px;   /* default */
+  --qx-border-medium: 2px;
+  --qx-border-thick:  4px;
+}
+
+/* ============================================================
+   Qmodii — EFFECTS: shadows, focus ring, motion, disabled
+   Overlay shadows in the Figma set are all soft rgba(0,0,0,.10).
+   Qmodii is a low-elevation, border-first system: most containers use
+   a 1px --qx-border-color rather than a drop shadow. Shadows are reserved
+   for floating overlays (menus, dialogs, drawers, popovers).
+   ============================================================ */
+.qx-root {
+  /* Elevation (overlay layers) */
+  --qx-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --qx-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.10);
+  --qx-shadow-md: 0 2px 6px rgba(0, 0, 0, 0.10), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --qx-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
+  --qx-shadow-overlay: var(--qx-shadow-md);   /* menus / selects / popovers */
+  --qx-shadow-dialog:  var(--qx-shadow-lg);   /* modal dialogs / drawers */
+  --qx-shadow-sheet:   0 -8px 28px rgba(0, 0, 0, 0.20);   /* upward cast — bottom sheets */
+
+  /* Scrim behind modals */
+  --qx-mask-bg: rgba(0, 0, 0, 0.4);
+
+  /* Focus ring — 1px primary, 2px offset */
+  --qx-focus-ring-width:  1px;
+  --qx-focus-ring-offset: 2px;
+  --qx-focus-ring-color:  var(--qx-primary);
+  --qx-focus-ring: 0 0 0 var(--qx-focus-ring-offset) var(--qx-surface-0),
+                0 0 0 calc(var(--qx-focus-ring-offset) + var(--qx-focus-ring-width)) var(--qx-focus-ring-color);
+
+  /* Disabled */
+  --qx-disabled-opacity: 0.6;   /* @kind other */
+
+  /* Motion — quick, functional, no bounce */
+  --qx-duration-fast: 120ms;    /* @kind other */
+  --qx-duration-base: 160ms;    /* @kind other */
+  --qx-ease: cubic-bezier(0.4, 0, 0.2, 1);   /* @kind other */
+  --qx-transition: all var(--qx-duration-base) var(--qx-ease);
+
+  /* M3 emphasized motion — overlays (Dialog / Drawer) enter/exit */
+  --qx-motion-enter-duration: 400ms;   /* @kind other */
+  --qx-motion-exit-duration:  200ms;   /* @kind other */
+  --qx-motion-enter-ease: cubic-bezier(0.05, 0.7, 0.1, 1);   /* @kind other */
+  --qx-motion-exit-ease:  cubic-bezier(0.3, 0, 0.8, 0.15);   /* @kind other */
+  --qx-motion-scrim-duration: 150ms;   /* @kind other */
+
+  /* Expand / collapse (accordion, list reveal). Same emphasized easing as the
+     overlays above — a second name for an identical curve is duplication, so
+     these are durations only. Collapse is much faster than expand, as M3
+     specifies and every other surface in the DS already does. */
+  --qx-motion-duration-expand:   420ms;   /* @kind other */
+  --qx-motion-duration-collapse: 240ms;   /* @kind other */
+}
+
+/* ============================================================
+   Qmodii — COMPONENT TOKENS  (light)
+   The third tier, mirroring the Figma "components" variable set.
+   Each value resolves up through the semantic aliases (semantic.css)
+   to a primitive (palette.css). Consumers can retheme a single
+   component by overriding just these variables.
+   ============================================================ */
+.qx-root {
+  /* ---------- Control sizing (shared field/button size maps) ----------
+     Font-size + line-height per control size (sm / md / lg). */
+  --qx-control-font-sm: var(--qx-text-sm);    /* 12px */
+  --qx-control-font-md: var(--qx-text-base);  /* 14px */
+  --qx-control-font-lg: var(--qx-text-lg);    /* 16px */
+  --qx-control-lh-sm:   var(--qx-leading-sm);   /* 16px */
+  --qx-control-lh-md:   var(--qx-leading-base); /* 20px */
+  --qx-control-lh-lg:   var(--qx-leading-lg);   /* 24px */
+  /* Text fields (Input / Select / DatePicker) — larger lg step */
+  --qx-field-font-sm:   var(--qx-text-base);  /* 14px */
+  --qx-field-font-md:   var(--qx-text-base);  /* 14px */
+  --qx-field-font-lg:   var(--qx-text-xl);    /* 18px */
+  --qx-field-lh-sm:     var(--qx-leading-base); /* 20px */
+  --qx-field-lh-md:     var(--qx-leading-base); /* 20px */
+  --qx-field-lh-lg:     var(--qx-leading-lg);   /* 24px */
+
+  /* ---------- Button ---------- */
+  --qx-btn-radius: var(--qx-radius-sm);
+  --qx-btn-height: var(--qx-control-height);
+  --qx-btn-height-sm: var(--qx-control-height-sm);
+  --qx-btn-height-lg: var(--qx-control-height-lg);
+
+  --qx-btn-primary-bg:            var(--qx-primary);
+  --qx-btn-primary-fg:            var(--qx-primary-contrast);
+  --qx-btn-primary-hover-bg:      var(--qx-primary-hover);
+  --qx-btn-primary-active-bg:     var(--qx-primary-active);
+  --qx-btn-secondary-bg:          var(--qx-surface-100);
+  --qx-btn-secondary-fg:          var(--qx-text-primary);
+  --qx-btn-secondary-hover-bg:    var(--qx-surface-200);
+  --qx-btn-secondary-active-bg:   var(--qx-surface-200);
+  --qx-btn-negative-bg:           var(--qx-red-700);
+  --qx-btn-negative-fg:           #FFFFFF;
+  --qx-btn-negative-hover-bg:     var(--qx-red-800);
+  --qx-btn-negative-active-bg:    var(--qx-red-800);
+
+  --qx-btn-outlined-primary-fg:       var(--qx-primary);
+  --qx-btn-outlined-primary-border:   var(--qx-blue-200);
+  --qx-btn-outlined-primary-hover-bg: var(--qx-blue-50);
+  --qx-btn-outlined-secondary-fg:     var(--qx-text-primary);
+  --qx-btn-outlined-secondary-border: var(--qx-surface-200);
+  --qx-btn-outlined-secondary-hover-bg: var(--qx-state-hover-bg);
+
+  --qx-btn-text-primary-fg:        var(--qx-primary);
+  --qx-btn-text-primary-hover-bg:  var(--qx-blue-50);
+
+  /* surface variant (tinted fill + subtle border) */
+  --qx-btn-surface-primary-fg:          var(--qx-primary);
+  --qx-btn-surface-primary-bg:          var(--qx-blue-50);
+  --qx-btn-surface-primary-border:      var(--qx-blue-200);
+  --qx-btn-surface-primary-hover-border:var(--qx-blue-300);
+  --qx-btn-surface-primary-active-bg:   var(--qx-blue-100);
+  --qx-btn-surface-secondary-fg:        var(--qx-text-primary);
+  --qx-btn-surface-secondary-bg:        var(--qx-surface-50);
+  --qx-btn-surface-secondary-border:    var(--qx-surface-200);
+  --qx-btn-surface-secondary-active-bg: var(--qx-surface-100);
+  --qx-btn-surface-negative-fg:         var(--qx-red-600);
+  --qx-btn-surface-negative-bg:         var(--qx-red-50);
+  --qx-btn-surface-negative-border:     var(--qx-red-300);
+  --qx-btn-surface-negative-hover-bg:   var(--qx-red-100);
+
+  /* ---------- Form fields (InputText / Select / Password) ---------- */
+  /* Shared --field-* tokens removed — components use their own
+     --input-text-* / --select-field-* tokens (which alias --form-field-*). */
+
+  /* ---------- InputText (component tokens → form-field semantics) ---------- */
+  --qx-input-text-bg:             var(--qx-form-field-bg);
+  --qx-input-text-fg:          var(--qx-form-field-fg);
+  --qx-input-text-placeholder:    var(--qx-form-field-placeholder);
+  --qx-input-text-border-color:   var(--qx-form-field-border-color);
+  --qx-input-text-hover-border:   var(--qx-form-field-hover-border);
+  --qx-input-text-focus-border:   var(--qx-form-field-focus-border);
+  --qx-input-text-invalid-border: var(--qx-form-field-invalid-border);
+  --qx-input-text-radius:         var(--qx-form-field-border-radius);
+  --qx-input-text-icon-color:     var(--qx-form-field-icon-color);
+  --qx-input-text-disabled-fg:    var(--qx-form-field-disabled-fg);
+  --qx-input-text-disabled-bg:    var(--qx-form-field-disabled-bg);
+
+  /* ---------- Select field / trigger (component tokens → form-field semantics) ---------- */
+  --qx-select-field-bg:             var(--qx-form-field-bg);
+  --qx-select-field-fg:          var(--qx-form-field-fg);
+  --qx-select-field-placeholder:    var(--qx-form-field-placeholder);
+  --qx-select-field-border-color:   var(--qx-form-field-border-color);
+  --qx-select-field-hover-border:   var(--qx-form-field-hover-border);
+  --qx-select-field-focus-border:   var(--qx-form-field-focus-border);
+  --qx-select-field-invalid-border: var(--qx-form-field-invalid-border);
+  --qx-select-field-radius:         var(--qx-form-field-border-radius);
+
+  /* Select overlay */
+  --qx-select-icon-color:     var(--qx-surface-500);       /* #575757 */
+  --qx-select-overlay-bg:     var(--qx-overlay-bg);
+  --qx-select-overlay-fg:  var(--qx-overlay-fg);
+  --qx-select-overlay-border: var(--qx-overlay-border);
+  --qx-select-overlay-radius: var(--qx-overlay-radius);
+  --qx-select-overlay-shadow: var(--qx-overlay-shadow);
+  --qx-select-option-fg:       var(--qx-text-primary);   /* #222222 */
+  --qx-select-option-radius:      var(--qx-radius-sm);
+  --qx-select-option-focus-bg: var(--qx-state-hover-bg);
+  --qx-select-option-focus-fg:    var(--qx-text-primary);
+  --qx-select-option-selected-bg: var(--qx-state-selected-bg);
+  --qx-select-option-selected-fg: var(--qx-state-selected-fg);
+  --qx-select-option-selected-focus-bg: var(--qx-state-selected-bg);
+  --qx-select-option-selected-focus-fg: var(--qx-state-selected-fg-strong);
+  --qx-select-checkmark-color:    var(--qx-text-primary);
+  --qx-select-clear-icon-color:   var(--qx-surface-500);
+  --qx-select-group-fg:           var(--qx-text-muted);       /* group / accordion header label */
+  --qx-select-group-bg:           var(--qx-surface-50);        /* accordion header background */
+  --qx-select-group-size:         var(--qx-text-xs);          /* 11px @kind spacing */
+  --qx-select-empty-fg:           var(--qx-text-muted);        /* "no results" / loading text */
+
+  /* ---------- List item (reusable menu / list rows) ---------- */
+  --qx-list-item-radius:        var(--qx-radius-sm);
+  --qx-list-item-fg:         var(--qx-text-primary);
+  --qx-list-item-sublabel-fg:   var(--qx-text-muted);
+  --qx-list-item-icon-color:    var(--qx-surface-500);
+  --qx-list-item-hover-bg: var(--qx-state-hover-bg);
+  --qx-list-item-selected-bg:   var(--qx-state-selected-bg);
+  --qx-list-item-selected-fg:   var(--qx-state-selected-fg);
+  --qx-list-item-selected-icon: var(--qx-primary);              /* #0477D1 */
+  --qx-list-item-disabled-fg:   var(--qx-surface-500);          /* #575757 */
+  --qx-list-item-check-color:   var(--qx-primary);
+
+  /* ---------- Checkbox / Radio ---------- */
+  --qx-check-size: 18px;   /* @kind spacing */
+  --qx-check-size-sm: 14px;
+  --qx-check-size-lg: 21px;
+  --qx-check-radius: var(--qx-radius-sm);
+  --qx-check-bg: var(--qx-surface-0);
+  --qx-check-border: var(--qx-surface-200);
+  --qx-check-hover-border: var(--qx-state-hover-border);
+  --qx-check-checked-bg: var(--qx-primary);
+  --qx-check-checked-hover-bg: var(--qx-primary-hover);
+  --qx-check-checked-border: var(--qx-primary);
+  --qx-check-icon-color: #FFFFFF;
+  --qx-check-invalid-border: var(--qx-red-400);
+
+  /* ---------- ToggleSwitch ---------- */
+  --qx-switch-w: 35px;
+  --qx-switch-h: 21px;
+  --qx-switch-handle: 14px;
+  --qx-switch-track-off: var(--qx-surface-300);
+  --qx-switch-track-off-hover: var(--qx-surface-400);
+  --qx-switch-track-on: var(--qx-primary);
+  --qx-switch-track-on-hover: var(--qx-primary-hover);
+  --qx-switch-track-disabled: var(--qx-surface-200);
+  --qx-switch-handle-bg: #FFFFFF;
+
+  /* ---------- ToggleButton (segmented) ---------- */
+  --qx-toggle-track-bg: var(--qx-surface-50);
+  --qx-toggle-radius: var(--qx-radius-sm);
+  --qx-toggle-seg-selected-bg: var(--qx-surface-0);
+  --qx-toggle-seg-selected-fg: var(--qx-surface-900);
+  --qx-toggle-seg-fg: var(--qx-text-secondary);
+  --qx-toggle-seg-hover-fg: var(--qx-surface-700);
+
+  /* ---------- Tag ---------- */
+  --qx-tag-radius: var(--qx-radius-xs);
+  --qx-tag-radius-rounded: var(--qx-radius-xl);
+  --qx-tag-font-size: var(--qx-text-sm);
+  --qx-tag-font-weight: var(--qx-weight-bold);
+  --qx-tag-padding: var(--qx-space-xxs) var(--qx-space-xxs-plus);   /* 2px 6px */
+  /* fg is blue-800, not --primary: #0477D1 on the blue-100 chip measures 3.29:1
+     at 12px/700, short of AA. */
+  --qx-tag-primary-bg:   var(--qx-blue-100);  --qx-tag-primary-fg:   var(--qx-blue-800);
+  --qx-tag-secondary-bg: var(--qx-surface-100);  --qx-tag-secondary-fg: var(--qx-surface-600);
+  --qx-tag-success-bg:   var(--qx-green-100);    --qx-tag-success-fg:   var(--qx-green-700);
+  --qx-tag-info-bg:      var(--qx-sky-100);      --qx-tag-info-fg:      var(--qx-sky-700);
+  --qx-tag-warn-bg:      color-mix(in srgb, var(--qx-yellow-500) 12%, transparent);--qx-tag-warn-fg:      var(--qx-warn-fg);
+  --qx-tag-danger-bg:    var(--qx-red-100);      --qx-tag-danger-fg:    var(--qx-red-700);
+  --qx-tag-contrast-bg:  var(--qx-neutral-950);  --qx-tag-contrast-fg:  #FFFFFF;
+  /* Mixed from the token, not a frozen rgba of its old value — retinting the
+     market ramp now carries these fills with it. */
+  --qx-tag-buy-bg:  color-mix(in srgb, var(--qx-market-up-fill) 12%, transparent);    --qx-tag-buy-fg:  var(--qx-market-up);
+  --qx-tag-sell-bg: color-mix(in srgb, var(--qx-market-down-fill) 12%, transparent);  --qx-tag-sell-fg: var(--qx-market-down);
+  --qx-tag-call-bg: color-mix(in srgb, var(--qx-market-up-fill) 12%, transparent);    --qx-tag-call-fg: var(--qx-market-up);
+  --qx-tag-put-bg:  color-mix(in srgb, var(--qx-market-down-fill) 12%, transparent);  --qx-tag-put-fg:  var(--qx-market-down);
+
+  /* ---------- RatingChip (analyst ratings — display only) ----------
+     Filled buy→sell scale; dark text on every step keeps the fill legible. */
+  --qx-rating-radius:      var(--qx-radius-sm);
+  --qx-rating-padding:     var(--qx-space-xs) var(--qx-space-sm);  /* 4px 8px */
+  --qx-rating-fg:          var(--qx-text-primary);        /* shared dark label #222 */
+  /* Five bands over one up/down axis: strong buy and buy are steps of the up
+     ramp, sell and strong sell steps of the down ramp, hold the neutral gold.
+     Previously ten hand-picked hexes, which made a "buy" rating pill a different
+     green from a "buy" price change. */
+  --qx-rating-strong-buy-bg:    var(--qx-up-300);    --qx-rating-strong-buy-border:  var(--qx-up-400);    --qx-rating-strong-buy-fg:  var(--qx-rating-fg);
+  --qx-rating-buy-bg:           var(--qx-up-200);    --qx-rating-buy-border:         var(--qx-up-300);    --qx-rating-buy-fg:         var(--qx-rating-fg);
+  --qx-rating-hold-bg:          var(--qx-market-hold);      --qx-rating-hold-border:        var(--qx-market-hold-border); --qx-rating-hold-fg:        var(--qx-rating-fg);
+  --qx-rating-sell-bg:          var(--qx-down-200);  --qx-rating-sell-border:        var(--qx-down-300);  --qx-rating-sell-fg:        var(--qx-rating-fg);
+  --qx-rating-strong-sell-bg:   var(--qx-down-300);  --qx-rating-strong-sell-border: var(--qx-down-400);  --qx-rating-strong-sell-fg: var(--qx-rating-fg);
+
+  /* ---------- Chip ---------- */
+  --qx-chip-height: 28px;
+  --qx-chip-radius: var(--qx-radius-sm);
+  --qx-chip-bg: var(--qx-surface-50);
+  --qx-chip-fg: var(--qx-text-primary);
+  --qx-chip-border: var(--qx-surface-200);
+  --qx-chip-hover-border: var(--qx-state-hover-border);
+  --qx-chip-selected-bg: var(--qx-state-selected-bg);
+  --qx-chip-selected-fg: var(--qx-state-selected-fg);
+  --qx-chip-selected-border: var(--qx-state-selected-border);
+
+  /* ---------- Message ---------- */
+  --qx-message-radius: var(--qx-radius-sm);
+  --qx-message-pad-y: var(--qx-space-xxs-plus);   /* 6px */
+  --qx-message-pad-x: var(--qx-space-sm);        /* 8px */
+  /* info-fg is blue-800: --primary #0477D1 on the blue-50 fill measures 4.30:1,
+     just short of AA. There is no step between 700 and 800 in the brand ramp
+     (the cliff noted in the colour audit), so 800 is the nearest passing value. */
+  --qx-message-info-bg: var(--qx-blue-50);   --qx-message-info-fg: var(--qx-blue-800);      --qx-message-info-border: var(--qx-blue-200);
+  --qx-message-success-bg: var(--qx-green-50);  --qx-message-success-fg: var(--qx-green-600); --qx-message-success-border: var(--qx-green-200);
+  --qx-message-warn-bg: color-mix(in srgb, var(--qx-yellow-100) 95%, transparent); --qx-message-warn-fg: var(--qx-warn-fg); --qx-message-warn-border: color-mix(in srgb, var(--qx-yellow-600) 35%, transparent);
+  --qx-message-error-bg: var(--qx-red-50);      --qx-message-error-fg: var(--qx-red-700);     --qx-message-error-border: var(--qx-red-300);
+  --qx-message-secondary-bg: var(--qx-surface-50);  --qx-message-secondary-fg: var(--qx-surface-700);  --qx-message-secondary-border: var(--qx-surface-200);
+  --qx-message-secondary-outlined-fg: var(--qx-surface-500);
+  --qx-message-contrast-bg: var(--qx-surface-900);  --qx-message-contrast-fg: var(--qx-surface-50);    --qx-message-contrast-border: var(--qx-surface-950);
+  --qx-message-contrast-outlined-fg: var(--qx-surface-950);
+
+  /* ---------- Card ---------- */
+  --qx-card-bg: var(--qx-content-bg);
+  --qx-card-border: var(--qx-surface-200);
+  --qx-card-radius: var(--qx-radius-sm);
+  --qx-card-padding: var(--qx-space-md);        /* 12px — body padding */
+  --qx-card-content-padding: 0px;            /* extra padding around content slot @kind spacing */
+  --qx-card-footer-padding-top: var(--qx-gap-md); /* 8px — space above footer @kind spacing */
+  --qx-card-title-size: var(--qx-text-lg);
+  --qx-card-title-weight: var(--qx-weight-medium);
+  --qx-card-title-fg: var(--qx-text-primary);
+  --qx-card-subtitle-fg: var(--qx-text-secondary);
+  --qx-card-subtitle-size: var(--qx-text-base);
+  --qx-card-subtitle-line-height: var(--qx-leading-snug);
+  --qx-card-body-line-height: var(--qx-leading-base);
+  --qx-card-title-line-height: var(--qx-leading-xtight);
+  --qx-card-fg: var(--qx-text-primary);
+  --qx-card-shadow: var(--qx-shadow-md);        /* only when raised */
+
+  /* ---------- Dialog / Drawer ---------- */
+  --qx-dialog-bg: var(--qx-overlay-bg);
+  --qx-dialog-border: var(--qx-overlay-border);
+  --qx-dialog-radius: var(--qx-overlay-radius);
+  --qx-dialog-padding: var(--qx-space-lg);
+  --qx-dialog-shadow: var(--qx-shadow-dialog);
+  --qx-dialog-title-size: var(--qx-text-lg);
+  --qx-dialog-title-weight: var(--qx-weight-semibold);
+  --qx-dialog-mask: var(--qx-mask-bg);
+  --qx-drawer-bg: var(--qx-surface-0);
+  --qx-drawer-border: var(--qx-surface-200);
+  --qx-drawer-header-padding: var(--qx-space-sm) var(--qx-space-md);   /* 8px 12px */
+  --qx-drawer-body-padding:   var(--qx-space-md);                  /* 12px */
+  --qx-drawer-footer-padding: var(--qx-space-sm) var(--qx-space-md);  /* 8px 12px */
+
+  /* ---------- Bottom sheet (mobile) ----------
+     DEFAULT IS FLOATING: inset on all four sides, all four corners rounded.
+     QMODs are frequently embedded in partner iframes — an edge-to-edge sheet
+     reads as the host page's own chrome and makes the "tool within a tool"
+     transition jarring. Floating keeps the sheet legibly ours.
+     Set --qx-sheet-inset: 0 and --qx-sheet-radius-bottom: 0 for a docked sheet
+     (only appropriate in a full-screen, non-embedded app shell). */
+  --qx-sheet-inset: 14px;                       /* margin on all sides @kind spacing */
+  --qx-sheet-radius: var(--qx-radius-lg);          /* 8px — top corners */
+  --qx-sheet-radius-bottom: var(--qx-radius-lg);   /* 8px — bottom corners (0 when docked) */
+  --qx-sheet-bg: var(--qx-surface-0);
+  --qx-sheet-shadow: var(--qx-shadow-sheet);
+  --qx-sheet-mask: var(--qx-mask-bg);
+  --qx-sheet-handle-width: 36px;                /* @kind spacing */
+  --qx-sheet-handle-height: 4px;                /* @kind spacing */
+  --qx-sheet-handle-color: var(--qx-surface-300);
+  --qx-sheet-max-height: calc(100dvh - (var(--qx-sheet-inset) * 3) - env(safe-area-inset-bottom));
+  /* On a wide viewport a full-width sheet is a band across the screen, so it
+     caps and centres instead — the sheet stays a sheet rather than becoming a
+     bottom-docked dialog. */
+  --qx-sheet-max-width: 560px;                  /* @kind spacing */
+  --qx-sheet-border: var(--qx-surface-200);
+  --qx-sheet-handle-area: 20px;                 /* grab strip above the header @kind spacing */
+  --qx-sheet-header-padding: var(--qx-space-sm) var(--qx-space-md);   /* 8px 12px */
+  --qx-sheet-body-padding:   var(--qx-space-md);                      /* 12px */
+  --qx-sheet-footer-padding: var(--qx-space-sm) var(--qx-space-md);   /* 8px 12px */
+  --qx-sheet-title-size:   var(--qx-text-base);
+  --qx-sheet-title-weight: var(--qx-weight-semibold);
+  /* Fraction of the sheet's own height it must be dragged past to dismiss.
+     Proportional, so a short sheet needs a short drag. */
+  --qx-sheet-dismiss-ratio: 0.35;               /* @kind other */
+
+  /* ---------- Accordion ----------
+     Rows read as a list of headlines, not as chrome: full-strength ink at rest,
+     regular weight, and the chevron carrying the affordance on its own. */
+  --qx-accordion-border: var(--qx-surface-200);
+  --qx-accordion-radius: var(--qx-radius-sm);
+  --qx-accordion-header-padding: var(--qx-space-sm-plus) var(--qx-space-md);   /* 10px 12px */
+  --qx-accordion-header-fg: var(--qx-text-primary);
+  --qx-accordion-header-active-fg: var(--qx-text-primary);
+  --qx-accordion-header-weight: var(--qx-weight-regular);
+  --qx-accordion-header-size: var(--qx-text-base);
+  --qx-accordion-header-hover-bg: var(--qx-state-hover-bg);
+  --qx-accordion-chevron-size: 16px;                /* @kind spacing */
+  --qx-accordion-chevron-stroke: 1.5;               /* lighter than an icon stroke @kind other */
+  --qx-accordion-chevron-color: var(--qx-surface-500);
+  --qx-accordion-content-padding: 0 var(--qx-space-md) var(--qx-space-md);
+  --qx-accordion-content-bg: var(--qx-surface-0);      /* matches the header — an open panel is one surface */
+  /* Expand / collapse. M3 emphasized easing, but shorter than an overlay: the
+     panel travels a fraction of the distance a dialog does, and M3 scales
+     duration with distance. Opacity is faster than height and delayed on enter
+     so text arrives into a box that already has room for it. */
+  --qx-accordion-expand-duration:   260ms;          /* @kind other */
+  --qx-accordion-collapse-duration: 180ms;          /* @kind other */
+  --qx-accordion-expand-ease:   var(--qx-motion-enter-ease);
+  --qx-accordion-collapse-ease: var(--qx-motion-exit-ease);
+  --qx-accordion-fade-duration: 140ms;              /* @kind other */
+  --qx-accordion-chevron-duration: var(--qx-duration-base);
+
+  /* ---------- Tabs ---------- */
+  --qx-tab-border: var(--qx-surface-200);
+  --qx-tab-fg: var(--qx-text-secondary);
+  --qx-tab-active-fg: var(--qx-primary);
+  --qx-tab-active-bar: var(--qx-primary);
+  --qx-tab-active-weight: var(--qx-weight-semibold);
+  --qx-tab-chip-track-bg: transparent;             /* chips are individually bordered — no track */
+  --qx-tab-chip-bg: var(--qx-surface-0);              /* inactive chip fill */
+  --qx-tab-chip-border: var(--qx-surface-200);        /* inactive chip border */
+  --qx-tab-chip-hover-border: var(--qx-state-hover-border);
+  --qx-tab-chip-selected-bg: var(--qx-state-selected-bg);
+  --qx-tab-chip-selected-border: var(--qx-state-selected-border);
+  --qx-tab-chip-selected-fg: var(--qx-primary);
+  --qx-tab-chip-padding: 0 var(--qx-space-md);   /* 0 12px */
+
+  /* ---------- Divider ---------- */
+  --qx-divider-color: var(--qx-surface-200);
+  --qx-divider-thickness: 1px;                     /* @kind spacing */
+  --qx-divider-margin: var(--qx-space-lg);            /* 16px — gap around a horizontal divider */
+  --qx-divider-content-fg: var(--qx-text-muted);
+  --qx-divider-content-size: var(--qx-text-base);     /* 14px */
+
+  /* ---------- DataTable ---------- */
+  --qx-table-border: var(--qx-surface-200);
+  --qx-table-cell-border: var(--qx-surface-100);
+  --qx-table-header-bg: var(--qx-surface-0);
+  --qx-table-header-fg: var(--qx-text-primary);
+  --qx-table-header-size: var(--qx-text-sm);
+  --qx-table-header-pad-y: var(--qx-space-xs);             /* 4px */
+  --qx-table-header-pad-x: var(--qx-space-md);             /* 12px */
+  --qx-table-header-action-pad-x: var(--qx-space-xxs-plus);/* 6px — action column */
+  --qx-table-row-striped-bg: var(--qx-surface-50);
+  --qx-table-row-hover-bg: var(--qx-state-hover-bg);
+  --qx-table-row-selected-bg: var(--qx-state-selected-bg);
+  --qx-table-row-selected-fg: var(--qx-state-selected-fg);
+  --qx-table-buy-fg: var(--qx-market-up);
+  --qx-table-sell-fg: var(--qx-market-down);
+  --qx-table-itm-call-bg: color-mix(in srgb, var(--qx-market-down-hot) 6%, transparent);  /* in-the-money call row/cell tint */
+  --qx-table-itm-put-bg:  color-mix(in srgb, var(--qx-market-up-fill) 6%, transparent);   /* in-the-money put row/cell tint */
+
+  /* Options-chain price cells (Bid / Ask) — hover + selected states */
+  --qx-chain-cell-radius:        var(--qx-radius-xs);
+  --qx-chain-ask-hover-bg:       color-mix(in srgb, var(--qx-market-up-fill) 16%, transparent);   /* Ask = green */
+  --qx-chain-ask-selected-bg:    color-mix(in srgb, var(--qx-market-up-fill) 32%, transparent);
+  --qx-chain-ask-selected-border: var(--qx-market-up-fill);
+  --qx-chain-ask-selected-fg:    var(--qx-market-up);
+  --qx-chain-bid-hover-bg:       color-mix(in srgb, var(--qx-market-down-hot) 12%, transparent);   /* Bid = red */
+  --qx-chain-bid-selected-bg:    color-mix(in srgb, var(--qx-market-down-hot) 26%, transparent);
+  --qx-chain-bid-selected-border: var(--qx-market-down-hot);
+  --qx-chain-bid-selected-fg:    var(--qx-market-down);
+  --qx-table-header-hover-bg: var(--qx-state-hover-bg);
+  /* column resize */
+  --qx-table-resize-hit: var(--qx-space-sm-plus);          /* 10px — handle hit area, flush right */
+  --qx-table-resize-inset: 0px;                         /* flush to the boundary */
+  --qx-table-resize-bar: rgba(4,119,209,0.5);           /* brand blue @ 50% */
+  --qx-table-col-min: 56px;                             /* --col-w-min */
+  --qx-table-col-max: 280px;                            /* --col-w-max */
+  /* column reorder */
+  --qx-table-grip-color: var(--qx-surface-400);            /* #707070 grip dots */
+  --qx-table-drop-indicator: var(--qx-primary);            /* 2px accent bar */
+  --qx-table-drag-source-opacity: 0.4;   /* @kind other */
+  /* group rows (full-width group bar) */
+  --qx-table-group-bar-bg: var(--qx-surface-100);
+  --qx-table-group-bar-hover-bg: var(--qx-surface-200);
+  --qx-table-group-bar-fg: var(--qx-text-secondary);       /* group name + chevron */
+  --qx-table-group-bar-count-fg: var(--qx-text-muted);     /* "(n)" row count */
+  --qx-table-group-bar-border: var(--qx-table-border);
+  --qx-table-group-bar-pad-y: var(--qx-space-xxs-plus);     /* 6px */
+  --qx-table-group-bar-pad-x: var(--qx-space-md);          /* 12px */
+  --qx-table-group-bar-size: var(--qx-text-sm);
+  --qx-table-group-bar-weight: var(--qx-weight-medium);
+  /* shadow cast by a sticky column/header over content scrolling under it */
+  --qx-table-sticky-shadow-x: 6px 0 8px -6px rgba(0, 0, 0, 0.22);
+  --qx-table-sticky-shadow-x-left: -6px 0 8px -6px rgba(0, 0, 0, 0.22);  /* right-pinned column casting left */
+  --qx-table-sticky-shadow-y: 0 6px 8px -6px rgba(0, 0, 0, 0.22);
+
+  /* ---------- Change (delta value + direction "dorito") ---------- */
+  /* text */
+  --qx-change-up-text:      var(--qx-market-up);          /* #2B7F45 */
+  --qx-change-down-text:    var(--qx-market-down);        /* #D02A48 */
+  --qx-change-neutral-text: var(--qx-text-primary); /* #222222 — used when text is not coloured */
+  /* dorito (direction triangle) — fill and border kept separate */
+  --qx-change-up-dorito-fill:     var(--qx-market-up);        /* #2B7F45 */
+  --qx-change-up-dorito-border:   var(--qx-market-up);
+  --qx-change-down-dorito-fill:   var(--qx-market-down); /* #D02A48 — matches its text, as the up side does */
+  --qx-change-down-dorito-border: var(--qx-market-down);
+  --qx-change-dorito-stroke: 1px;                 /* dorito border width @kind spacing */
+  /* sizes */
+  --qx-change-weight:    var(--qx-weight-medium);    /* one weight for every Change, at every size */
+  --qx-change-font-md:   var(--qx-text-base);        /* 14px */
+  --qx-change-font-sm:   var(--qx-text-sm);          /* 12px */
+  --qx-change-dorito-md: 9px;                     /* @kind spacing */
+  --qx-change-dorito-sm: 8px;                     /* @kind spacing */
+
+  /* ---------- SymbolTag ---------- */
+  --qx-symbol-tag-padding: var(--qx-space-xs) var(--qx-space-sm);   /* 4px 8px — roomier than Tag */
+
+  /* ---------- Paginator ---------- */
+  --qx-paginator-btn-size: 35px;
+  --qx-paginator-btn-radius: var(--qx-radius-full);
+  --qx-paginator-btn-fg: var(--qx-text-muted);
+  --qx-paginator-font-size: var(--qx-text-sm);        /* 12px @kind spacing */
+  --qx-paginator-btn-hover-bg: var(--qx-state-hover-bg);
+  --qx-paginator-btn-selected-bg: var(--qx-state-selected-bg);
+  --qx-paginator-btn-selected-fg: var(--qx-state-selected-fg);
+
+  /* ---------- TimeHorizon (bordered chips) ---------- */
+  --qx-th-height: var(--qx-control-height);
+  --qx-th-radius: var(--qx-radius-sm);
+  --qx-th-padding: 0 var(--qx-space-sm-plus);   /* 10px */
+  /* Identical to Chip by design — aliased, not re-declared. */
+  --qx-th-bg: var(--qx-chip-bg);
+  --qx-th-border: var(--qx-chip-border);
+  --qx-th-hover-border: var(--qx-state-hover-border);
+  --qx-th-fg: var(--qx-chip-fg);
+  --qx-th-font-size: var(--qx-text-sm);               /* 12px */
+  --qx-th-active-bg: var(--qx-state-selected-bg);
+  --qx-th-active-border: var(--qx-state-selected-border);
+  --qx-th-active-fg: var(--qx-primary);
+
+  /* ---------- Menu ---------- */
+  --qx-menu-bg: var(--qx-overlay-bg);
+  --qx-menu-fg: var(--qx-text-primary);
+  --qx-menu-border: var(--qx-overlay-border);
+  --qx-menu-radius: var(--qx-overlay-radius);
+  --qx-menu-shadow: var(--qx-overlay-shadow);
+  --qx-menu-item-fg: var(--qx-text-primary);
+  --qx-menu-item-size: var(--qx-text-base);
+  --qx-menu-section-size: var(--qx-text-xs);          /* 11px */
+  --qx-menu-sublabel-size: var(--qx-text-sm);
+  --qx-menu-item-radius: var(--qx-radius-sm);
+  --qx-menu-item-focus-bg: var(--qx-state-selected-bg);
+  --qx-menu-item-focus-fg: var(--qx-state-selected-fg);
+  --qx-menu-item-icon: var(--qx-surface-500);
+  --qx-menu-submenu-label-fg: var(--qx-text-secondary);
+  --qx-menu-submenu-label-weight: var(--qx-weight-semibold);
+  --qx-menu-separator-border: var(--qx-surface-200);
+
+  /* ---------- Overlay / Popover ---------- */
+  --qx-popover-bg: var(--qx-overlay-bg);
+  --qx-popover-fg: var(--qx-text-primary);
+  --qx-popover-border: var(--qx-overlay-border);
+  --qx-popover-radius: var(--qx-overlay-radius);
+  --qx-popover-shadow: var(--qx-overlay-shadow);
+  --qx-popover-gutter: var(--qx-space-sm-plus);       /* 10px — distance from anchor */
+  --qx-popover-arrow-offset: var(--qx-space-lg);      /* 16px */
+  --qx-popover-content-padding: var(--qx-space-lg);   /* 16px */
+
+  /* ---------- DatePicker ---------- */
+  --qx-datepicker-overlay-bg: var(--qx-overlay-bg);
+  --qx-datepicker-overlay-border: var(--qx-overlay-border);
+  --qx-datepicker-overlay-radius: var(--qx-overlay-radius);
+  --qx-datepicker-overlay-shadow: var(--qx-overlay-shadow);
+  --qx-datepicker-overlay-padding: var(--qx-space-sm);    /* 8px */
+  --qx-datepicker-header-fg: var(--qx-text-primary);
+  --qx-datepicker-title-size: var(--qx-text-base);
+  --qx-datepicker-weekday-size: var(--qx-text-xs);    /* 11px */
+  --qx-datepicker-day-size: var(--qx-text-sm);        /* 12px @kind spacing */
+  --qx-datepicker-weekday-fg: var(--qx-text-muted);
+  --qx-datepicker-day-fg: var(--qx-text-primary);
+  --qx-datepicker-day-radius: var(--qx-radius-sm);
+  --qx-datepicker-day-hover-bg: var(--qx-state-hover-bg);
+  --qx-datepicker-day-selected-bg: var(--qx-primary);
+  --qx-datepicker-day-selected-fg: #FFFFFF;
+  --qx-datepicker-day-today-border: var(--qx-blue-200);
+  --qx-datepicker-day-muted-fg: var(--qx-surface-400);
+  --qx-datepicker-day-disabled-fg: var(--qx-surface-300);
+  --qx-datepicker-nav-fg: var(--qx-text-secondary);
+  --qx-datepicker-nav-hover-bg: var(--qx-state-hover-bg);
+  --qx-datepicker-icon-color: var(--qx-form-field-icon-color);
+  --qx-datepicker-button-bg: var(--qx-surface-50);
+  --qx-datepicker-button-border: var(--qx-form-field-border-color);
+  --qx-datepicker-cell-size: 34px;                     /* @kind spacing */
+
+  /* ---------- Tooltip ---------- */
+  --qx-tooltip-bg: var(--qx-surface-900);              /* dark, per PrimeVue default */
+  --qx-tooltip-fg: var(--qx-surface-0);
+  --qx-tooltip-radius: var(--qx-radius-sm);
+  --qx-tooltip-padding-y: var(--qx-space-xxs-plus);     /* 6px */
+  --qx-tooltip-padding-x: var(--qx-space-sm);           /* 8px */
+  --qx-tooltip-font-size: var(--qx-text-sm);           /* 12px */
+  --qx-tooltip-line-height: var(--qx-leading-relaxed);  /* 1.4 — multi-line tooltips */
+  --qx-tooltip-max-width: 220px;                     /* @kind spacing */
+  --qx-tooltip-gutter: 8px;                          /* gap from anchor @kind spacing */
+  --qx-tooltip-arrow-size: var(--qx-space-xxs-plus);    /* 6px */
+  --qx-tooltip-shadow: var(--qx-shadow-md);
+
+  /* ---------- Faceted multiselect ---------- */
+  /* Trigger (matches the Select form field) */
+  --qx-multiselect-bg:            var(--qx-form-field-bg);
+  --qx-multiselect-border-color:          var(--qx-form-field-border-color);
+  --qx-multiselect-hover-border-color:    var(--qx-form-field-hover-border);
+  --qx-multiselect-focus-border-color:    var(--qx-form-field-focus-border);
+  --qx-multiselect-border-radius:         var(--qx-radius-sm);
+  --qx-multiselect-fg:                 var(--qx-form-field-fg);
+  --qx-multiselect-placeholder-fg:     var(--qx-form-field-placeholder);
+  --qx-multiselect-label-font-weight:     400;
+  --qx-multiselect-padding:               0 var(--qx-space-sm);   /* 8px */
+  --qx-multiselect-min-height:            32px;                 /* @kind spacing */
+  --qx-multiselect-dropdown-color:        var(--qx-select-icon-color);   /* chevron */
+  --qx-multiselect-focus-ring-color:      var(--qx-primary);
+  /* Count badge */
+  --qx-multiselect-badge-bg:      var(--qx-primary);
+  --qx-multiselect-badge-fg:           #FFFFFF;
+  /* Overlay / panel */
+  --qx-multiselect-overlay-bg:    var(--qx-overlay-bg);
+  --qx-multiselect-overlay-border-color:  var(--qx-overlay-border);
+  --qx-multiselect-overlay-border-radius: var(--qx-overlay-radius);
+  --qx-multiselect-overlay-shadow:        var(--qx-overlay-shadow);
+  --qx-multiselect-scrim-bg:      var(--qx-mask-bg);
+  /* Category rail */
+  --qx-multiselect-rail-bg:               var(--qx-surface-0);
+  --qx-multiselect-category-fg:                var(--qx-text-primary);
+  --qx-multiselect-category-hover-bg:     var(--qx-surface-100);
+  --qx-multiselect-category-active-bg:    var(--qx-state-selected-bg);
+  --qx-multiselect-category-active-fg:    var(--qx-state-selected-fg);
+  --qx-multiselect-category-active-accent-color:  var(--qx-primary);
+  --qx-multiselect-category-active-bar-width:     var(--qx-rangebar-marker-tick-width);  /* 3px — shared tick weight */
+  --qx-multiselect-category-active-bar-radius:    var(--qx-radius-full);
+  --qx-multiselect-category-badge-bg:     var(--qx-surface-100);
+  --qx-multiselect-category-badge-fg:          var(--qx-text-muted);
+  --qx-multiselect-category-badge-radius:         var(--qx-radius-sm);
+  /* Option list */
+  --qx-multiselect-header-fg:            var(--qx-text-primary);
+  --qx-multiselect-option-fg:            var(--qx-text-primary);
+  --qx-multiselect-option-min-height:       32px;               /* @kind spacing */
+  --qx-multiselect-option-border-radius:    var(--qx-radius-sm);
+  --qx-multiselect-option-hover-bg: var(--qx-state-hover-bg);
+  --qx-multiselect-option-selected-fg:   var(--qx-state-selected-fg);
+  --qx-multiselect-option-tag-fg:        var(--qx-text-muted);
+  /* Checkbox */
+  --qx-multiselect-checkbox-size:                 var(--qx-icon-size);     /* 16px */
+  --qx-multiselect-checkbox-border-color:         var(--qx-border-color-strong);
+  --qx-multiselect-checkbox-border-width:         var(--qx-border-thin);   /* 1px */
+  --qx-multiselect-checkbox-border-radius:        var(--qx-radius-sm);
+  --qx-multiselect-checkbox-checked-bg:   var(--qx-primary);
+  --qx-multiselect-checkbox-checked-border-color: var(--qx-primary);
+  /* Footer */
+  --qx-multiselect-footer-bg:    var(--qx-surface-0);
+  --qx-multiselect-footer-border-color:  var(--qx-border-color);
+  --qx-multiselect-footer-count-fg:   var(--qx-text-secondary);
+  /* Search field */
+  --qx-multiselect-search-divider-color:       var(--qx-border-color);
+  --qx-multiselect-search-field-bg:    var(--qx-surface-0);
+  --qx-multiselect-search-field-border-color:  var(--qx-border-color-strong);
+  --qx-multiselect-search-field-border-radius: var(--qx-radius-sm);
+  --qx-multiselect-search-placeholder-fg:   var(--qx-text-muted);
+  --qx-multiselect-search-focus-border-color:  var(--qx-primary);
+
+  /* ============================================================
+     Charts — color + dimension tokens (Figma "Chart" set)
+     ============================================================ */
+  /* Frame */
+  --qx-chart-bg:              var(--qx-surface-0);           /* plot background #FFFFFF */
+  --qx-chart-grid-line:       var(--qx-surface-200);         /* horizontal grid #E3E3E3 */
+  --qx-chart-axis-line:       var(--qx-surface-400);         /* base / zero axis #707070 */
+  --qx-chart-prevclose-line:  var(--qx-viz-reference-line);  /* previous-close reference */
+  --qx-chart-tick-color:      var(--qx-text-secondary);      /* axis tick labels #575757 */
+  --qx-chart-tick-size:       var(--qx-text-sm);             /* 12px */
+  --qx-chart-crosshair-line:  var(--qx-surface-300);         /* hover crosshair */
+
+  /* Dimensions */
+  --qx-chart-grid-line-width:    1px;    /* @kind spacing */
+  --qx-chart-axis-line-width:    1px;    /* @kind spacing */
+  --qx-chart-line-width:         2px;    /* @kind spacing */ /* series stroke */
+  --qx-chart-line-width-base:    1.5px;  /* @kind spacing */ /* base/neutral series */
+  --qx-chart-dot-radius:         3px;    /* @kind spacing */ /* data point / last dot */
+  --qx-chart-area-opacity:       0.40;   /* @kind other */ /* area fill top-stop alpha (Figma 40%) */
+  --qx-chart-candle-width:       7px;    /* @kind spacing */ /* candle body */
+  --qx-chart-candle-gap:         4px;    /* @kind spacing */ /* space between candles */
+  --qx-chart-candle-wick-width:  1px;    /* @kind spacing */
+
+  /* Brand area (gradient fill under a primary line) */
+  --qx-chart-area-stroke:     var(--qx-primary);             /* #0477D1 */
+  --qx-chart-area-fill-top:   var(--qx-primary);             /* gradient top → 40% */
+  --qx-chart-area-fill-bottom: transparent;               /* gradient bottom — not white, so it fades on any surface */
+
+  /* Brand line */
+  --qx-chart-line-stroke:     var(--qx-primary);             /* #0477D1 */
+  --qx-chart-line-dot:        var(--qx-primary);
+
+  /* Base line (neutral) */
+  --qx-chart-line-base-stroke: var(--qx-surface-400);        /* #707070 */
+  --qx-chart-line-base-dot:    var(--qx-surface-400);
+
+  /* Candlesticks — on the market ramps, so a green candle and a green delta are
+     the same green. Border is the fill's darker neighbour. */
+  --qx-chart-candle-up-border:   var(--qx-market-up-fill);      /* #5DB678 */
+  --qx-chart-candle-up-fill:     var(--qx-market-up-subtle);    /* #D6EBDE */
+  --qx-chart-candle-down-border: var(--qx-market-down-fill);    /* #E04E6E */
+  --qx-chart-candle-down-fill:   var(--qx-market-down-subtle);  /* #FAD3DB */
+  --qx-chart-candle-up-wick:     var(--qx-chart-candle-up-border);    /* wick = candle border */
+  --qx-chart-candle-down-wick:   var(--qx-chart-candle-down-border);
+
+  /* Session-state plot backgrounds — pre and post share one dormant tint */
+  --qx-chart-session-premarket-bg:  var(--qx-session-dormant-bg);
+  --qx-chart-session-postmarket-bg: var(--qx-session-dormant-bg);
+  --qx-chart-session-open-bg:       var(--qx-chart-bg);   /* regular hours */
+
+  /* Spark / baseline area — filled sparkline scale. border = stroke, mixed from
+     the shared --viz-line-* hue; top/bottom = the shared area stops. */
+  --qx-chart-spark-label-size: 7px;                 /* CLOSED · PREV DAY micro-label @kind spacing */
+  --qx-chart-spark-label-weight: var(--qx-weight-semibold);
+  --qx-chart-spark-positive-border: var(--qx-viz-line-positive);
+  --qx-chart-spark-positive-top:    color-mix(in srgb, var(--qx-viz-line-positive) var(--qx-viz-area-top), transparent);
+  --qx-chart-spark-positive-bottom: color-mix(in srgb, var(--qx-viz-line-positive) var(--qx-viz-area-bottom), transparent);
+  --qx-chart-spark-negative-border: var(--qx-viz-line-negative);
+  --qx-chart-spark-negative-top:    color-mix(in srgb, var(--qx-viz-line-negative) var(--qx-viz-area-top), transparent);
+  --qx-chart-spark-negative-bottom: color-mix(in srgb, var(--qx-viz-line-negative) var(--qx-viz-area-bottom), transparent);
+  --qx-chart-spark-closed-border:   var(--qx-viz-line-dormant);
+  --qx-chart-spark-closed-top:      color-mix(in srgb, var(--qx-viz-line-dormant) var(--qx-viz-area-top), transparent);
+  --qx-chart-spark-closed-bottom:   color-mix(in srgb, var(--qx-viz-line-dormant) var(--qx-viz-area-bottom), transparent);
+  /* Session bands at sparkline scale — the stronger dormant tint plus a
+     boundary hairline, because 26px of pale fill alone does not register. */
+  --qx-chart-spark-session-bg:      var(--qx-session-dormant-bg-strong);
+  --qx-chart-spark-session-edge:    var(--qx-viz-session-edge);
+  /* No-data state — dashed rule where the line would be, plus a micro-label */
+  --qx-chart-spark-empty-line:      var(--qx-surface-300);
+  --qx-chart-spark-empty-fg:        var(--qx-text-muted);
+
+  /* Series ramp — aliases of the shared --viz-series-* ramp in semantic.css.
+     Retained so existing chart code keeps reading --chart-series-N; override
+     the semantic ramp, not these. */
+  --qx-chart-series-1: var(--qx-viz-series-1);
+  --qx-chart-series-2: var(--qx-viz-series-2);
+  --qx-chart-series-3: var(--qx-viz-series-3);
+  --qx-chart-series-4: var(--qx-viz-series-4);
+  --qx-chart-series-5: var(--qx-viz-series-5);
+  --qx-chart-series-6: var(--qx-viz-series-6);
+  --qx-chart-series-7: var(--qx-viz-series-7);
+  --qx-chart-series-8: var(--qx-viz-series-8);
+
+  /* ---------- ChartTip (QX-ChartTip — transient hover / scrub readout) ----------
+     Container tokens are NOT white-label-exposed: contrast inside the box stays
+     under QuoteMedia's control while remaining QuoteMedia's a11y obligation. */
+  --qx-charttip-bg:              var(--qx-overlay-bg);
+  --qx-charttip-border-color:    var(--qx-border-color);
+  --qx-charttip-radius:          var(--qx-radius-sm);          /* 4px */
+  --qx-charttip-shadow:          var(--qx-shadow-md);          /* overlay layer */
+  --qx-charttip-padding:         var(--qx-space-sm);           /* 8px @kind spacing */
+  --qx-charttip-padding-compact: var(--qx-space-xxs-plus);     /* 6px */
+  --qx-charttip-min-width:       132px;                     /* @kind spacing */
+  --qx-charttip-max-width:       320px;                     /* @kind spacing */
+  --qx-charttip-cursor-offset:   14px;                      /* gap from crosshair, both axes @kind spacing */
+  --qx-charttip-plot-inset:      var(--qx-space-xxs-plus);     /* 6px — clamp margin inside plot rect */
+  --qx-charttip-fade-duration:   90ms;                      /* @kind other */ /* entry fade only — never animate position */
+  --qx-charttip-row-height:      22px;                      /* @kind spacing */
+  --qx-charttip-row-height-compact: 18px;                   /* @kind spacing */
+  --qx-charttip-font-size:       var(--qx-text-sm);            /* 12px */
+  --qx-charttip-font-size-compact: var(--qx-text-xs);          /* 11px */
+  --qx-charttip-headline-size:   var(--qx-text-base);          /* 14px — primary value */
+  --qx-charttip-headline-weight: var(--qx-weight-semibold);
+  --qx-charttip-label-color:     var(--qx-text-secondary);     /* field keys */
+  --qx-charttip-value-color:     var(--qx-text-primary);
+  --qx-charttip-emphasis-weight: var(--qx-weight-bold);        /* nearest-series row */
+  --qx-charttip-timestamp-size:  var(--qx-text-sm);            /* 12px, uppercase */
+  --qx-charttip-timestamp-color: var(--qx-text-secondary);
+  --qx-charttip-timestamp-tracking: 0.06em;                 /* @kind other */
+  --qx-charttip-divider-color:   var(--qx-border-color);       /* rule under timestamp */
+  --qx-charttip-swatch-size:     8px;                       /* @kind spacing */
+  --qx-charttip-swatch-radius:   var(--qx-radius-xs);          /* 2px */
+  --qx-charttip-footnote-size:   var(--qx-text-xs);            /* 11px — feed qualifier */
+  --qx-charttip-footnote-color:  var(--qx-text-muted);
+
+  /* ---------- ChartStrip (QX-ChartStrip — persistent in-plot readout) ----------
+     A scrim, not a card: no border, no radius, no shadow.
+     Shares the tooltip's type, row heights and ink — the two are read as one
+     family, so only what is genuinely unique to the strip is defined here.
+     Reused from ChartTip: --qx-charttip-font-size(-compact), --qx-charttip-row-height(-compact),
+     --qx-charttip-label-color, --qx-charttip-value-color. */
+  --qx-chartstrip-scrim-bg:      color-mix(in srgb, var(--qx-surface-0) 90%, transparent);  /* ≥0.85 alpha or dense candles bleed through */
+  --qx-chartstrip-scrim-blur:    3px;                     /* @kind spacing */
+  --qx-chartstrip-padding-y:     var(--qx-space-xs);         /* 4px — tighter than the tooltip's box @kind spacing */
+  --qx-chartstrip-padding-x:     var(--qx-space-sm);         /* 8px @kind spacing */
+  --qx-chartstrip-symbol-weight: var(--qx-weight-semibold);
+  --qx-chartstrip-gutter-width:  20px;                    /* disclosure gutter @kind spacing */
+  --qx-chartstrip-rule-width:    3px;                     /* series rule, not the tooltip's square swatch @kind spacing */
+  --qx-chartstrip-rule-height:   13px;                    /* @kind spacing */
+  --qx-chartstrip-rule-radius:   1px;                     /* @kind spacing */
+  --qx-chartstrip-chevron-size:  16px;                    /* glyph; hit area is 44px @kind spacing */
+  --qx-chartstrip-chevron-color: var(--qx-text-secondary);
+  --qx-chartstrip-chevron-hover-color: var(--qx-text-primary);
+  --qx-chartstrip-reserve:       34px;                    /* plot padding = COLLAPSED height @kind spacing */
+  --qx-chartstrip-reserve-compact: 29px;                  /* @kind spacing */
+
+  /* ---------- RangeBar (QX-RangeBar — bounded-domain linear gauge) ----------
+     One primitive behind 52wk range / support-resistance / price target /
+     volume comparison. Every colour resolves through the semantic layer so a
+     WMID theme and a future CVD ramp are theme swaps, not component variants.
+     Tone is always set explicitly by the caller — never derived from whether a
+     value sits left or right on the track (see the guideline note).
+     Fills come from the shared --viz-fill-* set; absent values from
+     --qx-value-null-color; loading from --skeleton-*; markers focus on --qx-focus-ring. */
+  --qx-rangebar-track-bg:            var(--qx-surface-100);
+  --qx-rangebar-track-radius:        var(--qx-radius-xs);    /* 2px */
+  --qx-rangebar-track-height:        10px;                /* @kind spacing */
+  --qx-rangebar-track-height-compact:     6px;            /* @kind spacing */
+  --qx-rangebar-track-height-comfortable: 14px;           /* @kind spacing */
+
+  /* bands — fills come from the shared --viz-fill-* set in semantic.css */
+  --qx-rangebar-band-tint-alpha:  0.16;                   /* @kind other */
+  --qx-rangebar-gradient-mid:     var(--qx-market-hold);  /* #F5C63F — shared with the scoring bands */
+
+  /* markers */
+  --qx-rangebar-marker-current-bg:   var(--qx-primary);
+  --qx-rangebar-marker-current-ring: var(--qx-surface-0);    /* halo so the dot reads on any band */
+  --qx-rangebar-marker-ring-width:   var(--qx-border-medium);/* 2px */
+  --qx-rangebar-marker-size:             10px;            /* @kind spacing */
+  --qx-rangebar-marker-size-compact:      8px;            /* @kind spacing */
+  --qx-rangebar-marker-size-comfortable: 12px;            /* @kind spacing */
+  --qx-rangebar-marker-reference: var(--qx-text-primary);    /* the AVG tick */
+  --qx-rangebar-marker-bound:     var(--qx-surface-300);     /* endpoint caps */
+  --qx-rangebar-marker-tick-width:  3px;                  /* matches --qx-chartstrip-rule-width @kind spacing */
+  --qx-rangebar-marker-tick-radius: 1px;                  /* @kind spacing */
+  --qx-rangebar-marker-overhang:  var(--qx-space-xxs);       /* 2px past the track edge @kind spacing */
+
+  /* labels — two sizes only, per the type rules */
+  --qx-rangebar-value-size:             var(--qx-text-sm);   /* 12px */
+  --qx-rangebar-value-size-compact:     var(--qx-text-xs);   /* 11px */
+  --qx-rangebar-value-size-comfortable: var(--qx-text-base); /* 14px */
+  --qx-rangebar-value-weight:   var(--qx-weight-semibold);
+  --qx-rangebar-value-color:    var(--qx-text-primary);
+  --qx-rangebar-value-positive: var(--qx-buy);
+  --qx-rangebar-value-negative: var(--qx-sell);
+  --qx-rangebar-value-accent:   var(--qx-primary);
+  --qx-rangebar-caption-size:   var(--qx-text-xs);           /* 11px — 52L, SUP, RES, AVG, LAST */
+  --qx-rangebar-caption-weight: var(--qx-weight-regular);
+  --qx-rangebar-caption-color:  var(--qx-text-secondary);
+
+  /* callout (the bordered current-value box) */
+  --qx-rangebar-callout-bg:           var(--qx-surface-0);
+  --qx-rangebar-callout-border-color: var(--qx-border-color);
+  --qx-rangebar-callout-radius:       var(--qx-radius-sm);   /* 4px */
+  --qx-rangebar-callout-shadow:       var(--qx-shadow-xs);
+  --qx-rangebar-callout-padding-y:    var(--qx-space-xxs);   /* 2px @kind spacing */
+  --qx-rangebar-callout-padding-x:    var(--qx-space-xxs-plus); /* 6px */
+
+  /* header + legend */
+  --qx-rangebar-title-size:      var(--qx-text-base);        /* 14px */
+  --qx-rangebar-title-weight:    var(--qx-weight-semibold);
+  --qx-rangebar-title-color:     var(--qx-text-primary);
+  --qx-rangebar-summary-size:    var(--qx-text-sm);          /* 12px */
+  --qx-rangebar-summary-color:   var(--qx-text-secondary);
+  --qx-rangebar-legend-size:     var(--qx-text-xs);          /* 11px */
+  --qx-rangebar-legend-color:    var(--qx-text-secondary);
+  --qx-rangebar-legend-dot-size: var(--qx-charttip-swatch-size); /* 8px — same swatch as the tooltip */
+
+  /* rhythm */
+  --qx-rangebar-title-gap:   var(--qx-space-xxs);            /* title ↔ summary 2px @kind spacing */
+  --qx-rangebar-header-gap:  var(--qx-space-sm);             /* header ↔ track 8px @kind spacing */
+  --qx-rangebar-label-gap:   var(--qx-space-xs);             /* track ↔ label row 4px @kind spacing */
+  --qx-rangebar-caption-gap: var(--qx-space-xxs);            /* value ↔ caption 2px @kind spacing */
+  --qx-rangebar-series-gap:  var(--qx-gap-sm);               /* between stacked bars 4px @kind spacing */
+  --qx-rangebar-bounds-gap:  var(--qx-gap-lg);              /* min gap between min/max labels 12px @kind spacing */
+  --qx-rangebar-inline-gap:  var(--qx-gap-md);              /* track ↔ inline bound label 8px @kind spacing */
+  --qx-rangebar-track-radius-pill: var(--qx-radius-full);   /* trackShape="pill" — inline rows read as one object */
+  --qx-rangebar-legend-gap:  var(--qx-space-lg);             /* between legend items 16px @kind spacing */
+  --qx-rangebar-label-row-height:             38px;       /* reserved: callout + caption @kind spacing */
+  --qx-rangebar-label-row-height-compact:     34px;       /* @kind spacing */
+  --qx-rangebar-label-row-height-comfortable: 42px;       /* @kind spacing */
+  /* Marker labels are absolutely positioned, so the row has no intrinsic
+     height — it must always reserve one or the label sits on the track. This
+     is the single-line case: one value line, no caption. */
+  --qx-rangebar-label-row-height-nocaption: calc(var(--qx-rangebar-value-size) * 1.3 + var(--qx-rangebar-callout-padding-y) * 2 + var(--qx-border-thin) * 2);
+
+  /* out-of-range indicator + non-default states */
+  --qx-rangebar-overflow-size:  var(--qx-text-xs);           /* 11px caret */
+  --qx-rangebar-overflow-color: var(--qx-text-muted);
+  --qx-rangebar-message-color:  var(--qx-text-secondary);    /* empty / error copy */
+  --qx-rangebar-skeleton-line-width: 120px;               /* stand-in for the title line @kind spacing */
+  --qx-rangebar-gate-blur:      3px;                      /* @kind spacing */
+  --qx-rangebar-gate-veil-alpha: 0.5;                     /* @kind other */
+
+  /* ---------- BarList (QX-BarList — proportional magnitude bars, one per row) ----------
+     Sibling to RangeBar, different job: RangeBar plots values inside a fixed
+     domain; BarList compares magnitudes across rows against one shared scale.
+     Fully rounded caps distinguish it at a glance from the square-capped
+     RangeBar track. Fills, skeleton and null ink all come from the shared
+     semantic sets (--viz-fill-*, --skeleton-*, --qx-value-null-color). */
+  --qx-barlist-bar-height:             8px;               /* @kind spacing */
+  --qx-barlist-bar-height-compact:     6px;               /* @kind spacing */
+  --qx-barlist-bar-height-comfortable: 10px;              /* @kind spacing */
+  --qx-barlist-bar-radius:      var(--qx-radius-full);       /* rounded caps — the component's signature */
+  --qx-barlist-bar-min-length:  var(--qx-barlist-bar-height); /* = bar height, so a near-zero value stays a round dot rather than a squashed nub @kind spacing */
+  --qx-barlist-track-bg:        var(--qx-surface-100);       /* omit with showTrack={false} on dark plots */
+  --qx-barlist-track-border-color: var(--qx-surface-200);     /* one step darker than the track — defines the empty extent */
+  --qx-barlist-track-radius:    var(--qx-barlist-bar-radius);
+
+  /* rows */
+  --qx-barlist-row-height:             24px;              /* @kind spacing */
+  --qx-barlist-row-height-compact:     20px;              /* @kind spacing */
+  --qx-barlist-row-height-comfortable: 28px;              /* @kind spacing */
+  --qx-barlist-row-hover-bg: var(--qx-state-hover-bg);
+  --qx-barlist-row-radius:   var(--qx-radius-xs);            /* 2px — hover/selection shape only */
+
+  /* label ↔ bar ↔ value */
+  --qx-barlist-label-size:   var(--qx-text-sm);              /* 12px */
+  --qx-barlist-label-weight: var(--qx-weight-regular);
+  --qx-barlist-label-color:  var(--qx-text-primary);
+  --qx-barlist-label-width:  96px;                        /* fixed column so bars share a left edge @kind spacing */
+  --qx-barlist-value-size:   var(--qx-text-sm);              /* 12px */
+  --qx-barlist-value-weight: var(--qx-weight-semibold);
+  --qx-barlist-value-color:  var(--qx-text-primary);
+  --qx-barlist-value-width:  56px;                        /* fixed column so bars share a right edge; sized to a formatted value, not to slack @kind spacing */
+
+  /* zero baseline (diverging bars) + reference line */
+  --qx-barlist-baseline-color: var(--qx-border-color-strong);
+  --qx-barlist-baseline-width: var(--qx-border-thin);        /* 1px */
+  --qx-barlist-target-color:   var(--qx-viz-reference-line); /* average / target rule — same reference slate as prev-close */
+
+  /* ============================================================
+     QMSymbolList — container, collapse, entitlement
+     ============================================================ */
+  /* collapse / expand reveal */
+  --qx-symbollist-fade-height:   40px;                    /* bottom fade in scroll mode @kind spacing */
+  --qx-symbollist-toggle-padding: var(--qx-space-sm-plus) var(--qx-space-md);
+  --qx-symbollist-toggle-fg:     var(--qx-text-link);
+  --qx-symbollist-toggle-size:   var(--qx-text-sm);
+  --qx-symbollist-toggle-weight: var(--qx-weight-semibold);
+  --qx-symbollist-toggle-divider: var(--qx-quoterow-divider-color);
+  /* entitlement gate — locked rows and the upgrade panel */
+  --qx-symbollist-lock-row-opacity: 0.55;                 /* @kind other */
+  --qx-symbollist-lock-bar-bg:   var(--qx-surface-100);       /* placeholder where a value would be */
+  --qx-symbollist-lock-panel-bg: var(--qx-surface-0);
+  --qx-symbollist-lock-panel-border: var(--qx-border-color);
+  --qx-symbollist-lock-panel-radius: var(--qx-radius-md);
+  --qx-symbollist-lock-panel-shadow: var(--qx-shadow-sm);
+  --qx-symbollist-lock-panel-padding: var(--qx-space-lg);
+  --qx-symbollist-lock-tile-size: 32px;                   /* @kind spacing */
+  --qx-symbollist-lock-tile-bg:  var(--qx-surface-100);
+  --qx-symbollist-lock-tile-fg:  var(--qx-text-secondary);
+  --qx-symbollist-lock-scrim:    color-mix(in srgb, var(--qx-surface-0) 72%, transparent);
+
+  /* ============================================================
+     WidgetHeader — dense panel header (icon tile + title + info)
+     ============================================================ */
+  --qx-widgetheader-padding:       var(--qx-space-sm) var(--qx-space-md);
+  --qx-widgetheader-gap:           var(--qx-gap-md);
+  --qx-widgetheader-bg:            var(--qx-surface-0);
+  --qx-widgetheader-divider-color: var(--qx-border-color);
+  --qx-widgetheader-icon-size:     24px;                  /* @kind spacing */
+  --qx-widgetheader-icon-radius:   var(--qx-radius-sm);
+  --qx-widgetheader-icon-bg:       var(--qx-surface-100);
+  --qx-widgetheader-icon-fg:       var(--qx-text-secondary);
+  --qx-widgetheader-icon-glyph:    18px;                  /* @kind spacing */
+  /* Denser than --card-title (16px/500) on purpose: a widget header labels a
+     panel inside a dashboard, a card title heads a standalone card. */
+  --qx-widgetheader-title-size:    var(--qx-text-base);
+  --qx-widgetheader-title-weight:  var(--qx-weight-bold);
+  --qx-widgetheader-title-fg:      var(--qx-text-primary);
+  --qx-widgetheader-info-size:     16px;                  /* @kind spacing */
+  --qx-widgetheader-info-fg:       var(--qx-text-muted);
+  --qx-widgetheader-info-hover-fg: var(--qx-text-secondary);
+  --qx-barlist-target-width:   var(--qx-rangebar-marker-tick-width); /* 3px — same tick weight as RangeBar */
+
+  /* ---------- QuoteRow (the individual row that makes up a symbol list) ----------
+     Four slots left to right: rank → logo → identity (required) → chart → data.
+     QMSymbolList repeats this row; the token set is here so a single row used
+     on its own (watchlist panel, search result, position row) themes the same.
+     Hover comes from --qx-state-hover-bg, skeletons from --skeleton-*, score
+     bands from --score-* — only geometry and the row's own ink live here. */
+  --qx-quoterow-bg:            transparent;
+  --qx-quoterow-hover-bg:      var(--qx-state-hover-bg);
+  --qx-quoterow-divider-color: var(--qx-border-color);
+  --qx-quoterow-padding-y:         var(--qx-space-sm);       /* 8px @kind spacing */
+  --qx-quoterow-padding-y-compact: var(--qx-space-xs);       /* 4px @kind spacing */
+  --qx-quoterow-padding-x:         var(--qx-space-md);       /* 12px @kind spacing */
+
+  /* rank */
+  --qx-quoterow-rank-width: 20px;                         /* @kind spacing */
+  --qx-quoterow-rank-size:  var(--qx-text-sm);               /* 12px */
+  --qx-quoterow-rank-leading: var(--qx-leading-tight);
+  --qx-quoterow-rank-color: var(--qx-text-muted);
+
+  /* logo */
+  --qx-quoterow-logo-size:         28px;                  /* @kind spacing */
+  --qx-quoterow-logo-size-compact: 22px;                  /* @kind spacing */
+  --qx-quoterow-logo-radius:       var(--qx-radius-full);
+  --qx-quoterow-logo-border:       var(--qx-border-color);
+  --qx-quoterow-logo-fallback-bg:  var(--qx-surface-100);
+  --qx-quoterow-logo-fallback-fg:  var(--qx-text-secondary);
+
+  /* identity — the only required slot */
+  --qx-quoterow-symbol-size:   var(--qx-text-base);          /* 14px */
+  --qx-quoterow-symbol-weight: var(--qx-weight-bold);
+  --qx-quoterow-symbol-color:  var(--qx-text-primary);
+  --qx-quoterow-symbol-leading: var(--qx-leading-tight);     /* single line — rhythm comes from --qx-quoterow-stack-gap */
+  --qx-quoterow-name-size:     var(--qx-text-sm);            /* 12px */
+  --qx-quoterow-name-color:    var(--qx-text-secondary);
+  --qx-quoterow-name-leading:  var(--qx-leading-sm);         /* 16px fixed — the second line's box, shared with the data slot's so both stacks align */
+  --qx-quoterow-stack-gap:     var(--qx-space-xxs);          /* 2px — the vertical gap in BOTH stacked slots: symbol↔name and price↔change @kind spacing */
+  --qx-quoterow-identity-width: 168px;                    /* fixed when a chart is present, so charts align @kind spacing */
+  --qx-quoterow-chart-gap:      var(--qx-space-md);          /* 12px — breathing room between the chart and the data slot @kind spacing */
+
+  /* data slot */
+  --qx-quoterow-data-min-width: 72px;                     /* keeps trailing values on one right edge @kind spacing */
+  --qx-quoterow-value-size:     var(--qx-text-base);         /* 14px */
+  --qx-quoterow-value-weight:   var(--qx-weight-semibold);
+  --qx-quoterow-value-color:    var(--qx-text-primary);
+  --qx-quoterow-value-leading:  var(--qx-leading-tight);
+  --qx-quoterow-meta-size:      var(--qx-text-xs);           /* 11px — the VOL / /100 suffix */
+  --qx-quoterow-meta-color:     var(--qx-text-muted);
+  --qx-quoterow-meta-leading:   var(--qx-quoterow-name-leading);  /* 11px VOL sits in the same 16px box as the 12px name */
+
+  /* score bar variant */
+  --qx-quoterow-scorebar-width:  64px;                    /* @kind spacing */
+  --qx-quoterow-scorebar-height: var(--qx-space-xxs-plus);   /* 6px */
+  --qx-quoterow-scorebar-track:  var(--qx-score-track-bg);
+  --qx-quoterow-scorebar-radius: var(--qx-radius-full);
+  /* filling H-bar (chart slot) — taller than the inline bar because it carries
+     the score on its own, with a bordered track and a same-hue fill edge */
+  --qx-quoterow-scorebar-hbar-height: 11px;               /* @kind spacing */
+  --qx-quoterow-scorebar-track-border: var(--qx-score-track-border);
+  --qx-quoterow-scorebar-fill-border-width: var(--qx-border-thin);
+  /* dot variant — number in primary ink, band carried by a dot instead of a bar */
+  --qx-quoterow-scoredot-size: var(--qx-space-sm);           /* 8px */
+  --qx-quoterow-scoredot-gap:  var(--qx-gap-sm);
+  /* peer comparison — industry average and signed diff */
+  --qx-quoterow-peer-avg-color: var(--qx-text-muted);
+  --qx-quoterow-peer-par-color: var(--qx-score-par-fg);
+
+  /* rank-badge variant */
+  --qx-quoterow-badge-width:  44px;                       /* @kind spacing */
+  --qx-quoterow-badge-height: 20px;                       /* @kind spacing */
+  --qx-quoterow-medal-gold-bg:       color-mix(in srgb, var(--qx-market-hold) 35%, transparent);
+  --qx-quoterow-medal-gold-border:   var(--qx-market-hold-border);
+  --qx-quoterow-medal-silver-bg:     var(--qx-surface-100);
+  --qx-quoterow-medal-silver-border: var(--qx-surface-300);
+  /* Bronze has no ramp of its own — it is a medal tint, not a system colour. */
+  --qx-quoterow-medal-bronze-bg:     color-mix(in srgb, #C98A3E 26%, transparent);
+  --qx-quoterow-medal-bronze-border: #C98A3E;
+
+  /* ---------- SecurityMark (the identity tile in a row's logo slot) ----------
+     A company has a logo; a barrel of crude, a 10-year note and the VIX do not.
+     One tinted tile per GROUP — not per contract — so a mixed list is scannable
+     without forty near-identical drawings. Tints are low-chroma on purpose: the
+     mark identifies a category, it never competes with a price or a delta.
+     Sizes track QuoteRow's logo slot so the two stay interchangeable. */
+  --qx-securitymark-size:          var(--qx-quoterow-logo-size);
+  --qx-securitymark-radius:        var(--qx-radius-sm);      /* only for shape="rounded" */
+  --qx-securitymark-border:        var(--qx-border-color);
+  --qx-securitymark-glyph-size:    68%;                   /* of the tile @kind other */
+  --qx-securitymark-glyph-stroke:  1.6;                   /* @kind other */
+  --qx-securitymark-monogram-bg:   var(--qx-surface-100);
+  --qx-securitymark-monogram-fg:   var(--qx-text-secondary);
+  --qx-securitymark-monogram-size: 0.4;                   /* ratio of the tile, not a length @kind other */
+  --qx-securitymark-brand-bg:      var(--qx-surface-0);      /* behind a coin brand mark */
+  --qx-securitymark-brand-border:  var(--qx-border-color);
+  --qx-securitymark-brand-inset:   0;                     /* one inset for EVERY image mark @kind other */
+
+  /* group tints — bg / fg / border per category */
+  --qx-securitymark-energy-bg:      #EFEDF6;
+  --qx-securitymark-energy-fg:      #4B4477;
+  --qx-securitymark-energy-border:  #DDD9EC;
+  --qx-securitymark-precious-bg:     #FAF2DE;
+  --qx-securitymark-precious-fg:     #8A6A16;
+  --qx-securitymark-precious-border: #F0E3C4;
+  /* per-metal tints — the metal itself is the identity, so gold, silver and
+     bronze keep their own colour rather than sharing one grey ingot */
+  --qx-securitymark-gold-bg:       #FAF2DE;
+  --qx-securitymark-gold-fg:       #8A6A16;
+  --qx-securitymark-gold-border:   #EFDFB4;
+  --qx-securitymark-silver-bg:     #F1F2F4;
+  --qx-securitymark-silver-fg:     #5C636E;
+  --qx-securitymark-silver-border: #DFE2E6;
+  --qx-securitymark-bronze-bg:     #F6EBE1;
+  --qx-securitymark-bronze-fg:     #8A5626;
+  --qx-securitymark-bronze-border: #EBD8C6;
+  --qx-securitymark-base-bg:        #F3EEEA;
+  --qx-securitymark-base-fg:        #7A5A45;
+  --qx-securitymark-base-border:    #E7DDD5;
+  --qx-securitymark-grains-bg:      #F6F1DF;
+  --qx-securitymark-grains-fg:      #79661D;
+  --qx-securitymark-grains-border:  #EBE3C8;
+  --qx-securitymark-softs-bg:       #EDF3EA;
+  --qx-securitymark-softs-fg:       #4A6B3E;
+  --qx-securitymark-softs-border:   #DCE8D6;
+  --qx-securitymark-livestock-bg:     #F7EEEC;
+  --qx-securitymark-livestock-fg:     #85504A;
+  --qx-securitymark-livestock-border: #EEDEDA;
+  --qx-securitymark-rates-bg:       var(--qx-primary-subtle);
+  --qx-securitymark-rates-fg:       var(--qx-blue-900);
+  --qx-securitymark-rates-border:   var(--qx-blue-200);
+  --qx-securitymark-volatility-bg:     #F7ECEC;
+  --qx-securitymark-volatility-fg:     var(--qx-sell);
+  --qx-securitymark-volatility-border: #EFD9D9;
+  --qx-securitymark-index-bg:       var(--qx-surface-100);
+  --qx-securitymark-index-fg:       var(--qx-text-primary);
+  --qx-securitymark-index-border:   var(--qx-surface-200);
+  --qx-securitymark-fx-bg:          #EAF1F5;
+  --qx-securitymark-fx-fg:          #38596B;
+  --qx-securitymark-fx-border:      #D8E5EC;
+  /* currency pair — two overlapping flag discs, base in front of quote */
+  --qx-securitymark-pair-disc:       72%;                 /* each disc, as a share of the tile @kind other */
+  --qx-securitymark-pair-ring:       var(--qx-surface-0);    /* separates the two discs */
+  --qx-securitymark-pair-ring-width: var(--qx-border-medium);/* 2px */
+  --qx-securitymark-pair-label-size: 0.26;                /* ratio of the tile, not a length @kind other */
+  --qx-securitymark-crypto-bg:      #FAF0E4;
+  --qx-securitymark-crypto-fg:      #8A5A17;
+  --qx-securitymark-crypto-border:  #F0E0C9;
+  --qx-securitymark-other-bg:       var(--qx-surface-100);
+  --qx-securitymark-other-fg:       var(--qx-text-secondary);
+  --qx-securitymark-other-border:   var(--qx-surface-200);
+
+  /* ---------- AxisPill (last-value chip — load-bearing on independently-scaled charts) ---------- */
+  --qx-axispill-padding-y:    1px;                          /* @kind spacing */
+  --qx-axispill-padding-x:    var(--qx-space-xs);              /* 4px @kind spacing */
+  --qx-axispill-radius:       var(--qx-radius-xs);             /* 2px */
+  --qx-axispill-font-size:    var(--qx-text-xs);               /* 11px */
+  --qx-axispill-fg:           var(--qx-surface-0);             /* pill ink on series-coloured fill */
+  --qx-axispill-min-gap:      var(--qx-space-lg);              /* 16px — de-collision spacing */
+}
+
+/* ============================================================
+   Qmodii — COMPONENT ROOT RESET
+   Rule 4 of the QX scoping rules: inheritable properties flow in from the
+   host page whether we want them or not. Declare them explicitly on the
+   component root so a QX subtree renders identically inside any client site.
+
+   `.qx-root` is also where every token is defined (see tokens/*.css), so the
+   class is doing two jobs: it is the token scope AND the inheritance barrier.
+   Anything rendering QX components must carry it.
+   ============================================================ */
+
+.qx-root {
+  /* Inherited typography + colour. Every one of these is a property a host
+     page's `body {}` or `*{}` rule would otherwise dictate. */
+  font-family: var(--qx-font-sans, 'Roboto', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif);
+  font-size: var(--qx-text-base, 14px);
+  /* Unitless on purpose. --qx-leading-normal is 20px, correct for 14px body but
+     wrong as an INHERITED default: a fixed length would hand 20px leading to
+     every nested size, cramping anything larger. 1.4 is the same rhythm at base
+     size (14 → 19.6px) and scales with whatever a child sets. */
+  line-height: var(--qx-leading-relaxed, 1.4);
+  font-weight: var(--qx-weight-regular, 400);
+  letter-spacing: normal;
+  color: var(--qx-text-primary, #222222);
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
+  text-decoration: none;
+  font-variant-ligatures: normal;
+  /* Host resets frequently set these on a wrapper and we inherit the damage. */
+  word-spacing: normal;
+  white-space: normal;
+  direction: ltr;
+  /* Rendering hints. Cheap, inherited, and a host page setting the opposite on
+     body would otherwise change how our type renders. */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.qx-root *,
+.qx-root *::before,
+.qx-root *::after { box-sizing: border-box; }
+
+/* Interactive + tabular elements our components render. A host page's global
+   reset (`button { all: unset }`, `table { border-collapse: separate }`, a
+   normalize.css, a Tailwind preflight) lands on these before our own rules do,
+   so each one is neutralised here rather than defended per component.
+
+   Every element selector below sits inside `:where()`, which contributes ZERO
+   specificity — so each rule weighs exactly (0,1,0), the `.qx-root` class alone.
+   That still beats a host's bare `button {}` (0,0,1), but it loses to any
+   single-class component rule like `.qx-btn`. Without `:where()` these would be
+   (0,1,1) and would strip the padding and background off every class-styled
+   component we ship. */
+.qx-root :where(button, input, select, textarea) {
+  font: inherit; color: inherit; letter-spacing: inherit;
+  margin: 0; padding: 0; border: 0; background: none;
+  border-radius: 0; text-align: inherit; text-transform: none;
+  appearance: none; -webkit-appearance: none;
+}
+.qx-root :where(button) { cursor: pointer; }
+.qx-root :where(button:disabled) { cursor: default; }
+.qx-root :where(a) { color: var(--qx-text-link, #002C5A); text-decoration: none; }
+.qx-root :where(a:hover) { color: var(--qx-text-link-hover, #0477D1); text-decoration: underline; }
+/* Tables. Scoped to a QX table so a host page's own tables are untouched. */
+.qx-root :where(table) { border-collapse: collapse; border-spacing: 0; width: auto; }
+.qx-root :where(table th, table td) { vertical-align: middle; }
+/* Lists inside QX components are never bulleted; scoped to our own subtree so
+   a host page's prose lists on the same page are not stripped. */
+.qx-root :where(ul, ol) { margin: 0; padding: 0; }
+/* Margins only. Deliberately NOT font-size / font-weight: our components set
+   their type inline, so flattening headings buys nothing and destroys the
+   hierarchy on any QX-owned page that uses real heading elements. */
+.qx-root :where(p, h1, h2, h3, h4, h5, h6, figure, blockquote) { margin: 0; }
+.qx-root :where(img, svg) { max-width: none; }
+.qx-root :where(fieldset) { margin: 0; padding: 0; border: 0; }
+.qx-root :where(legend) { padding: 0; }
+.qx-root :where(hr) { border: 0; margin: 0; }
+
+/* Overlays portal to document.body, outside any .qx-root subtree, so they
+   carry the class themselves and re-establish the same scope. */
+.qx-portal { display: contents; }
+
+/* ===== QX-NewsItem component ===== */
+/* ============================================================
+   QX-NewsItem — component styles
+   Namespaced under .qx-newsitem. Every var() carries a resolved
+   fallback so a missing token degrades to the right value.
+   Depends on QX tokens (tokens/semantic.css et al).
+   ============================================================ */
+
+/* Screen-reader-only helper (locked-state description text). */
+.qx-newsitem .qx-sr-only,
+.qx-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---- Row ------------------------------------------------------------- */
+.qx-newsitem {
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+  text-decoration: none;
+  color: var(--qx-text-primary, #222222);
+  background: var(--qx-surface-0, #FFFFFF);
+  font-family: var(--qx-font-sans, 'Roboto', system-ui, sans-serif);
+  padding: var(--qx-space-md, 12px);
+  cursor: pointer;
+  outline: none;
+  transition: background var(--qx-duration-fast, 120ms) var(--qx-ease, cubic-bezier(0.4,0,0.2,1));
+}
+.qx-newsitem[data-density='compact'] { padding: var(--qx-space-sm, 8px) var(--qx-space-sm-plus, 10px); }
+
+/* Whole row is the hover / active target, not just the headline. */
+.qx-newsitem:hover,
+.qx-newsitem[data-state='hover'] { background: var(--qx-state-hover-bg, #F6F6F6); }
+.qx-newsitem:active,
+.qx-newsitem[data-state='active'] { background: var(--qx-surface-100, #EDEDED); }
+.qx-newsitem:hover .qx-ni-title,
+.qx-newsitem[data-state='hover'] .qx-ni-title { color: var(--qx-text-link-hover, #0477D1); }
+
+/* Focus: visible 2px ring on the row bounds, 2px offset, primary token.
+   Colour change alone is never sufficient (WCAG 2.4.7). */
+.qx-newsitem:focus-visible,
+.qx-newsitem[data-state='focus'] {
+  outline: 2px solid var(--qx-primary, #0477D1);
+  outline-offset: 2px;
+  background: var(--qx-state-hover-bg, #F6F6F6);
+  z-index: 1;
+}
+
+/* ---- Signal spine — 3px left border by importance rank --------------- */
+.qx-newsitem[data-signal] { padding-left: calc(var(--qx-space-md, 12px) + 3px); }
+.qx-newsitem[data-density='compact'][data-signal] { padding-left: calc(var(--qx-space-sm-plus, 10px) + 3px); }
+.qx-newsitem[data-signal]::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--qx-surface-300, #C7C7C7);
+}
+.qx-newsitem[data-signal='high']::before   { background: var(--qx-amber-500, #F59E0B); }
+.qx-newsitem[data-signal='medium']::before { background: var(--qx-primary, #0477D1); }
+.qx-newsitem[data-signal='low']::before    { background: var(--qx-surface-300, #C7C7C7); }
+
+/* ---- Inner layout: media + body ------------------------------------- */
+.qx-ni-inner { display: flex; gap: var(--qx-space-md, 12px); align-items: flex-start; }
+.qx-newsitem[data-density='compact'] .qx-ni-inner { gap: var(--qx-space-sm, 8px); }
+.qx-newsitem[data-image-pos='above'] .qx-ni-inner { flex-direction: column; }
+.qx-ni-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--qx-space-xs, 4px); }
+
+/* ---- Media ----------------------------------------------------------- */
+.qx-ni-media-wrap { position: relative; flex: 0 0 auto; }
+.qx-ni-media {
+  width: 116px; aspect-ratio: 16 / 9; border-radius: var(--qx-radius-sm, 4px);
+  overflow: hidden; background: var(--qx-surface-100, #EDEDED);
+  border: 1px solid var(--qx-surface-200, #E3E3E3);
+}
+.qx-newsitem[data-density='compact'] .qx-ni-media { width: 96px; }
+.qx-newsitem[data-image-pos='above'] .qx-ni-media-wrap { width: 100%; }
+.qx-newsitem[data-image-pos='above'] .qx-ni-media { width: 100%; aspect-ratio: 16 / 9; }
+.qx-ni-thumb { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Branded fallback tile — never letterbox. */
+.qx-ni-media-fallback { display: flex; align-items: center; justify-content: center; background: var(--qx-primary-subtle, #F2F8FE); }
+.qx-ni-fallback-mark {
+  font-size: var(--qx-text-sm, 12px); font-weight: 700; letter-spacing: .04em;
+  color: var(--qx-primary, #0477D1); text-transform: uppercase;
+}
+
+/* ---- Title ----------------------------------------------------------- */
+.qx-ni-title {
+  margin: 0; order: 2;
+  font-size: var(--qx-text-base, 14px); font-weight: 600; line-height: 1.34;
+  color: var(--qx-text-primary, #222222);
+  display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;
+  -webkit-line-clamp: 2;
+}
+.qx-newsitem[data-title-lines='1'] .qx-ni-title { -webkit-line-clamp: 1; }
+.qx-newsitem[data-title-lines='2'] .qx-ni-title { -webkit-line-clamp: 2; }
+.qx-newsitem[data-title-lines='3'] .qx-ni-title { -webkit-line-clamp: 3; }
+.qx-newsitem[data-title-lines='full'] .qx-ni-title { -webkit-line-clamp: unset; display: block; }
+/* Editorial + Lead read as curated stories: larger, heavier headline. */
+.qx-newsitem[data-preset='editorial'] .qx-ni-title,
+.qx-newsitem[data-preset='lead'] .qx-ni-title { font-size: var(--qx-text-lg, 16px); font-weight: 700; line-height: 1.28; }
+
+/* ---- Description ----------------------------------------------------- */
+.qx-ni-desc {
+  margin: 0; order: 3;
+  font-size: 13px; line-height: 1.45; color: var(--qx-text-secondary, #575757);
+  display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;
+  -webkit-line-clamp: 2;
+}
+.qx-newsitem[data-desc-lines='1'] .qx-ni-desc { -webkit-line-clamp: 1; }
+.qx-newsitem[data-desc-lines='2'] .qx-ni-desc { -webkit-line-clamp: 2; }
+.qx-newsitem[data-desc-lines='3'] .qx-ni-desc { -webkit-line-clamp: 3; }
+
+/* ---- Badge row ------------------------------------------------------- */
+.qx-ni-badges { order: 4; display: flex; flex-wrap: wrap; align-items: center; gap: var(--qx-gap-md, 8px); margin-top: var(--qx-space-xxs, 2px); }
+
+.qx-ni-symbol {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 1px 6px; border-radius: 2px;
+  background: var(--qx-surface-100, #EDEDED); color: var(--qx-text-primary, #222222);
+  font-size: var(--qx-text-xs, 11px); font-weight: 700; letter-spacing: .02em;
+  font-variant-numeric: tabular-nums;
+}
+.qx-ni-symbol-chg { font-weight: 500; }
+.qx-ni-symbol.qx-ni-up   .qx-ni-symbol-chg { color: var(--qx-market-up, #2B7F45); }
+.qx-ni-symbol.qx-ni-down .qx-ni-symbol-chg { color: var(--qx-market-down, #D02A48); }
+
+.qx-ni-topic {
+  display: inline-flex; align-items: center;
+  padding: 1px 6px; border-radius: 2px;
+  background: var(--qx-surface-100, #EDEDED); color: var(--qx-text-secondary, #575757);
+  font-size: var(--qx-text-xs, 11px); font-weight: 600;
+}
+
+.qx-ni-sentiment { font-size: 12px; line-height: 1; }
+.qx-ni-sentiment.qx-ni-pos { color: var(--qx-market-up, #2B7F45); }
+.qx-ni-sentiment.qx-ni-neg { color: var(--qx-market-down, #D02A48); }
+.qx-ni-sentiment.qx-ni-neu { color: var(--qx-market-hold, #F5C63F); }
+
+.qx-ni-ai {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; border-radius: var(--qx-radius-sm, 4px);
+  background: var(--qx-info-bg, #F2F8FE); color: var(--qx-primary, #0477D1);
+}
+
+/* ---- Meta row -------------------------------------------------------- */
+.qx-ni-meta {
+  order: 5; display: flex; align-items: center; gap: 6px;
+  font-size: var(--qx-text-sm, 12px); color: var(--qx-text-muted, #707070);
+}
+.qx-ni-source { font-weight: 600; color: var(--qx-text-secondary, #575757); }
+.qx-ni-sep { color: var(--qx-surface-300, #C7C7C7); }
+.qx-ni-time { color: var(--qx-text-muted, #707070); }
+/* metaPosition=top lifts the meta row above the title, visually only. */
+.qx-newsitem[data-meta-pos='top'] .qx-ni-meta { order: 1; margin-bottom: var(--qx-space-xxs, 2px); }
+
+/* ---- Read / visited -------------------------------------------------- */
+.qx-newsitem[data-state='read'] .qx-ni-title { color: var(--qx-text-secondary, #575757); font-weight: 500; }
+.qx-newsitem[data-state='read'] .qx-ni-media { opacity: .7; }
+
+/* ---- Locked / entitlement-gated ------------------------------------- */
+/* Headline + meta stay fully legible; description + media are frosted. */
+.qx-newsitem[data-state='locked'] .qx-ni-desc {
+  filter: blur(3px); opacity: .55; user-select: none; pointer-events: none;
+}
+.qx-newsitem[data-state='locked'] .qx-ni-media { filter: blur(3px); }
+.qx-ni-media-lock {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: var(--qx-surface-0, #fff); background: rgba(0,0,0,.32); border-radius: var(--qx-radius-sm, 4px);
+}
+.qx-ni-lock-badge {
+  order: 0; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;
+  margin-bottom: var(--qx-space-xs, 4px);
+  padding: 2px 8px; border-radius: 999px;
+  background: var(--qx-primary-subtle, #F2F8FE); color: var(--qx-primary, #0477D1);
+  border: 1px solid var(--qx-blue-200, #C0DEF7);
+  font-size: var(--qx-text-xs, 11px); font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  position: relative; z-index: 2;
+}
+.qx-ni-lockglyph { display: block; }
+
+/* ---- Skeleton (loading) --------------------------------------------- */
+.qx-newsitem[data-state='loading'] { cursor: default; }
+@keyframes qx-ni-sheen { 0% { background-position: -160px 0; } 100% { background-position: 240px 0; } }
+.qx-ni-sk-media, .qx-ni-sk-line, .qx-ni-sk-meta, .qx-ni-sk-badges > span {
+  background: var(--qx-skeleton-bg, #EDEDED);
+  background-image: linear-gradient(90deg, var(--qx-skeleton-bg, #EDEDED) 0, var(--qx-skeleton-sheen, #F6F6F6) 40px, var(--qx-skeleton-bg, #EDEDED) 80px);
+  background-size: 240px 100%; background-repeat: no-repeat;
+  animation: qx-ni-sheen 1.2s var(--qx-ease, ease) infinite;
+  border-radius: var(--qx-radius-sm, 4px);
+}
+.qx-ni-sk-media { width: 116px; aspect-ratio: 16/9; flex: 0 0 auto; }
+.qx-newsitem[data-image-pos='above'] .qx-ni-sk-media { width: 100%; }
+.qx-ni-sk-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.qx-ni-sk-meta { width: 120px; height: 10px; }
+.qx-ni-sk-title { display: flex; flex-direction: column; gap: 6px; }
+.qx-ni-sk-desc { display: flex; flex-direction: column; gap: 5px; margin-top: 2px; }
+.qx-ni-sk-line { height: 12px; }
+.qx-ni-sk-desc .qx-ni-sk-line { height: 9px; }
+.qx-ni-sk-badges { display: flex; gap: 8px; margin-top: 2px; }
+.qx-ni-sk-badges > span { width: 46px; height: 14px; }
+
+/* ---- List container -------------------------------------------------- */
+/* Divider is owned by the list, not the row (0.5px rule between rows). */
+.qx-news-list { display: flex; flex-direction: column; background: var(--qx-surface-0, #fff); }
+.qx-news-list > .qx-newsitem + .qx-newsitem { border-top: 1px solid var(--qx-surface-200, #E3E3E3); }
+
+/* ===== Playground chrome ===== */
+body { margin: 0; }
+.qx-root.pg-page { min-height: 100vh; background: var(--qx-surface-ground, #F6F6F6); color: var(--qx-text-primary, #222); font-family: var(--qx-font-sans, system-ui, sans-serif); -webkit-font-smoothing: antialiased; }
+
+  :root { color-scheme: light; }
+  .qx-root.pg-page {
+    margin: 0;
+    background: var(--qx-surface-ground, #F6F6F6);
+    color: var(--qx-text-primary, #222);
+    font-family: var(--qx-font-sans, system-ui, sans-serif);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- App chrome ---- */
+  .pg-appbar {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--qx-surface-0, #fff);
+    border-bottom: 1px solid var(--qx-surface-200, #E3E3E3);
+    padding: 14px 24px; display: flex; align-items: center; gap: 16px;
+  }
+  .pg-wordmark { font-size: 18px; font-weight: 700; letter-spacing: -.01em; }
+  .pg-wordmark .dot { color: var(--qx-primary, #0477D1); }
+  .pg-appbar .pg-title { font-size: 14px; font-weight: 600; }
+  .pg-appbar .pg-sub { font-size: 12px; color: var(--qx-text-muted, #707070); }
+  .pg-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--qx-primary, #0477D1); background: var(--qx-primary-subtle, #F2F8FE);
+    border: 1px solid var(--qx-blue-200, #C0DEF7); border-radius: 2px; padding: 2px 6px; }
+  .pg-spacer { flex: 1 1 auto; }
+
+  .pg-wrap { max-width: 1220px; margin: 0 auto; padding: 24px; }
+
+  /* ---- Section scaffolding ---- */
+  .pg-section { margin-bottom: 40px; }
+  .pg-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--qx-text-muted, #707070); margin: 0 0 6px; }
+  .pg-h2 { font-size: 18px; font-weight: 700; margin: 0 0 4px; }
+  .pg-lede { font-size: 13px; color: var(--qx-text-secondary, #575757); margin: 0 0 18px; max-width: 72ch; line-height: 1.5; }
+
+  .pg-card { background: var(--qx-surface-0, #fff); border: 1px solid var(--qx-surface-200, #E3E3E3); border-radius: 8px; }
+  .pg-card-pad { padding: 16px; }
+  .pg-card-head { padding: 12px 16px; border-bottom: 1px solid var(--qx-surface-200, #E3E3E3); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .pg-card-head .t { font-size: 14px; font-weight: 700; }
+  .pg-card-head .s { font-size: 12px; color: var(--qx-text-muted, #707070); }
+
+  /* ---- Playground grid ---- */
+  .pg-play { display: grid; grid-template-columns: 300px 1fr; gap: 20px; align-items: start; }
+  @media (max-width: 900px) { .pg-play { grid-template-columns: 1fr; } }
+  .pg-controls { position: sticky; top: 74px; }
+  .pg-ctrl-group { padding: 14px 16px; border-bottom: 1px solid var(--qx-surface-100, #EDEDED); }
+  .pg-ctrl-group:last-child { border-bottom: 0; }
+  .pg-ctrl-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--qx-text-muted, #707070); margin: 0 0 8px; }
+  .pg-subctrl { margin-top: 8px; transition: opacity 120ms; }
+  .pg-subctrl.off { opacity: .4; pointer-events: none; }
+
+  /* segmented */
+  .pg-seg { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+  .pg-seg button {
+    font-family: inherit; font-size: 12px; font-weight: 500; padding: 5px 9px;
+    border-radius: var(--qx-radius-sm, 4px); cursor: pointer;
+    background: var(--qx-surface-0, #fff); color: var(--qx-text-secondary, #575757);
+    border: 1px solid var(--qx-surface-200, #E3E3E3); transition: all 120ms var(--qx-ease, ease);
+  }
+  .pg-seg button:hover { background: var(--qx-surface-50, #F6F6F6); border-color: var(--qx-surface-300, #C7C7C7); }
+  .pg-seg button[aria-pressed='true'] { background: var(--qx-primary-subtle, #F2F8FE); color: var(--qx-blue-900, #002C5A); border-color: var(--qx-blue-200, #C0DEF7); font-weight: 600; }
+  .pg-seg button:disabled { opacity: .5; cursor: not-allowed; }
+
+  /* toggle row */
+  .pg-toggle { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; font-size: 13px; }
+  .pg-toggle:not(:last-child) { border-bottom: 1px dashed var(--qx-surface-100, #EDEDED); }
+  .pg-toggle.dim { opacity: .45; }
+  .pg-switch { position: relative; width: 34px; height: 20px; flex: 0 0 auto; }
+  .pg-switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+  .pg-switch .track { position: absolute; inset: 0; border-radius: 999px; background: var(--qx-surface-300, #C7C7C7); transition: background 140ms var(--qx-ease, ease); }
+  .pg-switch .thumb { position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform 140ms var(--qx-ease, ease); box-shadow: var(--qx-shadow-xs, 0 1px 2px rgba(0,0,0,.06)); }
+  .pg-switch input:checked + .track { background: var(--qx-primary, #0477D1); }
+  .pg-switch input:checked + .track + .thumb { transform: translateX(14px); }
+
+  /* ---- Preview stage ---- */
+  .pg-stage { background: var(--qx-surface-ground, #F6F6F6); border: 1px solid var(--qx-surface-200, #E3E3E3); border-radius: 8px; padding: 28px; }
+  .pg-stage-inner { max-width: 560px; margin: 0 auto; }
+  .pg-list-frame { border: 1px solid var(--qx-surface-200, #E3E3E3); border-radius: 8px; overflow: hidden; }
+  .pg-hint { font-size: 12px; color: var(--qx-text-muted, #707070); text-align: center; margin: 14px 0 0; }
+
+  /* generated code */
+  .pg-code { margin-top: 20px; background: var(--qx-surface-900, #1a1a1a); color: #e8e8e8; border-radius: 8px; padding: 16px 18px; overflow-x: auto;
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 12px; line-height: 1.7; white-space: pre; }
+  .pg-code .k { color: #6cb6ff; } .pg-code .a { color: #f5c63f; } .pg-code .v { color: #7ee787; } .pg-code .p { color: #b0b0b0; }
+
+  /* ---- Galleries ---- */
+  .pg-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .pg-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 900px) { .pg-grid-2, .pg-grid-3 { grid-template-columns: 1fr; } }
+  .pg-gal-note { margin: 0 0 12px; font-size: 12px; color: var(--qx-text-secondary, #575757); line-height: 1.5; }
+  .pg-inner-list { border: 1px solid var(--qx-surface-200, #E3E3E3); border-radius: 6px; overflow: hidden; }
+
+  .pg-usage { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; align-items: start; }
+  @media (max-width: 900px) { .pg-usage { grid-template-columns: 1fr; } }
+  .pg-rail { display: flex; flex-direction: column; gap: 20px; }
+  .pg-module-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--qx-surface-200, #E3E3E3); }
+  .pg-module-head .icon { width: 22px; height: 22px; border-radius: 4px; background: var(--qx-primary-subtle, #F2F8FE); color: var(--qx-primary, #0477D1); display: flex; align-items: center; justify-content: center; font-size: 13px; }
+  .pg-module-head .t { font-size: 14px; font-weight: 700; }
+  .pg-module-head .more { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--qx-primary, #0477D1); text-decoration: none; }
+  .pg-embed-frame { border: 1px dashed var(--qx-surface-300, #C7C7C7); border-radius: 8px; padding: 12px; background: repeating-linear-gradient(45deg, var(--qx-surface-50, #F6F6F6) 0 10px, var(--qx-surface-0, #fff) 10px 20px); }
+  .pg-embed-note { font-size: 11px; color: var(--qx-text-muted); margin: 0 0 8px; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; }
+
+  table.pg-anat { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.pg-anat th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--qx-text-muted); padding: 0 12px 10px 0; border-bottom: 1px solid var(--qx-surface-200, #E3E3E3); }
+  table.pg-anat td { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--qx-surface-100, #EDEDED); color: var(--qx-text-secondary); vertical-align: top; line-height: 1.5; }
+  table.pg-anat td.n { font-weight: 700; color: var(--qx-text-primary); white-space: nowrap; }
+  table.pg-anat td.req.yes { color: var(--qx-text-positive, #2B7F45); font-weight: 600; white-space: nowrap; }
+  table.pg-anat td.req { color: var(--qx-text-muted); white-space: nowrap; }
+  .pg-a11y { margin: 0; padding-left: 18px; }
+  .pg-a11y li { font-size: 13px; color: var(--qx-text-secondary); line-height: 1.55; margin-bottom: 8px; }
+  .pg-a11y code { background: var(--qx-surface-100, #EDEDED); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+
+</style>
+
+<div class="qx-root pg-page"><div id="app"></div></div>
+
+<script>
+/* ============================================================
+   QX-NewsItem — dependency-free renderer (window.QXNewsItem)
+
+   A vanilla-JS mirror of QXNewsItem.jsx: same DOM structure, same
+   class names, same data-* attributes, so components/data/qxnewsitem.css
+   styles both identically. This is what the offline playground runs; the
+   .jsx file is the canonical React component for the design system.
+
+   Usage:
+     const node = QXNewsItem.render({ preset: 'feed', title: '…', … });
+     container.appendChild(node);
+   ============================================================ */
+(function (root) {
+  'use strict';
+
+  const PRESETS = {
+    feed:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 2, showImage: true,  imagePosition: 'leading',  showBadgeRow: true },
+    editorial: { metaPosition: 'bottom', titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'trailing', showBadgeRow: true },
+    compact:   { metaPosition: 'top',    titleLines: 1, showDescription: false, descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: true },
+    lead:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'above',    showBadgeRow: true },
+    embed:     { metaPosition: 'top',    titleLines: 1, showDescription: false, descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: false, minimalMeta: true },
+  };
+
+  const pick = (v, pv, fb) => (v !== undefined ? v : (pv !== undefined ? pv : fb));
+
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs, children) {
+    const node = document.createElement(tag);
+    if (attrs) for (const k in attrs) {
+      const val = attrs[k];
+      if (val === undefined || val === null || val === false) continue;
+      if (k === 'text') node.textContent = val;
+      else if (k === 'html') node.innerHTML = val;
+      else node.setAttribute(k, val === true ? '' : val);
+    }
+    if (children) [].concat(children).forEach(c => { if (c) node.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return node;
+  }
+  function svg(attrs, children) {
+    const node = document.createElementNS(SVGNS, 'svg');
+    for (const k in attrs) node.setAttribute(k, attrs[k]);
+    [].concat(children || []).forEach(c => node.appendChild(c));
+    return node;
+  }
+  function path(d, extra) {
+    const p = document.createElementNS(SVGNS, 'path');
+    p.setAttribute('d', d);
+    if (extra) for (const k in extra) p.setAttribute(k, extra[k]);
+    return p;
+  }
+  function rect(a) { const r = document.createElementNS(SVGNS, 'rect'); for (const k in a) r.setAttribute(k, a[k]); return r; }
+
+  function sentimentIcon(sentiment) {
+    const map = {
+      positive: { glyph: '▲', label: 'Positive sentiment', cls: 'qx-ni-pos' },
+      negative: { glyph: '▼', label: 'Negative sentiment', cls: 'qx-ni-neg' },
+      neutral:  { glyph: '■', label: 'Neutral sentiment',  cls: 'qx-ni-neu' },
+    };
+    const s = map[sentiment] || map.neutral;
+    return el('span', { class: 'qx-ni-sentiment ' + s.cls, role: 'img', 'aria-label': s.label, title: s.label, text: s.glyph });
+  }
+  function aiIcon(label) {
+    const name = label || 'Summary generated by AI';
+    return el('span', { class: 'qx-ni-ai', role: 'img', 'aria-label': name, title: name }, [
+      svg({ width: 12, height: 12, viewBox: '0 0 24 24', fill: 'currentColor', 'aria-hidden': 'true' },
+        [path('M12 2l1.9 5.3L19 9.2l-5.1 1.9L12 16l-1.9-4.9L5 9.2l5.1-1.9L12 2zM19 14l.9 2.5L22 17.4l-2.1.9L19 21l-.9-2.7L16 17.4l2.1-.9L19 14z')]),
+    ]);
+  }
+  function lockIcon() {
+    return svg({ class: 'qx-ni-lockglyph', width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' },
+      [rect({ x: 3, y: 11, width: 18, height: 10, rx: 2 }), path('M7 11V7a5 5 0 0 1 10 0v4')]);
+  }
+
+  function media(src, sourceInitials, alt) {
+    if (src) return el('div', { class: 'qx-ni-media' }, [el('img', { class: 'qx-ni-thumb', src, alt: alt || '', loading: 'lazy' })]);
+    return el('div', { class: 'qx-ni-media qx-ni-media-fallback', 'aria-hidden': 'true' },
+      [el('span', { class: 'qx-ni-fallback-mark', text: (sourceInitials || 'QM').slice(0, 3) })]);
+  }
+
+  function skeleton(r) {
+    const line = (w) => el('span', { class: 'qx-ni-sk-line', style: 'width:' + (w || '100%') });
+    const titleN = r.titleLines === 'full' ? 2 : r.titleLines;
+    const titleW = ['92%', '68%'];
+    const descW = ['100%', '96%', '54%'];
+    const bodyKids = [];
+    if (r.metaPosition === 'top') bodyKids.push(el('span', { class: 'qx-ni-sk-meta' }));
+    bodyKids.push(el('div', { class: 'qx-ni-sk-title' }, Array.from({ length: titleN }, (_, i) => line(titleW[i]))));
+    if (r.showDescription) bodyKids.push(el('div', { class: 'qx-ni-sk-desc' }, Array.from({ length: Math.min(r.descriptionLines, 3) }, (_, i) => line(descW[i]))));
+    if (r.showBadgeRow) bodyKids.push(el('div', { class: 'qx-ni-sk-badges' }, [el('span'), el('span')]));
+    if (r.metaPosition === 'bottom') bodyKids.push(el('span', { class: 'qx-ni-sk-meta' }));
+    const body = el('div', { class: 'qx-ni-sk-body' }, bodyKids);
+    const mediaEl = r.showImage ? el('div', { class: 'qx-ni-sk-media' }) : null;
+    const order = r.imagePosition === 'trailing' ? [body, mediaEl] : [mediaEl, body];
+    return el('div', { class: 'qx-ni-inner' }, order.filter(Boolean));
+  }
+
+  function render(props) {
+    props = props || {};
+    const preset = props.preset || 'feed';
+    const density = props.density || 'comfortable';
+    const state = props.state || 'default';
+    const p = PRESETS[preset] || PRESETS.feed;
+
+    const r = {
+      metaPosition:     pick(props.metaPosition,     p.metaPosition,     'top'),
+      titleLines:       pick(props.titleLines,       p.titleLines,       2),
+      showDescription:  pick(props.showDescription,  p.showDescription,  true),
+      descriptionLines: pick(props.descriptionLines, p.descriptionLines, 2),
+      showImage:        pick(props.showImage,        p.showImage,        true),
+      imagePosition:    pick(props.imagePosition,    p.imagePosition,    'leading'),
+      showBadgeRow:     pick(props.showBadgeRow,     p.showBadgeRow,     true),
+      showSymbol:       pick(props.showSymbol,       undefined,          !!props.symbol),
+      showSentiment:    pick(props.showSentiment,    undefined,          false),
+      showAI:           pick(props.showAI,           undefined,          false),
+      showTopic:        pick(props.showTopic,        undefined,          !!props.topic),
+      showSignalSpine:  pick(props.showSignalSpine,  undefined,          false),
+      minimalMeta:      p.minimalMeta || false,
+    };
+
+    const title = props.title || 'Headline goes here';
+    const signalLevel = props.signalLevel || 'high';
+
+    const dataAttrs = {
+      class: 'qx-newsitem',
+      'data-preset': preset,
+      'data-density': density,
+      'data-state': state,
+      'data-image-pos': r.showImage ? r.imagePosition : 'none',
+      'data-meta-pos': r.metaPosition,
+      'data-signal': r.showSignalSpine ? signalLevel : undefined,
+      'data-title-lines': r.titleLines,
+      'data-desc-lines': r.descriptionLines,
+    };
+
+    if (state === 'loading') {
+      return el('div', Object.assign({}, dataAttrs, { 'aria-hidden': 'true', role: 'presentation' }), [skeleton(r)]);
+    }
+
+    const isLocked = state === 'locked';
+
+    // Badge row
+    let badgeRow = null;
+    if (r.showBadgeRow) {
+      const badges = [];
+      if (r.showSymbol && props.symbol) {
+        const chg = props.symbolChange;
+        const cls = 'qx-ni-symbol' + (chg != null ? (chg >= 0 ? ' qx-ni-up' : ' qx-ni-down') : '');
+        const kids = [document.createTextNode(props.symbol)];
+        if (chg != null) kids.push(el('span', { class: 'qx-ni-symbol-chg', text: (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%' }));
+        badges.push(el('span', { class: cls }, kids));
+      }
+      if (r.showSentiment) badges.push(sentimentIcon(props.sentiment || 'neutral'));
+      if (r.showAI) badges.push(aiIcon(props.aiLabel));
+      if (r.showTopic && props.topic) badges.push(el('span', { class: 'qx-ni-topic', text: props.topic }));
+      if (badges.length) badgeRow = el('div', { class: 'qx-ni-badges' }, badges);
+    }
+
+    // Meta row
+    const timeAttrs = { class: 'qx-ni-time', text: props.timestamp || '2h ago' };
+    if (props.datetime) timeAttrs.datetime = props.datetime;
+    const metaRow = el('div', { class: 'qx-ni-meta' }, [
+      el('span', { class: 'qx-ni-source', text: props.source || 'Source name' }),
+      el('span', { class: 'qx-ni-sep', 'aria-hidden': 'true', text: '·' }),
+      el('time', timeAttrs),
+    ]);
+
+    const titleEl = el('h3', { class: 'qx-ni-title', text: title });
+    const descEl = (r.showDescription && !r.minimalMeta)
+      ? el('p', { class: 'qx-ni-desc', text: props.description || 'Story snippet goes here' })
+      : null;
+
+    // DOM order: title → description → badges → meta (headline is the a11y name)
+    const bodyKids = [titleEl, descEl, badgeRow, metaRow];
+    if (isLocked) bodyKids.push(el('span', { id: 'qx-ni-lock-desc', class: 'qx-sr-only', text: 'This story requires an upgrade to read.' }));
+    const body = el('div', { class: 'qx-ni-body' }, bodyKids.filter(Boolean));
+
+    let mediaWrap = null;
+    if (r.showImage) {
+      const kids = [media(props.image, props.sourceInitials, props.imageAlt)];
+      if (isLocked) kids.push(el('span', { class: 'qx-ni-media-lock', 'aria-hidden': 'true' }, [lockIcon()]));
+      mediaWrap = el('div', { class: 'qx-ni-media-wrap' }, kids);
+    }
+
+    const order = r.imagePosition === 'trailing' ? [body, mediaWrap] : [mediaWrap, body];
+    const inner = el('div', { class: 'qx-ni-inner' }, order.filter(Boolean));
+
+    const anchorAttrs = Object.assign({
+      href: props.href || '#',
+      'aria-label': title,
+      'aria-describedby': isLocked ? 'qx-ni-lock-desc' : undefined,
+    }, dataAttrs);
+
+    const rowKids = [];
+    if (isLocked) rowKids.push(el('span', { class: 'qx-ni-lock-badge' }, [lockIcon(), document.createTextNode('Upgrade to read')]));
+    rowKids.push(inner);
+
+    const a = el('a', anchorAttrs, rowKids);
+    if (props.onActivate) a.addEventListener('click', (e) => { e.preventDefault(); props.onActivate(props); });
+    return a;
+  }
+
+  root.QXNewsItem = { render, PRESETS };
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+
+/* ============================================================
+   Playground — dependency-free. Renders the QX-NewsItem component
+   (window.QXNewsItem) across a live configurator, preset & state
+   galleries, and real feed modules.
+   ============================================================ */
+(function () {
+  'use strict';
+  const NI = window.QXNewsItem;
+  const PRESETS = NI.PRESETS;
+
+  /* ---- tiny DOM helper ---- */
+  function el(tag, attrs, children) {
+    const n = document.createElement(tag);
+    if (attrs) for (const k in attrs) {
+      const v = attrs[k];
+      if (v === undefined || v === null || v === false) continue;
+      if (k === 'text') n.textContent = v;
+      else if (k === 'html') n.innerHTML = v;
+      else if (k === 'onclick') n.addEventListener('click', v);
+      else if (k === 'onchange') n.addEventListener('change', v);
+      else n.setAttribute(k, v === true ? '' : v);
+    }
+    if (children != null) [].concat(children).forEach(c => { if (c != null && c !== false) n.appendChild(typeof c === 'object' ? c : document.createTextNode(String(c))); });
+    return n;
+  }
+  const clear = (n) => { while (n.firstChild) n.removeChild(n.firstChild); return n; };
+
+  /* ---- deterministic placeholder thumbnails ---- */
+  const TINTS = [['#0477D1','#C0DEF7'],['#2B7F45','#CFE9D6'],['#575757','#E3E3E3'],['#D02A48','#F6D6DD'],['#F59E0B','#FBE6C2'],['#334155','#CBD5E1']];
+  function thumb(seed) {
+    let hs = 0; for (let i = 0; i < seed.length; i++) hs = (hs * 31 + seed.charCodeAt(i)) & 0xffffff;
+    const t = TINTS[hs % TINTS.length], c1 = t[0], c2 = t[1];
+    const r = (n) => ((hs >> n) & 0xff) / 255;
+    const s =
+      "<svg xmlns='http://www.w3.org/2000/svg' width='320' height='180' viewBox='0 0 320 180'>" +
+      "<rect width='320' height='180' fill='" + c2 + "'/>" +
+      "<circle cx='" + (40 + r(3) * 240) + "' cy='" + (30 + r(7) * 90) + "' r='" + (40 + r(5) * 50) + "' fill='" + c1 + "' opacity='0.9'/>" +
+      "<rect x='" + (r(11) * 200) + "' y='" + (90 + r(9) * 60) + "' width='" + (80 + r(13) * 160) + "' height='70' fill='" + c1 + "' opacity='0.35'/>" +
+      "<path d='M0 " + (120 + r(2) * 30) + " Q 80 " + (60 + r(4) * 40) + ", 160 110 T 320 90' stroke='" + c1 + "' stroke-width='4' fill='none' opacity='0.7'/>" +
+      "</svg>";
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(s);
+  }
+
+  /* ---- sample feed ---- */
+  const STORIES = [
+    { title: 'Nvidia clears $4.5 trillion as data-center demand outruns supply forecasts', description: 'The chipmaker’s latest guidance implies another record quarter, with cloud providers front-loading orders ahead of the next accelerator generation. Analysts lifted price targets across the board.', source: 'Bloomberg', initials: 'BL', timestamp: '18m ago', datetime: '2026-08-14T13:42:00Z', symbol: 'NVDA', symbolChange: 3.11, sentiment: 'positive', topic: 'Earnings' },
+    { title: 'Fed minutes signal a divided committee heading into September', description: 'Several members favored holding rates steady while a vocal minority pushed for a cut, citing softening in the labor market. Futures now price a coin-flip.', source: 'Reuters', initials: 'RE', timestamp: '1h ago', datetime: '2026-08-14T12:55:00Z', symbol: 'SPY', symbolChange: -0.42, sentiment: 'neutral', topic: 'Macro' },
+    { title: 'Apple’s services segment tops estimates as hardware cycle cools', description: 'Recurring revenue crossed a new high even as iPhone units slipped, underscoring the pivot analysts have watched for three years.', source: 'CNBC', initials: 'CN', timestamp: '2h ago', datetime: '2026-08-14T11:40:00Z', symbol: 'AAPL', symbolChange: 1.24, sentiment: 'positive', topic: 'Earnings' },
+    { title: 'Tesla recalls 62,000 vehicles over software fault in driver-assist stack', description: 'The over-the-air fix ships this week; regulators opened a preliminary review of the underlying subsystem.', source: 'WSJ', initials: 'WS', timestamp: '3h ago', datetime: '2026-08-14T10:30:00Z', symbol: 'TSLA', symbolChange: -2.67, sentiment: 'negative', topic: 'Autos' },
+    { title: 'Oil steadies near $71 as OPEC+ holds output through the quarter', description: 'Traders shrugged off inventory builds; the cartel reaffirmed its production ceiling in a brief statement.', source: 'MarketWatch', initials: 'MW', timestamp: '4h ago', datetime: '2026-08-14T09:15:00Z', symbol: 'USO', symbolChange: 0.18, sentiment: 'neutral', topic: 'Commodities' },
+    { title: 'Microsoft folds new agent tooling into Copilot for enterprise tier', description: 'The update targets regulated industries with audit trails and per-seat governance controls.', source: 'The Verge', initials: 'TV', timestamp: '5h ago', datetime: '2026-08-14T08:05:00Z', symbol: 'MSFT', symbolChange: 0.94, sentiment: 'positive', topic: 'AI' },
+  ];
+  const storyProps = (s, seed) => ({ title: s.title, description: s.description, source: s.source, sourceInitials: s.initials, timestamp: s.timestamp, datetime: s.datetime, image: thumb((seed || '') + s.title), symbol: s.symbol, symbolChange: s.symbolChange, sentiment: s.sentiment, topic: s.topic, imageAlt: '' });
+
+  /* ---- control widgets ---- */
+  function segmented(value, options, onChange, disabled) {
+    return el('div', { class: 'pg-seg', role: 'group' }, options.map(o => {
+      const val = Array.isArray(o) ? o[0] : o, lbl = Array.isArray(o) ? o[1] : o;
+      return el('button', { type: 'button', 'aria-pressed': String(val) === String(value), disabled: disabled || undefined, onclick: () => onChange(val), text: lbl });
+    }));
+  }
+  function toggleRow(label, checked, onChange, disabled) {
+    const input = el('input', { type: 'checkbox', onchange: (e) => onChange(e.target.checked) });
+    input.checked = checked; if (disabled) input.disabled = true;
+    return el('label', { class: 'pg-toggle' + (disabled ? ' dim' : '') }, [
+      el('span', { text: label }),
+      el('span', { class: 'pg-switch' }, [input, el('span', { class: 'track' }), el('span', { class: 'thumb' })]),
+    ]);
+  }
+  const ctrlGroup = (label, kids) => el('div', { class: 'pg-ctrl-group' }, [el('p', { class: 'pg-ctrl-label', text: label })].concat(kids));
+
+  /* ---- generated code snippet ---- */
+  function codeSnippet(cfg) {
+    const DEF = { density: 'comfortable', state: 'default', signalLevel: 'high' };
+    const rows = [];
+    const add = (name, val, isStr) => {
+      if (typeof val === 'boolean') { if (val) rows.push([name, null]); return; }
+      if (val == null) return;
+      rows.push([name, isStr ? '"' + val + '"' : '{' + JSON.stringify(val) + '}']);
+    };
+    add('preset', cfg.preset, true);
+    if (cfg.density !== DEF.density) add('density', cfg.density, true);
+    if (cfg.state !== DEF.state) add('state', cfg.state, true);
+    add('titleLines', cfg.titleLines, typeof cfg.titleLines !== 'number');
+    add('showDescription', cfg.showDescription);
+    if (cfg.showDescription) add('descriptionLines', cfg.descriptionLines, false);
+    add('showImage', cfg.showImage);
+    if (cfg.showImage) add('imagePosition', cfg.imagePosition, true);
+    add('metaPosition', cfg.metaPosition, true);
+    add('showSymbol', cfg.showSymbol);
+    add('showSentiment', cfg.showSentiment);
+    add('showAI', cfg.showAI);
+    add('showTopic', cfg.showTopic);
+    add('showSignalSpine', cfg.showSignalSpine);
+    if (cfg.showSignalSpine && cfg.signalLevel !== DEF.signalLevel) add('signalLevel', cfg.signalLevel, true);
+
+    const pre = el('pre', { class: 'pg-code' });
+    pre.appendChild(el('span', { class: 'k', text: '<QXNewsItem' }));
+    pre.appendChild(document.createTextNode('\n'));
+    rows.forEach(([n, v]) => {
+      pre.appendChild(document.createTextNode('  '));
+      pre.appendChild(el('span', { class: 'a', text: n }));
+      if (v !== null) { pre.appendChild(el('span', { class: 'p', text: '=' })); pre.appendChild(el('span', { class: 'v', text: v })); }
+      pre.appendChild(document.createTextNode('\n'));
+    });
+    pre.appendChild(document.createTextNode('  '));
+    pre.appendChild(el('span', { class: 'a', text: 'title' }));
+    pre.appendChild(el('span', { class: 'p', text: '=' }));
+    pre.appendChild(el('span', { class: 'v', text: '"…"' }));
+    pre.appendChild(el('span', { class: 'k', text: ' />' }));
+    return pre;
+  }
+
+  /* ---- playground ---- */
+  function playground() {
+    let cfg = { preset: 'feed', density: 'comfortable', state: 'default', titleLines: 2, showDescription: true, descriptionLines: 2, showImage: true, imagePosition: 'leading', metaPosition: 'top', showSymbol: true, showSentiment: true, showAI: false, showTopic: true, showSignalSpine: false, signalLevel: 'high' };
+
+    const controlsEl = el('div', { class: 'pg-card pg-controls' });
+    const previewEl = el('div', { class: 'pg-list-frame' });
+    const codeHolder = el('div');
+    const stage = el('div', { class: 'pg-stage' }, [
+      el('div', { class: 'pg-stage-inner' }, [previewEl]),
+      el('p', { class: 'pg-hint', html: 'Live rows reflect the controls. Tab into the second row to see the focus ring.' }),
+    ]);
+
+    function effBadges() {
+      const off = cfg.preset === 'embed';
+      return { showSymbol: cfg.showSymbol && !off, showSentiment: cfg.showSentiment && !off, showAI: cfg.showAI && !off, showTopic: cfg.showTopic && !off };
+    }
+
+    function renderPreview() {
+      clear(previewEl);
+      const b = effBadges();
+      const base = { preset: cfg.preset, density: cfg.density, titleLines: cfg.titleLines, showDescription: cfg.showDescription, descriptionLines: cfg.descriptionLines, showImage: cfg.showImage, imagePosition: cfg.imagePosition, metaPosition: cfg.metaPosition, showSignalSpine: cfg.showSignalSpine, signalLevel: cfg.signalLevel, showSymbol: b.showSymbol, showSentiment: b.showSentiment, showAI: b.showAI, showTopic: b.showTopic };
+      const list = el('div', { class: 'qx-news-list' });
+      list.appendChild(NI.render(Object.assign({}, base, storyProps(STORIES[0]), { state: cfg.state, image: cfg.showImage ? thumb(STORIES[0].title) : undefined })));
+      list.appendChild(NI.render(Object.assign({}, base, storyProps(STORIES[1]), { image: cfg.showImage ? thumb(STORIES[1].title) : undefined })));
+      previewEl.appendChild(list);
+      clear(codeHolder).appendChild(codeSnippet(Object.assign({}, cfg, b)));
+    }
+
+    function renderControls() {
+      clear(controlsEl);
+      const off = cfg.preset === 'embed';
+      const set = (patch) => { cfg = Object.assign({}, cfg, patch); renderControls(); renderPreview(); };
+      const setPreset = (preset) => { const p = PRESETS[preset]; set({ preset, titleLines: p.titleLines, showDescription: p.showDescription, descriptionLines: p.descriptionLines, showImage: p.showImage, imagePosition: p.imagePosition, metaPosition: p.metaPosition }); };
+
+      controlsEl.appendChild(ctrlGroup('Preset', segmented(cfg.preset, [['feed','Feed'],['editorial','Editorial'],['compact','Compact'],['lead','Lead'],['embed','Embed']], setPreset)));
+      controlsEl.appendChild(ctrlGroup('Density', segmented(cfg.density, [['comfortable','Comfortable'],['compact','Compact']], v => set({ density: v }))));
+      controlsEl.appendChild(ctrlGroup('State', segmented(cfg.state, [['default','Default'],['hover','Hover'],['focus','Focus'],['read','Read'],['loading','Loading'],['locked','Locked']], v => set({ state: v }))));
+      controlsEl.appendChild(ctrlGroup('Title lines', segmented(cfg.titleLines, [[1,'1'],[2,'2'],[3,'3'],['full','Full']], v => set({ titleLines: v }))));
+      controlsEl.appendChild(ctrlGroup('Description', [
+        toggleRow('Show description', cfg.showDescription, v => set({ showDescription: v })),
+        el('div', { class: 'pg-subctrl' + (cfg.showDescription ? '' : ' off') }, [segmented(cfg.descriptionLines, [[1,'1 line'],[2,'2 lines'],[3,'3 lines']], v => set({ descriptionLines: v }), !cfg.showDescription)]),
+      ]));
+      controlsEl.appendChild(ctrlGroup('Media', [
+        toggleRow('Show image', cfg.showImage, v => set({ showImage: v })),
+        el('div', { class: 'pg-subctrl' + (cfg.showImage ? '' : ' off') }, [segmented(cfg.imagePosition, [['leading','Leading'],['trailing','Trailing'],['above','Above']], v => set({ imagePosition: v }), !cfg.showImage)]),
+      ]));
+      controlsEl.appendChild(ctrlGroup('Meta position', segmented(cfg.metaPosition, [['top','Top'],['bottom','Bottom']], v => set({ metaPosition: v }))));
+      const badgeKids = [
+        toggleRow('Symbol chip', cfg.showSymbol && !off, v => set({ showSymbol: v }), off),
+        toggleRow('Sentiment icon', cfg.showSentiment && !off, v => set({ showSentiment: v }), off),
+        toggleRow('AI icon', cfg.showAI && !off, v => set({ showAI: v }), off),
+        toggleRow('Topic chip', cfg.showTopic && !off, v => set({ showTopic: v }), off),
+      ];
+      if (off) badgeKids.push(el('p', { style: 'font-size:11px;color:var(--qx-text-muted);margin:6px 0 0', text: 'Embed preset hides the badge row.' }));
+      controlsEl.appendChild(ctrlGroup('Badge row', badgeKids));
+      controlsEl.appendChild(ctrlGroup('Signal spine', [
+        toggleRow('Show signal spine', cfg.showSignalSpine, v => set({ showSignalSpine: v })),
+        el('div', { class: 'pg-subctrl' + (cfg.showSignalSpine ? '' : ' off') }, [segmented(cfg.signalLevel, [['high','High'],['medium','Medium'],['low','Low']], v => set({ signalLevel: v }), !cfg.showSignalSpine)]),
+      ]));
+    }
+
+    renderControls();
+    renderPreview();
+    return el('div', { class: 'pg-play' }, [controlsEl, el('div', {}, [stage, codeHolder])]);
+  }
+
+  /* ---- galleries ---- */
+  function galleryCard(name, presetName, desc, listNode) {
+    return el('div', { class: 'pg-card' }, [
+      el('div', { class: 'pg-card-head' }, [el('span', { class: 't', text: name }), el('span', { class: 's', text: 'preset="' + presetName + '"' })]),
+      el('div', { class: 'pg-card-pad' }, [el('p', { class: 'pg-gal-note', text: desc }), listNode]),
+    ]);
+  }
+  function presetList(preset, count, seed) {
+    const list = el('div', { class: 'qx-news-list pg-inner-list' });
+    STORIES.slice(0, count).forEach((s, i) => list.appendChild(NI.render(Object.assign({ preset, showSymbol: true, showTopic: true, showSentiment: true }, storyProps(s, (seed || '') + i)))));
+    return list;
+  }
+  function presetGallery() {
+    return el('div', { class: 'pg-grid-2' }, [
+      galleryCard('Feed', 'feed', 'Default. Meta on top, 2-line title + description, leading image, full badge row.', presetList('feed', 2, 'f')),
+      galleryCard('Editorial', 'editorial', 'Meta at the bottom, 3-line description, trailing image. Reads as a curated story.', presetList('editorial', 2, 'e')),
+      galleryCard('Compact', 'compact', '1-line title, no description, no image. Dense side rails and Most Read.', presetList('compact', 4, 'c')),
+      galleryCard('Embed', 'embed', '1-line title, source + time only, no badge row. WMID widget contexts.', presetList('embed', 4, 'm')),
+    ]);
+  }
+  function leadGallery() {
+    const list = el('div', { class: 'qx-news-list pg-inner-list' });
+    list.appendChild(NI.render(Object.assign({ preset: 'lead', showSymbol: true, showTopic: true, showSentiment: true, showSignalSpine: true, signalLevel: 'high' }, storyProps(STORIES[0], 'lead'))));
+    STORIES.slice(1, 4).forEach((s, i) => list.appendChild(NI.render(Object.assign({ preset: 'feed', showSymbol: true, showTopic: true }, storyProps(s, 'lf' + i)))));
+    return el('div', { class: 'pg-card' }, [
+      el('div', { class: 'pg-card-head' }, [el('span', { class: 't', text: 'Lead' }), el('span', { class: 's', text: 'preset="lead" — image above, full row width. One per module, always first.' })]),
+      el('div', { class: 'pg-card-pad' }, [list]),
+    ]);
+  }
+  function statesGallery() {
+    const states = [
+      ['default', 'Default', 'Row at container background, divider only.'],
+      ['hover', 'Hover', 'Row background shifts; headline takes link-hover colour.'],
+      ['focus', 'Focus', '2px ring on the row bounds, 2px offset (WCAG 2.4.7).'],
+      ['read', 'Read / visited', 'Headline drops to secondary; image at 70% opacity.'],
+      ['locked', 'Locked', 'Headline legible; description + image frosted with a lock affordance.'],
+      ['loading', 'Loading', 'Skeleton mirrors the configured anatomy — no layout shift.'],
+    ];
+    const s = STORIES[2];
+    return el('div', { class: 'pg-grid-3' }, states.map(([state, name, desc]) =>
+      el('div', { class: 'pg-card' }, [
+        el('div', { class: 'pg-card-head' }, [el('span', { class: 't', text: name }), el('span', { class: 's', text: state })]),
+        el('div', { class: 'pg-card-pad' }, [
+          el('p', { class: 'pg-gal-note', style: 'min-height:34px', text: desc }),
+          el('div', { class: 'pg-inner-list' }, [NI.render(Object.assign({ preset: 'feed', state, showSymbol: true, showTopic: true, showSentiment: true }, storyProps(s, 'st')))]),
+        ]),
+      ])
+    ));
+  }
+  function moduleCard(icon, title, more, rows) {
+    const head = el('div', { class: 'pg-module-head' }, [el('span', { class: 'icon', 'aria-hidden': 'true', text: icon }), el('span', { class: 't', text: title })]);
+    if (more) head.appendChild(el('a', { class: 'more', href: '#', text: more }));
+    return el('div', { class: 'pg-card' }, [head, el('div', { class: 'qx-news-list' }, rows)]);
+  }
+  function usageInContext() {
+    const feed = moduleCard('▤', 'Market news', 'See all', STORIES.map((s, i) =>
+      NI.render(Object.assign({ preset: 'feed', showSymbol: true, showTopic: true, showSentiment: true, showSignalSpine: i === 0, signalLevel: 'high' }, storyProps(s, 'ctx' + i)))));
+
+    const top = moduleCard('★', 'Top stories', null, STORIES.slice(0, 3).map((s, i) =>
+      NI.render(Object.assign({ preset: 'editorial', showSymbol: true, showTopic: true }, storyProps(s, 'top' + i)))));
+
+    const most = moduleCard('≡', 'Most read', null, STORIES.slice(1, 6).map((s) =>
+      NI.render({ preset: 'compact', title: s.title, source: s.source, sourceInitials: s.initials, timestamp: s.timestamp, datetime: s.datetime, symbol: s.symbol, symbolChange: s.symbolChange, showSymbol: true, showTopic: false })));
+
+    const embedInner = el('div', { class: 'qx-news-list' }, STORIES.slice(2, 6).map((s) =>
+      NI.render({ preset: 'embed', density: 'compact', title: s.title, source: s.source, sourceInitials: s.initials, timestamp: s.timestamp, datetime: s.datetime })));
+    const embed = el('div', { class: 'pg-embed-frame' }, [
+      el('p', { class: 'pg-embed-note', text: 'Third-party page · QX widget (Embed)' }),
+      el('div', { class: 'pg-card', style: 'border-radius:6px' }, [
+        el('div', { class: 'pg-module-head', style: 'padding:8px 12px' }, [el('span', { class: 't', style: 'font-size:13px', text: 'AAPL · News' })]),
+        embedInner,
+      ]),
+    ]);
+
+    return el('div', { class: 'pg-usage' }, [feed, el('div', { class: 'pg-rail' }, [top, most, embed])]);
+  }
+
+  function anatomy() {
+    const rows = [
+      ['Row', 'Required', 'Outer container and the single interactive target / tab stop (native <a>).'],
+      ['Signal spine', 'Optional', '3px left border coloured by importance rank. Off by default.'],
+      ['Media', 'Optional', 'Thumbnail or branded fallback tile, 16:9 crop-to-fill. Position: leading / trailing / above.'],
+      ['Meta row', 'Optional pos.', 'Source · relative timestamp. Renders top or bottom — never both.'],
+      ['Title', 'Required', 'Headline. Line-clamped per titleLines. The accessible name.'],
+      ['Description', 'Optional', 'Story snippet. Line-clamped per descriptionLines.'],
+      ['Badge row', 'Optional', 'Symbol chip · sentiment · AI · topic. Collapses with no reserved space.'],
+      ['Divider', 'Optional', '0.5px rule between rows — owned by the list container, not the row.'],
+    ];
+    const tbody = el('tbody', {}, rows.map(([n, req, note]) =>
+      el('tr', {}, [el('td', { class: 'n', text: n }), el('td', { class: 'req' + (req === 'Required' ? ' yes' : ''), text: req }), el('td', { text: note })])));
+    const table = el('table', { class: 'pg-anat' }, [
+      el('thead', {}, [el('tr', {}, [el('th', { text: 'Part' }), el('th', { text: 'Required' }), el('th', { text: 'Notes' })])]),
+      tbody,
+    ]);
+    const a11y = el('ul', { class: 'pg-a11y' });
+    [
+      'Row is a native <code>&lt;a&gt;</code> — one tab stop; <code>Enter</code> opens the story (or the upgrade modal when locked).',
+      'Accessible name is the headline alone; source, time, symbol, topic and sentiment stay in DOM order after the title even when <code>metaPosition="top"</code> reorders them visually.',
+      'Focus is a visible 2px ring at 2px offset — colour change is never the only signal (WCAG 2.4.7).',
+      'Sentiment pairs a shape with the tone token and carries an <code>aria-label</code> ("Positive sentiment"), not colour alone (WCAG 1.4.1).',
+      'The AI icon is labelled "Summary generated by AI"; the timestamp is wrapped in <code>&lt;time datetime&gt;</code>.',
+      'Locked rows keep the headline legible and add <code>aria-describedby</code> explaining the upgrade — the headline is never blurred.',
+    ].forEach(html => a11y.appendChild(el('li', { html })));
+    return el('div', { class: 'pg-grid-2' }, [
+      el('div', { class: 'pg-card' }, [el('div', { class: 'pg-card-head' }, [el('span', { class: 't', text: 'Anatomy' }), el('span', { class: 's', text: 'Feed configuration, top to bottom' })]), el('div', { class: 'pg-card-pad' }, [table])]),
+      el('div', { class: 'pg-card' }, [el('div', { class: 'pg-card-head' }, [el('span', { class: 't', text: 'Accessibility' }), el('span', { class: 's', text: 'Built into the component' })]), el('div', { class: 'pg-card-pad' }, [a11y])]),
+    ]);
+  }
+
+  function section(eyebrow, title, lede, body) {
+    const kids = [el('p', { class: 'pg-eyebrow', text: eyebrow }), el('h2', { class: 'pg-h2', text: title })];
+    if (lede) kids.push(el('p', { class: 'pg-lede', text: lede }));
+    kids.push(body);
+    return el('section', { class: 'pg-section' }, kids);
+  }
+
+  /* ---- mount ---- */
+  const app = document.getElementById('app');
+  app.appendChild(el('header', { class: 'pg-appbar' }, [
+    el('span', { class: 'pg-wordmark', html: 'Qmodii<span class="dot">.</span>' }),
+    el('span', { class: 'pg-title', text: 'QX-NewsItem' }),
+    el('span', { class: 'pg-sub', text: 'News article row · prototype playground' }),
+    el('span', { class: 'pg-spacer' }),
+    el('span', { class: 'pg-tag', text: 'Draft' }),
+  ]));
+  const wrap = el('div', { class: 'pg-wrap' });
+  wrap.appendChild(section('Playground', 'Configure the row', 'One row component for every news story across QSweb, Quotestream Mobile, Research Hub and QX/QMOD widgets. Presets are named prop bundles — pick one, then override any individual prop. Everything below is the live Qmodii component driven by design tokens.', playground()));
+  const presets = el('div', {}, [presetGallery(), el('div', { style: 'height:20px' }), leadGallery()]);
+  wrap.appendChild(section('Variants', 'Presets', 'Choosing a preset sets defaults; individual props stay overridable. One preset per list — a Lead row is the only permitted exception.', presets));
+  wrap.appendChild(section('States', 'Interactive & render states', 'Hover, focus, read, locked and loading. The skeleton mirrors the configured anatomy exactly so nothing shifts when data lands.', statesGallery()));
+  wrap.appendChild(section('In context', 'Real feed modules', 'The same component across a primary market-news feed (Feed + one Lead), a curated Top Stories rail (Editorial), a dense Most Read list (Compact), and a space-constrained third-party widget (Embed).', usageInContext()));
+  wrap.appendChild(section('Reference', 'Anatomy & accessibility', null, anatomy()));
+  app.appendChild(wrap);
+})();
+
+</script>
