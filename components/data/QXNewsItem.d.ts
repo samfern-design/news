@@ -61,8 +61,14 @@ export interface QXNewsItemProps extends Omit<React.AnchorHTMLAttributes<HTMLAnc
   showSentiment?: boolean;
   showAI?: boolean;
   showTopic?: boolean;
-  /** Meta row placement (only one meta row renders). Preset-defaulted. */
-  metaPosition?: 'top' | 'bottom';
+  /** Topic placement: inline in the badge row, or its own row above the headline. @default 'badge' */
+  topicPosition?: 'badge' | 'top';
+  /** Sentiment chip placement: the right-hand cluster, or inline in the badge row. @default 'right' */
+  sentimentPosition?: 'right' | 'badge';
+  /** AI icon placement: the right-hand cluster, or inline in the badge row. @default 'right' */
+  aiPosition?: 'right' | 'badge';
+  /** Meta row placement (only one meta row renders). 'right' parks it in the aside. Preset-defaulted for top/bottom. */
+  metaPosition?: 'top' | 'bottom' | 'right';
   /** 3px importance spine on the row's leading edge. @default false */
   showSignalSpine?: boolean;
 

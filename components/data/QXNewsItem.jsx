@@ -38,12 +38,13 @@
   // Sentiment pairs a shape with the semantic tone token (never colour alone).
   function SentimentIcon({ sentiment }) {
     const map = {
-      positive: { glyph: '▲', label: 'Positive sentiment', cls: 'qx-ni-pos' },
-      negative: { glyph: '▼', label: 'Negative sentiment', cls: 'qx-ni-neg' },
-      neutral:  { glyph: '■', label: 'Neutral sentiment',  cls: 'qx-ni-neu' },
+      positive: { glyph: '▲', word: 'Positive', label: 'Positive sentiment', cls: 'qx-ni-pos' },
+      negative: { glyph: '▼', word: 'Negative', label: 'Negative sentiment', cls: 'qx-ni-neg' },
+      neutral:  { glyph: '■', word: 'Neutral',  label: 'Neutral sentiment',  cls: 'qx-ni-neu' },
     };
     const s = map[sentiment] || map.neutral;
-    return h('span', { className: 'qx-ni-sentiment ' + s.cls, role: 'img', 'aria-label': s.label, title: s.label }, s.glyph);
+    return h('span', { className: 'qx-ni-sentiment ' + s.cls, role: 'img', 'aria-label': s.label, title: s.label },
+      h('span', { className: 'qx-ni-sentiment-glyph', 'aria-hidden': 'true' }, s.glyph), s.word);
   }
 
   // AI-derived content is labelled explicitly with an accessible name + tooltip.
@@ -127,6 +128,9 @@
       showAI:           pick(props.showAI,           undefined,          false),
       showTopic:        pick(props.showTopic,        undefined,          !!topic),
       showSignalSpine:  pick(props.showSignalSpine,  undefined,          false),
+      topicPosition:     pick(props.topicPosition,     undefined,         'badge'),   // 'badge' | 'top'
+      sentimentPosition: pick(props.sentimentPosition, undefined,         'right'),   // 'right' | 'badge'
+      aiPosition:        pick(props.aiPosition,        undefined,         'right'),    // 'right' | 'badge'
       minimalMeta:      p.minimalMeta || false,
     };
 
@@ -152,20 +156,31 @@
         h(Skeleton, { r }));
     }
 
-    /* Badge row — Symbol chip · Sentiment · AI · Topic. Collapses entirely
-       when all four are off, with no reserved space. */
+    /* Reusable marks. */
+    const symbolChip = (r.showSymbol && symbol)
+      ? h('span', { key: 'sym', className: 'qx-ni-symbol' + (symbolChange != null ? (symbolChange >= 0 ? ' qx-ni-up' : ' qx-ni-down') : '') },
+          symbol,
+          symbolChange != null ? h('span', { className: 'qx-ni-symbol-chg' }, (symbolChange >= 0 ? '+' : '') + symbolChange.toFixed(2) + '%') : null)
+      : null;
+    const topicChip = (r.showTopic && topic) ? (key) => h('span', { key, className: 'qx-ni-topic' }, topic) : null;
+    const sentimentChip = r.showSentiment ? h(SentimentIcon, { key: 'sent', sentiment }) : null;
+    const aiBtn = r.showAI ? h(AIIcon, { key: 'ai', label: aiLabel }) : null;
+
+    /* Left badge row — symbol + (topic/sentiment/ai only when placed 'badge').
+       Collapses entirely when empty, with no reserved space. */
     const badges = [];
     if (r.showBadgeRow) {
-      if (r.showSymbol && symbol) {
-        badges.push(h('span', { key: 'sym', className: 'qx-ni-symbol' + (symbolChange != null ? (symbolChange >= 0 ? ' qx-ni-up' : ' qx-ni-down') : '') },
-          symbol,
-          symbolChange != null ? h('span', { className: 'qx-ni-symbol-chg' }, (symbolChange >= 0 ? '+' : '') + symbolChange.toFixed(2) + '%') : null));
-      }
-      if (r.showSentiment) badges.push(h(SentimentIcon, { key: 'sent', sentiment }));
-      if (r.showAI) badges.push(h(AIIcon, { key: 'ai', label: aiLabel }));
-      if (r.showTopic && topic) badges.push(h('span', { key: 'topic', className: 'qx-ni-topic' }, topic));
+      if (symbolChip) badges.push(symbolChip);
+      if (topicChip && r.topicPosition === 'badge') badges.push(topicChip('topic'));
+      if (sentimentChip && r.sentimentPosition === 'badge') badges.push(sentimentChip);
+      if (aiBtn && r.aiPosition === 'badge') badges.push(aiBtn);
     }
     const badgeRow = badges.length ? h('div', { className: 'qx-ni-badges' }, badges) : null;
+
+    /* Topic kicker — own row above the headline (topicPosition='top'). */
+    const kicker = (topicChip && r.topicPosition === 'top')
+      ? h('div', { className: 'qx-ni-kicker' }, topicChip('kicker'))
+      : null;
 
     /* Meta row — source · separator · relative time. One meta row at a time.
        Timestamp wrapped in <time datetime> with the absolute value. */
@@ -174,22 +189,37 @@
       h('span', { className: 'qx-ni-sep', 'aria-hidden': 'true' }, '·'),
       h('time', datetime ? { className: 'qx-ni-time', dateTime: datetime } : { className: 'qx-ni-time' }, timestamp),
     );
+    const metaInMain = r.metaPosition !== 'right';
 
     const titleEl = h('h3', { className: 'qx-ni-title' }, title);
     const descEl = (r.showDescription && !r.minimalMeta)
       ? h('p', { className: 'qx-ni-desc' }, description)
       : null;
 
-    // DOM order: title → description → badges → meta (accessible name is the
-    // headline; everything else follows it). CSS `order` lifts meta to the top
-    // visually when metaPosition="top".
-    const body = h('div', { className: 'qx-ni-body' },
+    // Main column DOM order: title → description → badges → meta → kicker
+    // (headline first = accessible name; CSS `order` sets visual placement).
+    const main = h('div', { className: 'qx-ni-main' },
       titleEl,
       descEl,
       badgeRow,
-      metaRow,
+      metaInMain ? metaRow : null,
+      kicker,
       isLocked ? h('span', { id: 'qx-ni-lock-desc', className: 'qx-sr-only' }, 'This story requires an upgrade to read.') : null,
     );
+
+    // Right aside — sentiment + AI (their default home) and optional meta.
+    const cluster = [];
+    if (sentimentChip && r.sentimentPosition === 'right') cluster.push(sentimentChip);
+    if (aiBtn && r.aiPosition === 'right') cluster.push(aiBtn);
+    const asideKids = [];
+    if (cluster.length) asideKids.push(h('div', { key: 'cluster', className: 'qx-ni-signal-cluster' }, cluster));
+    if (!metaInMain) asideKids.push(h('div', { key: 'metaright', className: 'qx-ni-meta' },
+      h('span', { className: 'qx-ni-source' }, source),
+      h('span', { className: 'qx-ni-sep', 'aria-hidden': 'true' }, '·'),
+      h('time', datetime ? { className: 'qx-ni-time', dateTime: datetime } : { className: 'qx-ni-time' }, timestamp)));
+    const aside = asideKids.length ? h('div', { className: 'qx-ni-aside' }, asideKids) : null;
+
+    const body = h('div', { className: 'qx-ni-body' }, main, aside);
 
     const media = r.showImage
       ? h('div', { className: 'qx-ni-media-wrap' },

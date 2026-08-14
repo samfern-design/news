@@ -36,10 +36,21 @@ Choosing a preset sets defaults; every individual prop stays overridable.
 
 `Row` (required, the `<a>` and the interactive target) · `Signal spine` (3px
 importance border, off by default) · `Media` (thumbnail or branded fallback,
-16:9) · `Meta row` (source · time — top **or** bottom, never both) · `Title`
-(required, line-clamped) · `Description` (line-clamped) · `Badge row`
-(symbol · sentiment · AI · topic — collapses with no reserved space) ·
-`Divider` (owned by the list, not the row).
+16:9) · `Topic kicker` (topic chip on its own row above the headline, when
+`topicPosition="top"`) · `Meta row` (source · time — top, bottom, **or** right,
+only one) · `Title` (required, line-clamped) · `Description` (line-clamped) ·
+`Badge row` (symbol chip + topic — left side, collapses with no reserved space)
+· `Right aside` (sentiment chip + AI icon, their default home, plus the meta row
+when `metaPosition="right"`) · `Divider` (owned by the list, not the row).
+
+### Placement props
+
+- `topicPosition`: `'badge'` (default, inline in the badge row) | `'top'` (own row above the headline).
+- `sentimentPosition`: `'right'` (default, in the aside) | `'badge'`.
+- `aiPosition`: `'right'` (default, in the aside) | `'badge'`.
+- `metaPosition`: `'top'` | `'bottom'` | `'right'`.
+
+Sentiment renders as a labelled chip (▲/▼/■ glyph + word + semantic tone token).
 
 ## Rules
 

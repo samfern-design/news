@@ -1782,7 +1782,17 @@
 .qx-ni-inner { display: flex; gap: var(--qx-space-md, 12px); align-items: flex-start; }
 .qx-newsitem[data-density='compact'] .qx-ni-inner { gap: var(--qx-space-sm, 8px); }
 .qx-newsitem[data-image-pos='above'] .qx-ni-inner { flex-direction: column; }
-.qx-ni-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--qx-space-xs, 4px); }
+/* Body splits into a main text column and an optional right-hand aside that
+   holds the sentiment chip, AI icon, and (optionally) the meta row. */
+.qx-ni-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: row; gap: var(--qx-space-md, 12px); align-items: stretch; }
+.qx-ni-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--qx-space-xs, 4px); }
+.qx-ni-aside { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: var(--qx-space-sm, 8px); }
+.qx-ni-signal-cluster { display: flex; align-items: center; gap: var(--qx-gap-md, 8px); }
+/* Meta parked in the aside is right-aligned and drops the main-column ordering. */
+.qx-ni-aside .qx-ni-meta { order: 0; margin: 0; text-align: right; justify-content: flex-end; }
+
+/* ---- Topic kicker (topicPosition='top') — own row above the headline ---- */
+.qx-ni-kicker { order: 0; display: flex; margin-bottom: var(--qx-space-xxs, 2px); }
 
 /* ---- Media ----------------------------------------------------------- */
 .qx-ni-media-wrap { position: relative; flex: 0 0 auto; }
@@ -1851,15 +1861,25 @@
   font-size: var(--qx-text-xs, 11px); font-weight: 600;
 }
 
-.qx-ni-sentiment { font-size: 12px; line-height: 1; }
-.qx-ni-sentiment.qx-ni-pos { color: var(--qx-market-up, #2B7F45); }
-.qx-ni-sentiment.qx-ni-neg { color: var(--qx-market-down, #D02A48); }
-.qx-ni-sentiment.qx-ni-neu { color: var(--qx-market-hold, #F5C63F); }
+/* Sentiment reads as a labelled chip — shape + word + semantic tone token,
+   never colour alone (WCAG 1.4.1). */
+.qx-ni-sentiment {
+  display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
+  padding: 2px 8px; border-radius: 2px; border: 1px solid transparent;
+  font-size: var(--qx-text-xs, 11px); font-weight: 600; line-height: 1.4;
+}
+.qx-ni-sentiment .qx-ni-sentiment-glyph { font-size: 9px; line-height: 1; }
+.qx-ni-sentiment.qx-ni-pos { color: var(--qx-market-up, #2B7F45); background: var(--qx-market-up-subtle, #E4F2E9); border-color: var(--qx-market-up-fill, #5DB678); }
+.qx-ni-sentiment.qx-ni-neg { color: var(--qx-market-down, #D02A48); background: var(--qx-market-down-subtle, #FBE3E8); border-color: var(--qx-market-down-fill, #E04E6E); }
+.qx-ni-sentiment.qx-ni-neu { color: var(--qx-text-secondary, #575757); background: var(--qx-surface-100, #EDEDED); border-color: var(--qx-surface-300, #C7C7C7); }
+.qx-ni-sentiment.qx-ni-neu .qx-ni-sentiment-glyph { color: var(--qx-market-hold, #F5C63F); }
 
+/* AI icon reads as a small affordance (it opens an AI summary in product). */
 .qx-ni-ai {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 18px; height: 18px; border-radius: var(--qx-radius-sm, 4px);
+  width: 24px; height: 24px; border-radius: var(--qx-radius-sm, 4px);
   background: var(--qx-info-bg, #F2F8FE); color: var(--qx-primary, #0477D1);
+  border: 1px solid var(--qx-blue-200, #C0DEF7);
 }
 
 /* ---- Meta row -------------------------------------------------------- */
@@ -1979,6 +1999,8 @@ body { margin: 0; }
   .pg-ctrl-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--qx-text-muted, #707070); margin: 0 0 8px; }
   .pg-subctrl { margin-top: 8px; transition: opacity 120ms; }
   .pg-subctrl.off { opacity: .4; pointer-events: none; }
+  .pg-place { margin: 6px 0 10px 12px; padding-left: 10px; border-left: 2px solid var(--qx-surface-200, #E3E3E3); }
+  .pg-place .pg-seg button { font-size: 11px; padding: 4px 7px; }
 
   /* segmented */
   .pg-seg { display: inline-flex; flex-wrap: wrap; gap: 4px; }
@@ -2100,12 +2122,15 @@ body { margin: 0; }
 
   function sentimentIcon(sentiment) {
     const map = {
-      positive: { glyph: '▲', label: 'Positive sentiment', cls: 'qx-ni-pos' },
-      negative: { glyph: '▼', label: 'Negative sentiment', cls: 'qx-ni-neg' },
-      neutral:  { glyph: '■', label: 'Neutral sentiment',  cls: 'qx-ni-neu' },
+      positive: { glyph: '▲', word: 'Positive', label: 'Positive sentiment', cls: 'qx-ni-pos' },
+      negative: { glyph: '▼', word: 'Negative', label: 'Negative sentiment', cls: 'qx-ni-neg' },
+      neutral:  { glyph: '■', word: 'Neutral',  label: 'Neutral sentiment',  cls: 'qx-ni-neu' },
     };
     const s = map[sentiment] || map.neutral;
-    return el('span', { class: 'qx-ni-sentiment ' + s.cls, role: 'img', 'aria-label': s.label, title: s.label, text: s.glyph });
+    return el('span', { class: 'qx-ni-sentiment ' + s.cls, role: 'img', 'aria-label': s.label, title: s.label }, [
+      el('span', { class: 'qx-ni-sentiment-glyph', 'aria-hidden': 'true', text: s.glyph }),
+      document.createTextNode(s.word),
+    ]);
   }
   function aiIcon(label) {
     const name = label || 'Summary generated by AI';
@@ -2162,6 +2187,9 @@ body { margin: 0; }
       showAI:           pick(props.showAI,           undefined,          false),
       showTopic:        pick(props.showTopic,        undefined,          !!props.topic),
       showSignalSpine:  pick(props.showSignalSpine,  undefined,          false),
+      topicPosition:    pick(props.topicPosition,    undefined,          'badge'),   // 'badge' | 'top'
+      sentimentPosition: pick(props.sentimentPosition, undefined,        'right'),   // 'right' | 'badge'
+      aiPosition:       pick(props.aiPosition,       undefined,          'right'),   // 'right' | 'badge'
       minimalMeta:      p.minimalMeta || false,
     };
 
@@ -2186,22 +2214,34 @@ body { margin: 0; }
 
     const isLocked = state === 'locked';
 
-    // Badge row
+    // Reusable badge/marks
+    const topicChip = (r.showTopic && props.topic) ? () => el('span', { class: 'qx-ni-topic', text: props.topic }) : null;
+    let symbolChip = null;
+    if (r.showSymbol && props.symbol) {
+      const chg = props.symbolChange;
+      const cls = 'qx-ni-symbol' + (chg != null ? (chg >= 0 ? ' qx-ni-up' : ' qx-ni-down') : '');
+      const kids = [document.createTextNode(props.symbol)];
+      if (chg != null) kids.push(el('span', { class: 'qx-ni-symbol-chg', text: (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%' }));
+      symbolChip = el('span', { class: cls }, kids);
+    }
+    const sentimentChip = r.showSentiment ? sentimentIcon(props.sentiment || 'neutral') : null;
+    const aiBtn = r.showAI ? aiIcon(props.aiLabel) : null;
+
+    // Left badge row — symbol + (topic/sentiment/ai only when placed 'badge').
     let badgeRow = null;
     if (r.showBadgeRow) {
       const badges = [];
-      if (r.showSymbol && props.symbol) {
-        const chg = props.symbolChange;
-        const cls = 'qx-ni-symbol' + (chg != null ? (chg >= 0 ? ' qx-ni-up' : ' qx-ni-down') : '');
-        const kids = [document.createTextNode(props.symbol)];
-        if (chg != null) kids.push(el('span', { class: 'qx-ni-symbol-chg', text: (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%' }));
-        badges.push(el('span', { class: cls }, kids));
-      }
-      if (r.showSentiment) badges.push(sentimentIcon(props.sentiment || 'neutral'));
-      if (r.showAI) badges.push(aiIcon(props.aiLabel));
-      if (r.showTopic && props.topic) badges.push(el('span', { class: 'qx-ni-topic', text: props.topic }));
+      if (symbolChip) badges.push(symbolChip);
+      if (topicChip && r.topicPosition === 'badge') badges.push(topicChip());
+      if (sentimentChip && r.sentimentPosition === 'badge') badges.push(sentimentChip);
+      if (aiBtn && r.aiPosition === 'badge') badges.push(aiBtn);
       if (badges.length) badgeRow = el('div', { class: 'qx-ni-badges' }, badges);
     }
+
+    // Topic kicker — own row above the headline (topicPosition='top').
+    const kicker = (topicChip && r.topicPosition === 'top')
+      ? el('div', { class: 'qx-ni-kicker' }, [topicChip()])
+      : null;
 
     // Meta row
     const timeAttrs = { class: 'qx-ni-time', text: props.timestamp || '2h ago' };
@@ -2211,16 +2251,29 @@ body { margin: 0; }
       el('span', { class: 'qx-ni-sep', 'aria-hidden': 'true', text: '·' }),
       el('time', timeAttrs),
     ]);
+    const metaInMain = r.metaPosition !== 'right';
 
     const titleEl = el('h3', { class: 'qx-ni-title', text: title });
     const descEl = (r.showDescription && !r.minimalMeta)
       ? el('p', { class: 'qx-ni-desc', text: props.description || 'Story snippet goes here' })
       : null;
 
-    // DOM order: title → description → badges → meta (headline is the a11y name)
-    const bodyKids = [titleEl, descEl, badgeRow, metaRow];
-    if (isLocked) bodyKids.push(el('span', { id: 'qx-ni-lock-desc', class: 'qx-sr-only', text: 'This story requires an upgrade to read.' }));
-    const body = el('div', { class: 'qx-ni-body' }, bodyKids.filter(Boolean));
+    // Main column DOM order: title → description → badges → meta → kicker
+    // (headline first = the a11y name; CSS `order` sets the visual placement).
+    const mainKids = [titleEl, descEl, badgeRow, metaInMain ? metaRow : null, kicker];
+    if (isLocked) mainKids.push(el('span', { id: 'qx-ni-lock-desc', class: 'qx-sr-only', text: 'This story requires an upgrade to read.' }));
+    const main = el('div', { class: 'qx-ni-main' }, mainKids.filter(Boolean));
+
+    // Right aside — sentiment + AI (their default home) and optional meta.
+    const cluster = [];
+    if (sentimentChip && r.sentimentPosition === 'right') cluster.push(sentimentChip);
+    if (aiBtn && r.aiPosition === 'right') cluster.push(aiBtn);
+    const asideKids = [];
+    if (cluster.length) asideKids.push(el('div', { class: 'qx-ni-signal-cluster' }, cluster));
+    if (!metaInMain) asideKids.push(metaRow);
+    const aside = asideKids.length ? el('div', { class: 'qx-ni-aside' }, asideKids) : null;
+
+    const body = el('div', { class: 'qx-ni-body' }, [main, aside].filter(Boolean));
 
     let mediaWrap = null;
     if (r.showImage) {
@@ -2343,9 +2396,12 @@ body { margin: 0; }
     if (cfg.showImage) add('imagePosition', cfg.imagePosition, true);
     add('metaPosition', cfg.metaPosition, true);
     add('showSymbol', cfg.showSymbol);
-    add('showSentiment', cfg.showSentiment);
-    add('showAI', cfg.showAI);
     add('showTopic', cfg.showTopic);
+    if (cfg.showTopic && cfg.topicPosition !== 'badge') add('topicPosition', cfg.topicPosition, true);
+    add('showSentiment', cfg.showSentiment);
+    if (cfg.showSentiment && cfg.sentimentPosition !== 'right') add('sentimentPosition', cfg.sentimentPosition, true);
+    add('showAI', cfg.showAI);
+    if (cfg.showAI && cfg.aiPosition !== 'right') add('aiPosition', cfg.aiPosition, true);
     add('showSignalSpine', cfg.showSignalSpine);
     if (cfg.showSignalSpine && cfg.signalLevel !== DEF.signalLevel) add('signalLevel', cfg.signalLevel, true);
 
@@ -2368,7 +2424,7 @@ body { margin: 0; }
 
   /* ---- playground ---- */
   function playground() {
-    let cfg = { preset: 'feed', density: 'comfortable', state: 'default', titleLines: 2, showDescription: true, descriptionLines: 2, showImage: true, imagePosition: 'leading', metaPosition: 'top', showSymbol: true, showSentiment: true, showAI: false, showTopic: true, showSignalSpine: false, signalLevel: 'high' };
+    let cfg = { preset: 'feed', density: 'comfortable', state: 'default', titleLines: 2, showDescription: true, descriptionLines: 2, showImage: true, imagePosition: 'leading', metaPosition: 'top', showSymbol: true, showSentiment: true, showAI: true, showTopic: true, topicPosition: 'badge', sentimentPosition: 'right', aiPosition: 'right', showSignalSpine: false, signalLevel: 'high' };
 
     const controlsEl = el('div', { class: 'pg-card pg-controls' });
     const previewEl = el('div', { class: 'pg-list-frame' });
@@ -2386,7 +2442,7 @@ body { margin: 0; }
     function renderPreview() {
       clear(previewEl);
       const b = effBadges();
-      const base = { preset: cfg.preset, density: cfg.density, titleLines: cfg.titleLines, showDescription: cfg.showDescription, descriptionLines: cfg.descriptionLines, showImage: cfg.showImage, imagePosition: cfg.imagePosition, metaPosition: cfg.metaPosition, showSignalSpine: cfg.showSignalSpine, signalLevel: cfg.signalLevel, showSymbol: b.showSymbol, showSentiment: b.showSentiment, showAI: b.showAI, showTopic: b.showTopic };
+      const base = { preset: cfg.preset, density: cfg.density, titleLines: cfg.titleLines, showDescription: cfg.showDescription, descriptionLines: cfg.descriptionLines, showImage: cfg.showImage, imagePosition: cfg.imagePosition, metaPosition: cfg.metaPosition, showSignalSpine: cfg.showSignalSpine, signalLevel: cfg.signalLevel, showSymbol: b.showSymbol, showSentiment: b.showSentiment, showAI: b.showAI, showTopic: b.showTopic, topicPosition: cfg.topicPosition, sentimentPosition: cfg.sentimentPosition, aiPosition: cfg.aiPosition };
       const list = el('div', { class: 'qx-news-list' });
       list.appendChild(NI.render(Object.assign({}, base, storyProps(STORIES[0]), { state: cfg.state, image: cfg.showImage ? thumb(STORIES[0].title) : undefined })));
       list.appendChild(NI.render(Object.assign({}, base, storyProps(STORIES[1]), { image: cfg.showImage ? thumb(STORIES[1].title) : undefined })));
@@ -2412,15 +2468,19 @@ body { margin: 0; }
         toggleRow('Show image', cfg.showImage, v => set({ showImage: v })),
         el('div', { class: 'pg-subctrl' + (cfg.showImage ? '' : ' off') }, [segmented(cfg.imagePosition, [['leading','Leading'],['trailing','Trailing'],['above','Above']], v => set({ imagePosition: v }), !cfg.showImage)]),
       ]));
-      controlsEl.appendChild(ctrlGroup('Meta position', segmented(cfg.metaPosition, [['top','Top'],['bottom','Bottom']], v => set({ metaPosition: v }))));
+      controlsEl.appendChild(ctrlGroup('Meta position', segmented(cfg.metaPosition, [['top','Top'],['bottom','Bottom'],['right','Right']], v => set({ metaPosition: v }))));
+      const placement = (on, value, opts, key) => el('div', { class: 'pg-subctrl pg-place' + (on ? '' : ' off') }, [segmented(value, opts, v => set({ [key]: v }), !on)]);
       const badgeKids = [
         toggleRow('Symbol chip', cfg.showSymbol && !off, v => set({ showSymbol: v }), off),
-        toggleRow('Sentiment icon', cfg.showSentiment && !off, v => set({ showSentiment: v }), off),
-        toggleRow('AI icon', cfg.showAI && !off, v => set({ showAI: v }), off),
         toggleRow('Topic chip', cfg.showTopic && !off, v => set({ showTopic: v }), off),
+        placement(cfg.showTopic && !off, cfg.topicPosition, [['badge','In badge row'],['top','Own row on top']], 'topicPosition'),
+        toggleRow('Sentiment chip', cfg.showSentiment && !off, v => set({ showSentiment: v }), off),
+        placement(cfg.showSentiment && !off, cfg.sentimentPosition, [['right','Right'],['badge','Badge row']], 'sentimentPosition'),
+        toggleRow('AI icon', cfg.showAI && !off, v => set({ showAI: v }), off),
+        placement(cfg.showAI && !off, cfg.aiPosition, [['right','Right'],['badge','Badge row']], 'aiPosition'),
       ];
       if (off) badgeKids.push(el('p', { style: 'font-size:11px;color:var(--qx-text-muted);margin:6px 0 0', text: 'Embed preset hides the badge row.' }));
-      controlsEl.appendChild(ctrlGroup('Badge row', badgeKids));
+      controlsEl.appendChild(ctrlGroup('Badges & signals', badgeKids));
       controlsEl.appendChild(ctrlGroup('Signal spine', [
         toggleRow('Show signal spine', cfg.showSignalSpine, v => set({ showSignalSpine: v })),
         el('div', { class: 'pg-subctrl' + (cfg.showSignalSpine ? '' : ' off') }, [segmented(cfg.signalLevel, [['high','High'],['medium','Medium'],['low','Low']], v => set({ signalLevel: v }), !cfg.showSignalSpine)]),
@@ -2441,7 +2501,7 @@ body { margin: 0; }
   }
   function presetList(preset, count, seed) {
     const list = el('div', { class: 'qx-news-list pg-inner-list' });
-    STORIES.slice(0, count).forEach((s, i) => list.appendChild(NI.render(Object.assign({ preset, showSymbol: true, showTopic: true, showSentiment: true }, storyProps(s, (seed || '') + i)))));
+    STORIES.slice(0, count).forEach((s, i) => list.appendChild(NI.render(Object.assign({ preset, showSymbol: true, showTopic: true, showSentiment: true, showAI: true }, storyProps(s, (seed || '') + i)))));
     return list;
   }
   function presetGallery() {
@@ -2488,10 +2548,11 @@ body { margin: 0; }
   }
   function usageInContext() {
     const feed = moduleCard('▤', 'Market news', 'See all', STORIES.map((s, i) =>
-      NI.render(Object.assign({ preset: 'feed', showSymbol: true, showTopic: true, showSentiment: true, showSignalSpine: i === 0, signalLevel: 'high' }, storyProps(s, 'ctx' + i)))));
+      NI.render(Object.assign({ preset: 'feed', showSymbol: true, showTopic: true, showSentiment: true, showAI: true, showSignalSpine: i === 0, signalLevel: 'high' }, storyProps(s, 'ctx' + i)))));
 
+    // Top Stories shows the topic as a kicker on its own row and meta on the right.
     const top = moduleCard('★', 'Top stories', null, STORIES.slice(0, 3).map((s, i) =>
-      NI.render(Object.assign({ preset: 'editorial', showSymbol: true, showTopic: true }, storyProps(s, 'top' + i)))));
+      NI.render(Object.assign({ preset: 'editorial', showSymbol: true, showTopic: true, topicPosition: 'top', showSentiment: true, metaPosition: 'right' }, storyProps(s, 'top' + i)))));
 
     const most = moduleCard('≡', 'Most read', null, STORIES.slice(1, 6).map((s) =>
       NI.render({ preset: 'compact', title: s.title, source: s.source, sourceInitials: s.initials, timestamp: s.timestamp, datetime: s.datetime, symbol: s.symbol, symbolChange: s.symbolChange, showSymbol: true, showTopic: false })));
@@ -2514,10 +2575,12 @@ body { margin: 0; }
       ['Row', 'Required', 'Outer container and the single interactive target / tab stop (native <a>).'],
       ['Signal spine', 'Optional', '3px left border coloured by importance rank. Off by default.'],
       ['Media', 'Optional', 'Thumbnail or branded fallback tile, 16:9 crop-to-fill. Position: leading / trailing / above.'],
-      ['Meta row', 'Optional pos.', 'Source · relative timestamp. Renders top or bottom — never both.'],
+      ['Topic kicker', 'Optional', 'Topic chip on its own row above the headline (topicPosition="top").'],
+      ['Meta row', 'Optional pos.', 'Source · relative timestamp. Renders top, bottom, or in the right aside — only one at a time.'],
       ['Title', 'Required', 'Headline. Line-clamped per titleLines. The accessible name.'],
       ['Description', 'Optional', 'Story snippet. Line-clamped per descriptionLines.'],
-      ['Badge row', 'Optional', 'Symbol chip · sentiment · AI · topic. Collapses with no reserved space.'],
+      ['Badge row', 'Optional', 'Symbol chip · topic (unless on top). Collapses with no reserved space.'],
+      ['Right aside', 'Optional', 'Sentiment chip + AI icon (their default home) and, optionally, the meta row.'],
       ['Divider', 'Optional', '0.5px rule between rows — owned by the list container, not the row.'],
     ];
     const tbody = el('tbody', {}, rows.map(([n, req, note]) =>
