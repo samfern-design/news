@@ -52,6 +52,13 @@ when `metaPosition="right"`) · `Divider` (owned by the list, not the row).
 
 Sentiment renders as a labelled chip (▲/▼/■ glyph + word + semantic tone token).
 
+The **AI icon** is pink (distinct from the blue brand) and interactive: it's a
+`role="button"` with `aria-haspopup="dialog"` that opens an **AI summary
+popover** on click/Enter (Esc or outside-click closes it). The popover is
+portaled to `document.body` (re-wrapped in `.qx-root`) so a list's `overflow`
+can't clip it. Feed real content via `aiSummary` (string[]) and `aiUpdated`;
+both fall back to placeholder copy.
+
 ## Rules
 
 - Whole row is the link target (44×44 min tap area).

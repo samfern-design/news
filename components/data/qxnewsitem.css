@@ -153,13 +153,49 @@
 .qx-ni-sentiment.qx-ni-neu { color: var(--qx-text-secondary, #575757); background: var(--qx-surface-100, #EDEDED); border-color: var(--qx-surface-300, #C7C7C7); }
 .qx-ni-sentiment.qx-ni-neu .qx-ni-sentiment-glyph { color: var(--qx-market-hold, #F5C63F); }
 
-/* AI icon reads as a small affordance (it opens an AI summary in product). */
+/* AI accent — pink, distinct from the blue brand so AI-generated content reads
+   as its own thing. The Qmodii palette ships no pink, so these are defined here
+   (on .qx-root so the portaled popover resolves them too) pending a real token. */
+.qx-root {
+  --qx-ni-ai-fg:           #C4238C;
+  --qx-ni-ai-bg:           #FCEAF4;
+  --qx-ni-ai-border:       #F3C4E1;
+  --qx-ni-ai-hover-bg:     #F8D6EB;
+  --qx-ni-ai-hover-border: #E993C6;
+}
+
+/* AI icon is an interactive affordance: click/Enter opens the AI summary. */
 .qx-ni-ai {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 24px; height: 24px; border-radius: var(--qx-radius-sm, 4px);
-  background: var(--qx-info-bg, #F2F8FE); color: var(--qx-primary, #0477D1);
-  border: 1px solid var(--qx-blue-200, #C0DEF7);
+  width: 24px; height: 24px; padding: 0; border-radius: var(--qx-radius-sm, 4px);
+  background: var(--qx-ni-ai-bg, #FCEAF4); color: var(--qx-ni-ai-fg, #C4238C);
+  border: 1px solid var(--qx-ni-ai-border, #F3C4E1);
+  cursor: pointer;
+  transition: background var(--qx-duration-fast, 120ms) var(--qx-ease, ease),
+              border-color var(--qx-duration-fast, 120ms) var(--qx-ease, ease);
 }
+.qx-ni-ai:hover,
+.qx-ni-ai[aria-expanded='true'] { background: var(--qx-ni-ai-hover-bg, #F8D6EB); border-color: var(--qx-ni-ai-hover-border, #E993C6); }
+.qx-ni-ai:focus-visible { outline: 2px solid var(--qx-ni-ai-fg, #C4238C); outline-offset: 2px; }
+
+/* ---- AI summary popover (portaled to body, re-wrapped in .qx-root) -------- */
+.qx-ni-ai-popover {
+  position: fixed; z-index: 1000; width: 320px; max-width: calc(100vw - 24px);
+  background: var(--qx-surface-0, #fff); color: var(--qx-text-primary, #222);
+  border: 1px solid var(--qx-surface-200, #E3E3E3); border-radius: var(--qx-radius-sm, 4px);
+  box-shadow: var(--qx-shadow-lg, 0 8px 24px rgba(0,0,0,.12), 0 2px 6px rgba(0,0,0,.08));
+  font-family: var(--qx-font-sans, system-ui, sans-serif); overflow: hidden;
+}
+.qx-ni-ai-pop-head { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--qx-surface-100, #EDEDED); font-size: var(--qx-text-base, 14px); font-weight: 700; }
+.qx-ni-ai-pop-mark { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: var(--qx-radius-sm, 4px); background: var(--qx-ni-ai-bg, #FCEAF4); color: var(--qx-ni-ai-fg, #C4238C); border: 1px solid var(--qx-ni-ai-border, #F3C4E1); flex: 0 0 auto; }
+.qx-ni-ai-pop-body { padding: 12px 14px; }
+.qx-ni-ai-pop-body h4 { margin: 0 0 8px; font-size: var(--qx-text-xs, 11px); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--qx-text-muted, #707070); }
+.qx-ni-ai-pop-body ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.qx-ni-ai-pop-body li { position: relative; padding-left: 16px; font-size: 13px; line-height: 1.45; color: var(--qx-text-secondary, #575757); }
+.qx-ni-ai-pop-body li::before { content: ''; position: absolute; left: 3px; top: 7px; width: 5px; height: 5px; border-radius: 50%; background: var(--qx-ni-ai-fg, #C4238C); }
+.qx-ni-ai-pop-note { padding: 10px 14px; border-top: 1px solid var(--qx-surface-100, #EDEDED); font-size: var(--qx-text-xs, 11px); line-height: 1.45; color: var(--qx-text-muted, #707070); }
+.qx-ni-ai-pop-foot { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-top: 1px solid var(--qx-surface-100, #EDEDED); font-size: var(--qx-text-sm, 12px); color: var(--qx-text-secondary, #575757); }
+.qx-ni-ai-pop-foot svg { flex: 0 0 auto; }
 
 /* ---- Meta row -------------------------------------------------------- */
 .qx-ni-meta {
