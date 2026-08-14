@@ -1845,7 +1845,10 @@
 .qx-newsitem[data-desc-lines='3'] .qx-ni-desc { -webkit-line-clamp: 3; }
 
 /* ---- Badge row ------------------------------------------------------- */
-.qx-ni-badges { order: 5; display: flex; flex-wrap: wrap; align-items: center; gap: var(--qx-gap-md, 8px); margin-top: var(--qx-space-xs, 4px); }
+/* Single line — symbol chips never wrap; overflow folds into "+N more"
+   (see fitSymbols in the component). */
+.qx-ni-badges { order: 5; display: flex; flex-wrap: nowrap; align-items: center; gap: var(--qx-gap-md, 8px); margin-top: var(--qx-space-xs, 4px); overflow: hidden; }
+.qx-ni-symbol, .qx-ni-topic, .qx-ni-symbol-more { flex: 0 0 auto; }
 
 .qx-ni-symbol {
   display: inline-flex; align-items: center; gap: 4px;
@@ -2137,7 +2140,7 @@ body { margin: 0; }
   const PRESETS = {
     feed:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 2, showImage: true,  imagePosition: 'leading',  showBadgeRow: true },
     editorial: { metaPosition: 'bottom', titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'trailing', showBadgeRow: true },
-    compact:   { metaPosition: 'top',    titleLines: 1, showDescription: true,  descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: true },
+    compact:   { metaPosition: 'top',    titleLines: 1, showDescription: true,  descriptionLines: 2, showImage: false, imagePosition: 'leading',  showBadgeRow: true, showTopic: false },
     lead:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'above',    showBadgeRow: true },
     embed:     { metaPosition: 'top',    titleLines: 1, showDescription: false, descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: false, minimalMeta: true },
   };
@@ -2268,6 +2271,26 @@ body { margin: 0; }
       [rect({ x: 3, y: 11, width: 18, height: 10, rx: 2 }), path('M7 11V7a5 5 0 0 1 10 0v4')]);
   }
 
+  // Fit symbol chips on a single line: show all that fit, fold the rest into
+  // the "+N more" chip. Uses scrollWidth vs clientWidth on a nowrap container.
+  function fitSymbols(container, symEls, moreEl) {
+    if (!container || !container.clientWidth) return;   // not laid out yet
+    symEls.forEach(e => { e.style.display = ''; });
+    if (moreEl) moreEl.style.display = 'none';
+    if (container.scrollWidth <= container.clientWidth + 0.5) return;   // all fit
+    if (moreEl) moreEl.style.display = '';
+    let hidden = 0;
+    for (let i = symEls.length - 1; i >= 0; i--) {
+      if (container.scrollWidth <= container.clientWidth + 0.5) break;
+      symEls[i].style.display = 'none';
+      hidden++;
+    }
+    if (moreEl) {
+      if (hidden === 0) moreEl.style.display = 'none';
+      else moreEl.textContent = '+' + hidden + ' more';
+    }
+  }
+
   function media(src, sourceInitials, alt) {
     if (src) return el('div', { class: 'qx-ni-media' }, [el('img', { class: 'qx-ni-thumb', src, alt: alt || '', loading: 'lazy' })]);
     return el('div', { class: 'qx-ni-media qx-ni-media-fallback', 'aria-hidden': 'true' },
@@ -2309,7 +2332,7 @@ body { margin: 0; }
       showSymbol:       pick(props.showSymbol,       undefined,          !!props.symbol),
       showSentiment:    pick(props.showSentiment,    undefined,          false),
       showAI:           pick(props.showAI,           undefined,          false),
-      showTopic:        pick(props.showTopic,        undefined,          !!props.topic),
+      showTopic:        pick(props.showTopic,        p.showTopic,        !!props.topic),
       showSignalSpine:  pick(props.showSignalSpine,  undefined,          false),
       topicPosition:    pick(props.topicPosition,    p.topicPosition,    'badge'),   // 'badge' | 'top'
       sentimentPosition: pick(props.sentimentPosition, p.sentimentPosition, 'right'), // 'right' | 'badge'
@@ -2341,9 +2364,9 @@ body { margin: 0; }
     // Reusable badge/marks
     const topicChip = (r.showTopic && props.topic) ? () => el('span', { class: 'qx-ni-topic', text: props.topic }) : null;
 
-    // Symbols — a story can reference several. Normalize to a list, cap the
-    // visible chips at MAX_SYMBOLS, and show a "+N more" overflow count.
-    const MAX_SYMBOLS = 3;
+    // Symbols — a story can reference several. Normalize to a list; the chips
+    // never wrap — as many as fit on one line show, the rest fold into a
+    // "+N more" count sized to the row (see fitSymbols / ResizeObserver below).
     let symbolList = [];
     if (Array.isArray(props.symbols) && props.symbols.length) {
       symbolList = props.symbols.map(s => (typeof s === 'string' ? { symbol: s } : s));
@@ -2357,12 +2380,11 @@ body { margin: 0; }
       if (chg != null) kids.push(el('span', { class: 'qx-ni-symbol-chg', text: (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%' }));
       return el('span', { class: cls }, kids);
     }
-    let symbolChips = [];
+    let symbolChipEls = [];
+    let symbolMoreEl = null;
     if (r.showSymbol && symbolList.length) {
-      symbolChips = symbolList.slice(0, MAX_SYMBOLS).map(item => symbolChipEl(item, true));  // always show change when present
-      if (symbolList.length > MAX_SYMBOLS) {
-        symbolChips.push(el('span', { class: 'qx-ni-symbol-more', text: '+' + (symbolList.length - MAX_SYMBOLS) + ' more' }));
-      }
+      symbolChipEls = symbolList.map(item => symbolChipEl(item, true));  // always show change when present
+      symbolMoreEl = el('span', { class: 'qx-ni-symbol-more', style: 'display:none' });
     }
 
     const sentimentChip = r.showSentiment ? sentimentIcon(props.sentiment || 'neutral') : null;
@@ -2374,10 +2396,18 @@ body { margin: 0; }
     if (r.showBadgeRow) {
       const badges = [];
       if (topicChip && r.topicPosition === 'badge') badges.push(topicChip());
-      badges.push(...symbolChips);
+      badges.push(...symbolChipEls);
+      if (symbolMoreEl) badges.push(symbolMoreEl);
       if (sentimentChip && r.sentimentPosition === 'badge') badges.push(sentimentChip);
       if (aiBtn && r.aiPosition === 'badge') badges.push(aiBtn);
       if (badges.length) badgeRow = el('div', { class: 'qx-ni-badges' }, badges);
+      // Symbols never wrap: fit as many as the row allows, fold the rest into
+      // "+N more". Re-runs whenever the row's width changes.
+      if (badgeRow && symbolChipEls.length) {
+        const run = () => fitSymbols(badgeRow, symbolChipEls, symbolMoreEl);
+        if (typeof ResizeObserver !== 'undefined') { new ResizeObserver(run).observe(badgeRow); }
+        else { (window.requestAnimationFrame || window.setTimeout)(run); }
+      }
     }
 
     // Topic kicker — own row above the headline (topicPosition='top').
@@ -2654,14 +2684,14 @@ body { margin: 0; }
   }
   function presetList(preset, count, seed) {
     const list = el('div', { class: 'qx-news-list pg-inner-list' });
-    STORIES.slice(0, count).forEach((s, i) => list.appendChild(NI.render(Object.assign({ preset, showSymbol: true, showTopic: true, showSentiment: true, showAI: true }, storyProps(s, (seed || '') + i)))));
+    STORIES.slice(0, count).forEach((s, i) => list.appendChild(NI.render(Object.assign({ preset, showSymbol: true, showTopic: preset !== 'compact', showSentiment: true, showAI: true }, storyProps(s, (seed || '') + i)))));
     return list;
   }
   function presetGallery() {
     return el('div', { class: 'pg-grid-2' }, [
       galleryCard('Feed', 'feed', 'Default. Meta on top, 2-line title + description, leading image, full badge row.', presetList('feed', 2, 'f')),
       galleryCard('Editorial', 'editorial', 'Meta at the bottom, 3-line description, trailing image. Reads as a curated story.', presetList('editorial', 2, 'e')),
-      galleryCard('Compact', 'compact', '1-line title, 1-line description, no image. Dense side rails and Most Read.', presetList('compact', 4, 'c')),
+      galleryCard('Compact', 'compact', '1-line title, 2-line description, no image, no topic. Dense side rails and Most Read.', presetList('compact', 4, 'c')),
       galleryCard('Embed', 'embed', '1-line title, source + time only, no badge row. WMID widget contexts.', presetList('embed', 4, 'm')),
     ]);
   }

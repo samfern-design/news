@@ -21,13 +21,32 @@
   else root.QXNewsItem = factory(root.React, root.ReactDOM);
 })(typeof self !== 'undefined' ? self : this, function (React, ReactDOM) {
   const h = React.createElement;
-  const { useState, useRef, useEffect, useCallback } = React;
+  const { useState, useRef, useEffect, useLayoutEffect, useCallback } = React;
+
+  // Fit symbol chips on a single line: show all that fit, fold the rest into
+  // the "+N more" chip. Uses scrollWidth vs clientWidth on a nowrap container.
+  function fitSymbols(container) {
+    if (!container || !container.clientWidth) return;
+    const symEls = Array.from(container.querySelectorAll('.qx-ni-symbol'));
+    const moreEl = container.querySelector('.qx-ni-symbol-more');
+    symEls.forEach(e => { e.style.display = ''; });
+    if (moreEl) moreEl.style.display = 'none';
+    if (container.scrollWidth <= container.clientWidth + 0.5) return;
+    if (moreEl) moreEl.style.display = '';
+    let hidden = 0;
+    for (let i = symEls.length - 1; i >= 0; i--) {
+      if (container.scrollWidth <= container.clientWidth + 0.5) break;
+      symEls[i].style.display = 'none';
+      hidden++;
+    }
+    if (moreEl) { if (hidden === 0) moreEl.style.display = 'none'; else moreEl.textContent = '+' + hidden + ' more'; }
+  }
 
   /* ---- Preset bundles ------------------------------------------------- */
   const PRESETS = {
     feed:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 2, showImage: true,  imagePosition: 'leading',  showBadgeRow: true },
     editorial: { metaPosition: 'bottom', titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'trailing', showBadgeRow: true },
-    compact:   { metaPosition: 'top',    titleLines: 1, showDescription: true,  descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: true },
+    compact:   { metaPosition: 'top',    titleLines: 1, showDescription: true,  descriptionLines: 2, showImage: false, imagePosition: 'leading',  showBadgeRow: true, showTopic: false },
     lead:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'above',    showBadgeRow: true },
     embed:     { metaPosition: 'top',    titleLines: 1, showDescription: false, descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: false, minimalMeta: true },
   };
@@ -149,6 +168,18 @@
 
   /* ---- Component ------------------------------------------------------ */
   function QXNewsItem(props) {
+    // Keep the symbol chips on one line; recompute on width changes.
+    const badgeRef = useRef(null);
+    useLayoutEffect(() => {
+      const c = badgeRef.current;
+      if (!c) return;
+      const run = () => fitSymbols(c);
+      run();
+      let ro;
+      if (typeof ResizeObserver !== 'undefined') { ro = new ResizeObserver(run); ro.observe(c); }
+      return () => { if (ro) ro.disconnect(); };
+    });
+
     const {
       preset = 'feed',
       density = 'comfortable',
@@ -185,7 +216,7 @@
       showSymbol:       pick(props.showSymbol,       undefined,          !!symbol),
       showSentiment:    pick(props.showSentiment,    undefined,          false),
       showAI:           pick(props.showAI,           undefined,          false),
-      showTopic:        pick(props.showTopic,        undefined,          !!topic),
+      showTopic:        pick(props.showTopic,        p.showTopic,        !!topic),
       showSignalSpine:  pick(props.showSignalSpine,  undefined,          false),
       topicPosition:     pick(props.topicPosition,     p.topicPosition,     'badge'),  // 'badge' | 'top'
       sentimentPosition: pick(props.sentimentPosition, p.sentimentPosition, 'right'),  // 'right' | 'badge'
@@ -216,22 +247,22 @@
     }
 
     /* Reusable marks. */
-    // Symbols — a story can reference several. Cap the visible chips at 3 and
-    // show a "+N more" overflow count; show % only for a lone symbol.
-    const MAX_SYMBOLS = 3;
+    // Symbols — a story can reference several. Render them all; fitSymbols
+    // (below, via ResizeObserver) keeps them on one line, folding overflow
+    // into the "+N more" chip. Change is shown for every visible chip.
     let symbolList = [];
     if (Array.isArray(props.symbols) && props.symbols.length) symbolList = props.symbols.map(s => (typeof s === 'string' ? { symbol: s } : s));
     else if (symbol) symbolList = [{ symbol, change: symbolChange }];
-    const symbolChipEl = (item, i, showChange) => {
-      const chg = showChange ? item.change : undefined;
+    const symbolChipEl = (item, i) => {
+      const chg = item.change;
       return h('span', { key: 'sym' + i, className: 'qx-ni-symbol' + (chg != null ? (chg >= 0 ? ' qx-ni-up' : ' qx-ni-down') : '') },
         item.symbol,
         chg != null ? h('span', { className: 'qx-ni-symbol-chg' }, (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%') : null);
     };
     let symbolChips = [];
     if (r.showSymbol && symbolList.length) {
-      symbolChips = symbolList.slice(0, MAX_SYMBOLS).map((item, i) => symbolChipEl(item, i, true));  // always show change when present
-      if (symbolList.length > MAX_SYMBOLS) symbolChips.push(h('span', { key: 'more', className: 'qx-ni-symbol-more' }, '+' + (symbolList.length - MAX_SYMBOLS) + ' more'));
+      symbolChips = symbolList.map((item, i) => symbolChipEl(item, i));
+      symbolChips.push(h('span', { key: 'more', className: 'qx-ni-symbol-more', style: { display: 'none' } }));
     }
     const topicChip = (r.showTopic && topic) ? (key) => h('span', { key, className: 'qx-ni-topic' }, topic) : null;
     const sentimentChip = r.showSentiment ? h(SentimentIcon, { key: 'sent', sentiment }) : null;
@@ -246,7 +277,7 @@
       if (sentimentChip && r.sentimentPosition === 'badge') badges.push(sentimentChip);
       if (aiBtn && r.aiPosition === 'badge') badges.push(aiBtn);
     }
-    const badgeRow = badges.length ? h('div', { className: 'qx-ni-badges' }, badges) : null;
+    const badgeRow = badges.length ? h('div', { className: 'qx-ni-badges', ref: badgeRef }, badges) : null;
 
     /* Topic kicker — own row above the headline (topicPosition='top'). */
     const kicker = (topicChip && r.topicPosition === 'top')

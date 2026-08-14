@@ -124,7 +124,10 @@
 .qx-newsitem[data-desc-lines='3'] .qx-ni-desc { -webkit-line-clamp: 3; }
 
 /* ---- Badge row ------------------------------------------------------- */
-.qx-ni-badges { order: 5; display: flex; flex-wrap: wrap; align-items: center; gap: var(--qx-gap-md, 8px); margin-top: var(--qx-space-xs, 4px); }
+/* Single line — symbol chips never wrap; overflow folds into "+N more"
+   (see fitSymbols in the component). */
+.qx-ni-badges { order: 5; display: flex; flex-wrap: nowrap; align-items: center; gap: var(--qx-gap-md, 8px); margin-top: var(--qx-space-xs, 4px); overflow: hidden; }
+.qx-ni-symbol, .qx-ni-topic, .qx-ni-symbol-more { flex: 0 0 auto; }
 
 .qx-ni-symbol {
   display: inline-flex; align-items: center; gap: 4px;

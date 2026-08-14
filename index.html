@@ -321,14 +321,14 @@
   }
   function presetList(preset, count, seed) {
     const list = el('div', { class: 'qx-news-list pg-inner-list' });
-    STORIES.slice(0, count).forEach((s, i) => list.appendChild(NI.render(Object.assign({ preset, showSymbol: true, showTopic: true, showSentiment: true, showAI: true }, storyProps(s, (seed || '') + i)))));
+    STORIES.slice(0, count).forEach((s, i) => list.appendChild(NI.render(Object.assign({ preset, showSymbol: true, showTopic: preset !== 'compact', showSentiment: true, showAI: true }, storyProps(s, (seed || '') + i)))));
     return list;
   }
   function presetGallery() {
     return el('div', { class: 'pg-grid-2' }, [
       galleryCard('Feed', 'feed', 'Default. Meta on top, 2-line title + description, leading image, full badge row.', presetList('feed', 2, 'f')),
       galleryCard('Editorial', 'editorial', 'Meta at the bottom, 3-line description, trailing image. Reads as a curated story.', presetList('editorial', 2, 'e')),
-      galleryCard('Compact', 'compact', '1-line title, 1-line description, no image. Dense side rails and Most Read.', presetList('compact', 4, 'c')),
+      galleryCard('Compact', 'compact', '1-line title, 2-line description, no image, no topic. Dense side rails and Most Read.', presetList('compact', 4, 'c')),
       galleryCard('Embed', 'embed', '1-line title, source + time only, no badge row. WMID widget contexts.', presetList('embed', 4, 'm')),
     ]);
   }
