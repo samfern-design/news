@@ -26,7 +26,7 @@
   /* ---- Preset bundles ------------------------------------------------- */
   const PRESETS = {
     feed:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 2, showImage: true,  imagePosition: 'leading',  showBadgeRow: true },
-    editorial: { metaPosition: 'bottom', titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'trailing', showBadgeRow: true, sentimentPosition: 'badge', aiPosition: 'badge' },
+    editorial: { metaPosition: 'bottom', titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'trailing', showBadgeRow: true },
     compact:   { metaPosition: 'top',    titleLines: 1, showDescription: true,  descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: true },
     lead:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'above',    showBadgeRow: true },
     embed:     { metaPosition: 'top',    titleLines: 1, showDescription: false, descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: false, minimalMeta: true },
@@ -41,11 +41,12 @@
     const map = {
       positive: { glyph: '▲', word: 'Positive', label: 'Positive sentiment', cls: 'qx-ni-pos' },
       negative: { glyph: '▼', word: 'Negative', label: 'Negative sentiment', cls: 'qx-ni-neg' },
-      neutral:  { glyph: '■', word: 'Neutral',  label: 'Neutral sentiment',  cls: 'qx-ni-neu' },
+      neutral:  { glyph: '–', word: 'Neutral',  label: 'Neutral sentiment',  cls: 'qx-ni-neu' },
     };
     const s = map[sentiment] || map.neutral;
     return h('span', { className: 'qx-ni-sentiment ' + s.cls, role: 'img', 'aria-label': s.label, title: s.label },
-      h('span', { className: 'qx-ni-sentiment-glyph', 'aria-hidden': 'true' }, s.glyph), s.word);
+      h('span', { className: 'qx-ni-sentiment-glyph', 'aria-hidden': 'true' }, s.glyph),
+      h('span', { className: 'qx-ni-sentiment-label' }, s.word));
   }
 
   const AISparkle = () =>
@@ -229,32 +230,21 @@
     };
     let symbolChips = [];
     if (r.showSymbol && symbolList.length) {
-      const single = symbolList.length === 1;
-      symbolChips = symbolList.slice(0, MAX_SYMBOLS).map((item, i) => symbolChipEl(item, i, single));
+      symbolChips = symbolList.slice(0, MAX_SYMBOLS).map((item, i) => symbolChipEl(item, i, true));  // always show change when present
       if (symbolList.length > MAX_SYMBOLS) symbolChips.push(h('span', { key: 'more', className: 'qx-ni-symbol-more' }, '+' + (symbolList.length - MAX_SYMBOLS) + ' more'));
     }
     const topicChip = (r.showTopic && topic) ? (key) => h('span', { key, className: 'qx-ni-topic' }, topic) : null;
     const sentimentChip = r.showSentiment ? h(SentimentIcon, { key: 'sent', sentiment }) : null;
     const aiBtn = r.showAI ? h(AIIcon, { key: 'ai', label: aiLabel, summary: props.aiSummary, updated: props.aiUpdated }) : null;
 
-    /* Left badge row. Editorial reads topic → AI → sentiment → symbols;
-       other presets read symbols → topic → sentiment → AI. Collapses when empty. */
+    /* Left badge row — topic always leads, then symbols, then any sentiment/AI
+       placed 'badge'. Collapses entirely when empty. */
     const badges = [];
     if (r.showBadgeRow) {
-      const topicEl = (topicChip && r.topicPosition === 'badge') ? topicChip('topic') : null;
-      const sentEl = (sentimentChip && r.sentimentPosition === 'badge') ? sentimentChip : null;
-      const aiEl = (aiBtn && r.aiPosition === 'badge') ? aiBtn : null;
-      if (preset === 'editorial') {
-        if (topicEl) badges.push(topicEl);
-        if (aiEl) badges.push(aiEl);
-        if (sentEl) badges.push(sentEl);
-        badges.push(...symbolChips);
-      } else {
-        badges.push(...symbolChips);
-        if (topicEl) badges.push(topicEl);
-        if (sentEl) badges.push(sentEl);
-        if (aiEl) badges.push(aiEl);
-      }
+      if (topicChip && r.topicPosition === 'badge') badges.push(topicChip('topic'));
+      badges.push(...symbolChips);
+      if (sentimentChip && r.sentimentPosition === 'badge') badges.push(sentimentChip);
+      if (aiBtn && r.aiPosition === 'badge') badges.push(aiBtn);
     }
     const badgeRow = badges.length ? h('div', { className: 'qx-ni-badges' }, badges) : null;
 
@@ -300,16 +290,21 @@
       h('time', datetime ? { className: 'qx-ni-time', dateTime: datetime } : { className: 'qx-ni-time' }, timestamp)));
     const aside = asideKids.length ? h('div', { className: 'qx-ni-aside' }, asideKids) : null;
 
-    const body = h('div', { className: 'qx-ni-body' }, main, aside);
-
     const media = r.showImage
       ? h('div', { className: 'qx-ni-media-wrap' },
           h(Media, { src: image, sourceInitials, alt: imageAlt }),
           isLocked ? h('span', { className: 'qx-ni-media-lock', 'aria-hidden': 'true' }, h(LockIcon)) : null)
       : null;
 
-    const inner = h('div', { className: 'qx-ni-inner' },
-      r.imagePosition === 'trailing' ? [body, media] : [media, body]);
+    // Arrange media / main / aside. On a trailing image the aside stacks under
+    // the image (shared right column); leading keeps it far-right; above stacks
+    // the image over a main+aside row.
+    let innerKids;
+    if (!media) innerKids = [main, aside];
+    else if (r.imagePosition === 'trailing') innerKids = [main, h('div', { className: 'qx-ni-rightcol' }, media, aside)];
+    else if (r.imagePosition === 'above') innerKids = [media, h('div', { className: 'qx-ni-mainrow' }, main, aside)];
+    else innerKids = [media, main, aside];
+    const inner = h('div', { className: 'qx-ni-inner' }, innerKids);
 
     const handleClick = onActivate ? (e) => { e.preventDefault(); onActivate(props); } : undefined;
 

@@ -1778,15 +1778,19 @@
 .qx-newsitem[data-signal='medium']::before { background: var(--qx-primary, #0477D1); }
 .qx-newsitem[data-signal='low']::before    { background: var(--qx-surface-300, #C7C7C7); }
 
-/* ---- Inner layout: media + body ------------------------------------- */
+/* ---- Inner layout: media / main / aside ----------------------------- */
+/* The row lays out a main text column, an optional right-hand aside (sentiment
+   chip, AI icon, optional meta), and media. On a trailing image the aside
+   stacks *under* the image in a shared right column (.qx-ni-rightcol); leading
+   keeps the aside on the far right; above stacks the image over a main+aside
+   row (.qx-ni-mainrow). */
 .qx-ni-inner { display: flex; gap: var(--qx-space-md, 12px); align-items: flex-start; }
 .qx-newsitem[data-density='compact'] .qx-ni-inner { gap: var(--qx-space-sm, 8px); }
 .qx-newsitem[data-image-pos='above'] .qx-ni-inner { flex-direction: column; }
-/* Body splits into a main text column and an optional right-hand aside that
-   holds the sentiment chip, AI icon, and (optionally) the meta row. */
-.qx-ni-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: row; gap: var(--qx-space-md, 12px); align-items: stretch; }
 .qx-ni-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--qx-space-xs, 4px); }
-.qx-ni-aside { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: var(--qx-space-sm, 8px); }
+.qx-ni-mainrow { flex: 1 1 auto; min-width: 0; display: flex; gap: var(--qx-space-md, 12px); align-items: flex-start; }
+.qx-ni-aside { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-end; gap: var(--qx-space-sm, 8px); }
+.qx-ni-rightcol { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-end; gap: var(--qx-space-sm, 8px); }
 .qx-ni-signal-cluster { display: flex; align-items: center; gap: var(--qx-gap-md, 8px); }
 /* Meta parked in the aside is right-aligned and drops the main-column ordering. */
 .qx-ni-aside .qx-ni-meta { order: 0; margin: 0; text-align: right; justify-content: flex-end; }
@@ -1868,18 +1872,22 @@
   font-size: var(--qx-text-xs, 11px); font-weight: 600;
 }
 
-/* Sentiment reads as a labelled chip — shape + word + semantic tone token,
-   never colour alone (WCAG 1.4.1). */
+/* Sentiment chip — a light rounded pill: coloured direction glyph, a hairline
+   divider, then the word in neutral text. Shape + word + tone (never colour
+   alone, WCAG 1.4.1). */
 .qx-ni-sentiment {
-  display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
-  padding: 2px 8px; border-radius: 2px; border: 1px solid transparent;
-  font-size: var(--qx-text-xs, 11px); font-weight: 600; line-height: 1.4;
+  display: inline-flex; align-items: stretch; white-space: nowrap;
+  background: var(--qx-surface-0, #fff);
+  border: 1px solid var(--qx-surface-200, #E3E3E3);
+  border-radius: 8px; overflow: hidden;
+  box-shadow: var(--qx-shadow-xs, 0 1px 2px rgba(0,0,0,.06));
+  font-size: var(--qx-text-sm, 12px); font-weight: 500; line-height: 1;
 }
-.qx-ni-sentiment .qx-ni-sentiment-glyph { font-size: 9px; line-height: 1; }
-.qx-ni-sentiment.qx-ni-pos { color: var(--qx-market-up, #2B7F45); background: var(--qx-market-up-subtle, #E4F2E9); border-color: var(--qx-market-up-fill, #5DB678); }
-.qx-ni-sentiment.qx-ni-neg { color: var(--qx-market-down, #D02A48); background: var(--qx-market-down-subtle, #FBE3E8); border-color: var(--qx-market-down-fill, #E04E6E); }
-.qx-ni-sentiment.qx-ni-neu { color: var(--qx-text-secondary, #575757); background: var(--qx-surface-100, #EDEDED); border-color: var(--qx-surface-300, #C7C7C7); }
-.qx-ni-sentiment.qx-ni-neu .qx-ni-sentiment-glyph { color: var(--qx-market-hold, #F5C63F); }
+.qx-ni-sentiment-glyph { display: inline-flex; align-items: center; padding: 4px 7px; font-size: 10px; }
+.qx-ni-sentiment-label { display: inline-flex; align-items: center; padding: 4px 9px; border-left: 1px solid var(--qx-surface-200, #E3E3E3); color: var(--qx-text-primary, #222222); }
+.qx-ni-sentiment.qx-ni-pos .qx-ni-sentiment-glyph { color: var(--qx-market-up, #2B7F45); }
+.qx-ni-sentiment.qx-ni-neg .qx-ni-sentiment-glyph { color: var(--qx-market-down, #D02A48); }
+.qx-ni-sentiment.qx-ni-neu .qx-ni-sentiment-glyph { color: var(--qx-text-secondary, #575757); font-weight: 700; }
 
 /* AI accent — pink, distinct from the blue brand so AI-generated content reads
    as its own thing. The Qmodii palette ships no pink, so these are defined here
@@ -2128,7 +2136,7 @@ body { margin: 0; }
 
   const PRESETS = {
     feed:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 2, showImage: true,  imagePosition: 'leading',  showBadgeRow: true },
-    editorial: { metaPosition: 'bottom', titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'trailing', showBadgeRow: true, sentimentPosition: 'badge', aiPosition: 'badge' },
+    editorial: { metaPosition: 'bottom', titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'trailing', showBadgeRow: true },
     compact:   { metaPosition: 'top',    titleLines: 1, showDescription: true,  descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: true },
     lead:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'above',    showBadgeRow: true },
     embed:     { metaPosition: 'top',    titleLines: 1, showDescription: false, descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: false, minimalMeta: true },
@@ -2167,12 +2175,12 @@ body { margin: 0; }
     const map = {
       positive: { glyph: '▲', word: 'Positive', label: 'Positive sentiment', cls: 'qx-ni-pos' },
       negative: { glyph: '▼', word: 'Negative', label: 'Negative sentiment', cls: 'qx-ni-neg' },
-      neutral:  { glyph: '■', word: 'Neutral',  label: 'Neutral sentiment',  cls: 'qx-ni-neu' },
+      neutral:  { glyph: '–', word: 'Neutral',  label: 'Neutral sentiment',  cls: 'qx-ni-neu' },
     };
     const s = map[sentiment] || map.neutral;
     return el('span', { class: 'qx-ni-sentiment ' + s.cls, role: 'img', 'aria-label': s.label, title: s.label }, [
       el('span', { class: 'qx-ni-sentiment-glyph', 'aria-hidden': 'true', text: s.glyph }),
-      document.createTextNode(s.word),
+      el('span', { class: 'qx-ni-sentiment-label', text: s.word }),
     ]);
   }
   function aiSparkle() {
@@ -2351,8 +2359,7 @@ body { margin: 0; }
     }
     let symbolChips = [];
     if (r.showSymbol && symbolList.length) {
-      const single = symbolList.length === 1;   // show % only for a lone symbol
-      symbolChips = symbolList.slice(0, MAX_SYMBOLS).map(item => symbolChipEl(item, single));
+      symbolChips = symbolList.slice(0, MAX_SYMBOLS).map(item => symbolChipEl(item, true));  // always show change when present
       if (symbolList.length > MAX_SYMBOLS) {
         symbolChips.push(el('span', { class: 'qx-ni-symbol-more', text: '+' + (symbolList.length - MAX_SYMBOLS) + ' more' }));
       }
@@ -2361,25 +2368,15 @@ body { margin: 0; }
     const sentimentChip = r.showSentiment ? sentimentIcon(props.sentiment || 'neutral') : null;
     const aiBtn = r.showAI ? aiIcon(props) : null;
 
-    // Left badge row. Editorial reads topic → AI → sentiment → symbols;
-    // other presets read symbols → topic → sentiment → AI.
+    // Left badge row — topic always leads, then symbols, then any
+    // sentiment/AI placed 'badge'.
     let badgeRow = null;
     if (r.showBadgeRow) {
-      const topicEl = (topicChip && r.topicPosition === 'badge') ? topicChip() : null;
-      const sentEl = (sentimentChip && r.sentimentPosition === 'badge') ? sentimentChip : null;
-      const aiEl = (aiBtn && r.aiPosition === 'badge') ? aiBtn : null;
       const badges = [];
-      if (preset === 'editorial') {
-        if (topicEl) badges.push(topicEl);
-        if (aiEl) badges.push(aiEl);
-        if (sentEl) badges.push(sentEl);
-        badges.push(...symbolChips);
-      } else {
-        badges.push(...symbolChips);
-        if (topicEl) badges.push(topicEl);
-        if (sentEl) badges.push(sentEl);
-        if (aiEl) badges.push(aiEl);
-      }
+      if (topicChip && r.topicPosition === 'badge') badges.push(topicChip());
+      badges.push(...symbolChips);
+      if (sentimentChip && r.sentimentPosition === 'badge') badges.push(sentimentChip);
+      if (aiBtn && r.aiPosition === 'badge') badges.push(aiBtn);
       if (badges.length) badgeRow = el('div', { class: 'qx-ni-badges' }, badges);
     }
 
@@ -2418,8 +2415,6 @@ body { margin: 0; }
     if (!metaInMain) asideKids.push(metaRow);
     const aside = asideKids.length ? el('div', { class: 'qx-ni-aside' }, asideKids) : null;
 
-    const body = el('div', { class: 'qx-ni-body' }, [main, aside].filter(Boolean));
-
     let mediaWrap = null;
     if (r.showImage) {
       const kids = [media(props.image, props.sourceInitials, props.imageAlt)];
@@ -2427,8 +2422,21 @@ body { margin: 0; }
       mediaWrap = el('div', { class: 'qx-ni-media-wrap' }, kids);
     }
 
-    const order = r.imagePosition === 'trailing' ? [body, mediaWrap] : [mediaWrap, body];
-    const inner = el('div', { class: 'qx-ni-inner' }, order.filter(Boolean));
+    // Arrange media / main / aside. On a trailing image the aside stacks
+    // *under* the image in a shared right column; leading keeps the aside on
+    // the far right; above stacks the image over a main+aside row.
+    let inner;
+    if (!mediaWrap) {
+      inner = el('div', { class: 'qx-ni-inner' }, [main, aside].filter(Boolean));
+    } else if (r.imagePosition === 'trailing') {
+      const rightcol = el('div', { class: 'qx-ni-rightcol' }, [mediaWrap, aside].filter(Boolean));
+      inner = el('div', { class: 'qx-ni-inner' }, [main, rightcol]);
+    } else if (r.imagePosition === 'above') {
+      const mainrow = el('div', { class: 'qx-ni-mainrow' }, [main, aside].filter(Boolean));
+      inner = el('div', { class: 'qx-ni-inner' }, [mediaWrap, mainrow]);
+    } else { // leading
+      inner = el('div', { class: 'qx-ni-inner' }, [mediaWrap, main, aside].filter(Boolean));
+    }
 
     const anchorAttrs = Object.assign({
       href: props.href || '#',
@@ -2496,9 +2504,9 @@ body { margin: 0; }
 
   /* ---- sample feed ---- */
   const STORIES = [
-    { title: 'Nvidia clears $4.5 trillion as data-center demand outruns supply forecasts', description: 'The chipmaker’s latest guidance implies another record quarter, with cloud providers front-loading orders ahead of the next accelerator generation. Analysts lifted price targets across the board.', source: 'Bloomberg', initials: 'BL', timestamp: '18m ago', datetime: '2026-08-14T13:42:00Z', symbol: 'NVDA', symbolChange: 3.11, symbols: ['NVDA','AMD','TSM','AVGO','MU','ASML','QCOM'], sentiment: 'positive', topic: 'Earnings' },
+    { title: 'Nvidia clears $4.5 trillion as data-center demand outruns supply forecasts', description: 'The chipmaker’s latest guidance implies another record quarter, with cloud providers front-loading orders ahead of the next accelerator generation. Analysts lifted price targets across the board.', source: 'Bloomberg', initials: 'BL', timestamp: '18m ago', datetime: '2026-08-14T13:42:00Z', symbol: 'NVDA', symbolChange: 3.11, symbols: [{symbol:'NVDA',change:3.11},{symbol:'AMD',change:2.44},{symbol:'TSM',change:1.02},{symbol:'AVGO',change:0.83},{symbol:'MU',change:-1.12},{symbol:'ASML',change:1.97},{symbol:'QCOM',change:0.55}], sentiment: 'positive', topic: 'Earnings' },
     { title: 'Fed minutes signal a divided committee heading into September', description: 'Several members favored holding rates steady while a vocal minority pushed for a cut, citing softening in the labor market. Futures now price a coin-flip.', source: 'Reuters', initials: 'RE', timestamp: '1h ago', datetime: '2026-08-14T12:55:00Z', symbol: 'SPY', symbolChange: -0.42, sentiment: 'neutral', topic: 'Macro' },
-    { title: 'Apple’s services segment tops estimates as hardware cycle cools', description: 'Recurring revenue crossed a new high even as iPhone units slipped, underscoring the pivot analysts have watched for three years.', source: 'CNBC', initials: 'CN', timestamp: '2h ago', datetime: '2026-08-14T11:40:00Z', symbol: 'AAPL', symbolChange: 1.24, symbols: ['AAPL','GOOGL','AMZN','META'], sentiment: 'positive', topic: 'Earnings' },
+    { title: 'Apple’s services segment tops estimates as hardware cycle cools', description: 'Recurring revenue crossed a new high even as iPhone units slipped, underscoring the pivot analysts have watched for three years.', source: 'CNBC', initials: 'CN', timestamp: '2h ago', datetime: '2026-08-14T11:40:00Z', symbol: 'AAPL', symbolChange: 1.24, symbols: [{symbol:'AAPL',change:1.24},{symbol:'GOOGL',change:0.61},{symbol:'AMZN',change:-0.32},{symbol:'META',change:1.83}], sentiment: 'positive', topic: 'Earnings' },
     { title: 'Tesla recalls 62,000 vehicles over software fault in driver-assist stack', description: 'The over-the-air fix ships this week; regulators opened a preliminary review of the underlying subsystem.', source: 'WSJ', initials: 'WS', timestamp: '3h ago', datetime: '2026-08-14T10:30:00Z', symbol: 'TSLA', symbolChange: -2.67, sentiment: 'negative', topic: 'Autos' },
     { title: 'Oil steadies near $71 as OPEC+ holds output through the quarter', description: 'Traders shrugged off inventory builds; the cartel reaffirmed its production ceiling in a brief statement.', source: 'MarketWatch', initials: 'MW', timestamp: '4h ago', datetime: '2026-08-14T09:15:00Z', symbol: 'USO', symbolChange: 0.18, sentiment: 'neutral', topic: 'Commodities' },
     { title: 'Microsoft folds new agent tooling into Copilot for enterprise tier', description: 'The update targets regulated industries with audit trails and per-seat governance controls.', source: 'The Verge', initials: 'TV', timestamp: '5h ago', datetime: '2026-08-14T08:05:00Z', symbol: 'MSFT', symbolChange: 0.94, sentiment: 'positive', topic: 'AI' },

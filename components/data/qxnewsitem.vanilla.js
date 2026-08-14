@@ -15,7 +15,7 @@
 
   const PRESETS = {
     feed:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 2, showImage: true,  imagePosition: 'leading',  showBadgeRow: true },
-    editorial: { metaPosition: 'bottom', titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'trailing', showBadgeRow: true, sentimentPosition: 'badge', aiPosition: 'badge' },
+    editorial: { metaPosition: 'bottom', titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'trailing', showBadgeRow: true },
     compact:   { metaPosition: 'top',    titleLines: 1, showDescription: true,  descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: true },
     lead:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'above',    showBadgeRow: true },
     embed:     { metaPosition: 'top',    titleLines: 1, showDescription: false, descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: false, minimalMeta: true },
@@ -54,12 +54,12 @@
     const map = {
       positive: { glyph: '▲', word: 'Positive', label: 'Positive sentiment', cls: 'qx-ni-pos' },
       negative: { glyph: '▼', word: 'Negative', label: 'Negative sentiment', cls: 'qx-ni-neg' },
-      neutral:  { glyph: '■', word: 'Neutral',  label: 'Neutral sentiment',  cls: 'qx-ni-neu' },
+      neutral:  { glyph: '–', word: 'Neutral',  label: 'Neutral sentiment',  cls: 'qx-ni-neu' },
     };
     const s = map[sentiment] || map.neutral;
     return el('span', { class: 'qx-ni-sentiment ' + s.cls, role: 'img', 'aria-label': s.label, title: s.label }, [
       el('span', { class: 'qx-ni-sentiment-glyph', 'aria-hidden': 'true', text: s.glyph }),
-      document.createTextNode(s.word),
+      el('span', { class: 'qx-ni-sentiment-label', text: s.word }),
     ]);
   }
   function aiSparkle() {
@@ -238,8 +238,7 @@
     }
     let symbolChips = [];
     if (r.showSymbol && symbolList.length) {
-      const single = symbolList.length === 1;   // show % only for a lone symbol
-      symbolChips = symbolList.slice(0, MAX_SYMBOLS).map(item => symbolChipEl(item, single));
+      symbolChips = symbolList.slice(0, MAX_SYMBOLS).map(item => symbolChipEl(item, true));  // always show change when present
       if (symbolList.length > MAX_SYMBOLS) {
         symbolChips.push(el('span', { class: 'qx-ni-symbol-more', text: '+' + (symbolList.length - MAX_SYMBOLS) + ' more' }));
       }
@@ -248,25 +247,15 @@
     const sentimentChip = r.showSentiment ? sentimentIcon(props.sentiment || 'neutral') : null;
     const aiBtn = r.showAI ? aiIcon(props) : null;
 
-    // Left badge row. Editorial reads topic → AI → sentiment → symbols;
-    // other presets read symbols → topic → sentiment → AI.
+    // Left badge row — topic always leads, then symbols, then any
+    // sentiment/AI placed 'badge'.
     let badgeRow = null;
     if (r.showBadgeRow) {
-      const topicEl = (topicChip && r.topicPosition === 'badge') ? topicChip() : null;
-      const sentEl = (sentimentChip && r.sentimentPosition === 'badge') ? sentimentChip : null;
-      const aiEl = (aiBtn && r.aiPosition === 'badge') ? aiBtn : null;
       const badges = [];
-      if (preset === 'editorial') {
-        if (topicEl) badges.push(topicEl);
-        if (aiEl) badges.push(aiEl);
-        if (sentEl) badges.push(sentEl);
-        badges.push(...symbolChips);
-      } else {
-        badges.push(...symbolChips);
-        if (topicEl) badges.push(topicEl);
-        if (sentEl) badges.push(sentEl);
-        if (aiEl) badges.push(aiEl);
-      }
+      if (topicChip && r.topicPosition === 'badge') badges.push(topicChip());
+      badges.push(...symbolChips);
+      if (sentimentChip && r.sentimentPosition === 'badge') badges.push(sentimentChip);
+      if (aiBtn && r.aiPosition === 'badge') badges.push(aiBtn);
       if (badges.length) badgeRow = el('div', { class: 'qx-ni-badges' }, badges);
     }
 
@@ -305,8 +294,6 @@
     if (!metaInMain) asideKids.push(metaRow);
     const aside = asideKids.length ? el('div', { class: 'qx-ni-aside' }, asideKids) : null;
 
-    const body = el('div', { class: 'qx-ni-body' }, [main, aside].filter(Boolean));
-
     let mediaWrap = null;
     if (r.showImage) {
       const kids = [media(props.image, props.sourceInitials, props.imageAlt)];
@@ -314,8 +301,21 @@
       mediaWrap = el('div', { class: 'qx-ni-media-wrap' }, kids);
     }
 
-    const order = r.imagePosition === 'trailing' ? [body, mediaWrap] : [mediaWrap, body];
-    const inner = el('div', { class: 'qx-ni-inner' }, order.filter(Boolean));
+    // Arrange media / main / aside. On a trailing image the aside stacks
+    // *under* the image in a shared right column; leading keeps the aside on
+    // the far right; above stacks the image over a main+aside row.
+    let inner;
+    if (!mediaWrap) {
+      inner = el('div', { class: 'qx-ni-inner' }, [main, aside].filter(Boolean));
+    } else if (r.imagePosition === 'trailing') {
+      const rightcol = el('div', { class: 'qx-ni-rightcol' }, [mediaWrap, aside].filter(Boolean));
+      inner = el('div', { class: 'qx-ni-inner' }, [main, rightcol]);
+    } else if (r.imagePosition === 'above') {
+      const mainrow = el('div', { class: 'qx-ni-mainrow' }, [main, aside].filter(Boolean));
+      inner = el('div', { class: 'qx-ni-inner' }, [mediaWrap, mainrow]);
+    } else { // leading
+      inner = el('div', { class: 'qx-ni-inner' }, [mediaWrap, main, aside].filter(Boolean));
+    }
 
     const anchorAttrs = Object.assign({
       href: props.href || '#',

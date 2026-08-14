@@ -24,7 +24,7 @@ separate components.
 | Preset | Meta | Title | Description | Image | Badges |
 |---|---|---|---|---|---|
 | `feed` (default) | top | 2 lines | 2 lines | leading | full |
-| `editorial` | bottom | 2 lines | 3 lines | trailing | full (sentiment + AI inline; order: topic · AI · sentiment · symbols) |
+| `editorial` | bottom | 2 lines | 3 lines | trailing | full (sentiment + AI stack under the trailing image) |
 | `compact` | top | 1 line | 1 line | — | full |
 | `lead` | top | 2 lines | 3 lines | above (full width) | full |
 | `embed` | top | 1 line | — | — | none |
