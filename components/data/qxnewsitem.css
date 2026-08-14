@@ -110,7 +110,7 @@
 .qx-newsitem[data-desc-lines='3'] .qx-ni-desc { -webkit-line-clamp: 3; }
 
 /* ---- Badge row ------------------------------------------------------- */
-.qx-ni-badges { order: 4; display: flex; flex-wrap: wrap; align-items: center; gap: var(--qx-gap-md, 8px); margin-top: var(--qx-space-xxs, 2px); }
+.qx-ni-badges { order: 5; display: flex; flex-wrap: wrap; align-items: center; gap: var(--qx-gap-md, 8px); margin-top: var(--qx-space-xxs, 2px); }
 
 .qx-ni-symbol {
   display: inline-flex; align-items: center; gap: 4px;
@@ -143,7 +143,8 @@
 
 /* ---- Meta row -------------------------------------------------------- */
 .qx-ni-meta {
-  order: 5; display: flex; align-items: center; gap: 6px;
+  /* order 4 sits above the badge row (order 5); the top override lifts it to 1 */
+  order: 4; display: flex; align-items: center; gap: 6px;
   font-size: var(--qx-text-sm, 12px); color: var(--qx-text-muted, #707070);
 }
 .qx-ni-source { font-weight: 600; color: var(--qx-text-secondary, #575757); }
@@ -151,6 +152,8 @@
 .qx-ni-time { color: var(--qx-text-muted, #707070); }
 /* metaPosition=top lifts the meta row above the title, visually only. */
 .qx-newsitem[data-meta-pos='top'] .qx-ni-meta { order: 1; margin-bottom: var(--qx-space-xxs, 2px); }
+/* metaPosition=bottom: meta sits above the badge row, with a little air above it. */
+.qx-newsitem[data-meta-pos='bottom'] .qx-ni-meta { margin-top: var(--qx-space-xxs, 2px); }
 
 /* ---- Read / visited -------------------------------------------------- */
 .qx-newsitem[data-state='read'] .qx-ni-title { color: var(--qx-text-secondary, #575757); font-weight: 500; }
