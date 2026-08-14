@@ -274,7 +274,7 @@
       clear(controlsEl);
       const off = cfg.preset === 'embed';
       const set = (patch) => { cfg = Object.assign({}, cfg, patch); renderControls(); renderPreview(); };
-      const setPreset = (preset) => { const p = PRESETS[preset]; set({ preset, titleLines: p.titleLines, showDescription: p.showDescription, descriptionLines: p.descriptionLines, showImage: p.showImage, imagePosition: p.imagePosition, metaPosition: p.metaPosition }); };
+      const setPreset = (preset) => { const p = PRESETS[preset]; set({ preset, titleLines: p.titleLines, showDescription: p.showDescription, descriptionLines: p.descriptionLines, showImage: p.showImage, imagePosition: p.imagePosition, metaPosition: p.metaPosition, topicPosition: p.topicPosition || 'badge', sentimentPosition: p.sentimentPosition || 'right', aiPosition: p.aiPosition || 'right' }); };
 
       controlsEl.appendChild(ctrlGroup('Preset', segmented(cfg.preset, [['feed','Feed'],['editorial','Editorial'],['compact','Compact'],['lead','Lead'],['embed','Embed']], setPreset)));
       controlsEl.appendChild(ctrlGroup('Density', segmented(cfg.density, [['comfortable','Comfortable'],['compact','Compact']], v => set({ density: v }))));

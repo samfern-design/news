@@ -15,7 +15,7 @@
 
   const PRESETS = {
     feed:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 2, showImage: true,  imagePosition: 'leading',  showBadgeRow: true },
-    editorial: { metaPosition: 'bottom', titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'trailing', showBadgeRow: true },
+    editorial: { metaPosition: 'bottom', titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'trailing', showBadgeRow: true, sentimentPosition: 'badge', aiPosition: 'badge' },
     compact:   { metaPosition: 'top',    titleLines: 1, showDescription: false, descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: true },
     lead:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'above',    showBadgeRow: true },
     embed:     { metaPosition: 'top',    titleLines: 1, showDescription: false, descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: false, minimalMeta: true },
@@ -190,9 +190,9 @@
       showAI:           pick(props.showAI,           undefined,          false),
       showTopic:        pick(props.showTopic,        undefined,          !!props.topic),
       showSignalSpine:  pick(props.showSignalSpine,  undefined,          false),
-      topicPosition:    pick(props.topicPosition,    undefined,          'badge'),   // 'badge' | 'top'
-      sentimentPosition: pick(props.sentimentPosition, undefined,        'right'),   // 'right' | 'badge'
-      aiPosition:       pick(props.aiPosition,       undefined,          'right'),   // 'right' | 'badge'
+      topicPosition:    pick(props.topicPosition,    p.topicPosition,    'badge'),   // 'badge' | 'top'
+      sentimentPosition: pick(props.sentimentPosition, p.sentimentPosition, 'right'), // 'right' | 'badge'
+      aiPosition:       pick(props.aiPosition,       p.aiPosition,       'right'),   // 'right' | 'badge'
       minimalMeta:      p.minimalMeta || false,
     };
 

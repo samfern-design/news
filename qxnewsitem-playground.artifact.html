@@ -2121,7 +2121,7 @@ body { margin: 0; }
 
   const PRESETS = {
     feed:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 2, showImage: true,  imagePosition: 'leading',  showBadgeRow: true },
-    editorial: { metaPosition: 'bottom', titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'trailing', showBadgeRow: true },
+    editorial: { metaPosition: 'bottom', titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'trailing', showBadgeRow: true, sentimentPosition: 'badge', aiPosition: 'badge' },
     compact:   { metaPosition: 'top',    titleLines: 1, showDescription: false, descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: true },
     lead:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'above',    showBadgeRow: true },
     embed:     { metaPosition: 'top',    titleLines: 1, showDescription: false, descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: false, minimalMeta: true },
@@ -2296,9 +2296,9 @@ body { margin: 0; }
       showAI:           pick(props.showAI,           undefined,          false),
       showTopic:        pick(props.showTopic,        undefined,          !!props.topic),
       showSignalSpine:  pick(props.showSignalSpine,  undefined,          false),
-      topicPosition:    pick(props.topicPosition,    undefined,          'badge'),   // 'badge' | 'top'
-      sentimentPosition: pick(props.sentimentPosition, undefined,        'right'),   // 'right' | 'badge'
-      aiPosition:       pick(props.aiPosition,       undefined,          'right'),   // 'right' | 'badge'
+      topicPosition:    pick(props.topicPosition,    p.topicPosition,    'badge'),   // 'badge' | 'top'
+      sentimentPosition: pick(props.sentimentPosition, p.sentimentPosition, 'right'), // 'right' | 'badge'
+      aiPosition:       pick(props.aiPosition,       p.aiPosition,       'right'),   // 'right' | 'badge'
       minimalMeta:      p.minimalMeta || false,
     };
 
@@ -2563,7 +2563,7 @@ body { margin: 0; }
       clear(controlsEl);
       const off = cfg.preset === 'embed';
       const set = (patch) => { cfg = Object.assign({}, cfg, patch); renderControls(); renderPreview(); };
-      const setPreset = (preset) => { const p = PRESETS[preset]; set({ preset, titleLines: p.titleLines, showDescription: p.showDescription, descriptionLines: p.descriptionLines, showImage: p.showImage, imagePosition: p.imagePosition, metaPosition: p.metaPosition }); };
+      const setPreset = (preset) => { const p = PRESETS[preset]; set({ preset, titleLines: p.titleLines, showDescription: p.showDescription, descriptionLines: p.descriptionLines, showImage: p.showImage, imagePosition: p.imagePosition, metaPosition: p.metaPosition, topicPosition: p.topicPosition || 'badge', sentimentPosition: p.sentimentPosition || 'right', aiPosition: p.aiPosition || 'right' }); };
 
       controlsEl.appendChild(ctrlGroup('Preset', segmented(cfg.preset, [['feed','Feed'],['editorial','Editorial'],['compact','Compact'],['lead','Lead'],['embed','Embed']], setPreset)));
       controlsEl.appendChild(ctrlGroup('Density', segmented(cfg.density, [['comfortable','Comfortable'],['compact','Compact']], v => set({ density: v }))));
