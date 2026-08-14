@@ -1,0 +1,28 @@
+/* ============================================================
+   Qmodii — SPACING & GAP  (px, from qmodii/primative)
+   ============================================================ */
+.qx-root {
+  /* Spacing scale — padding / margins */
+  --qx-space-0:   0;
+  --qx-space-xxs: 2px;
+  --qx-space-xs:  4px;
+  --qx-space-xxs-plus: 6px;   /* dense row padding — between xs and sm, used constantly */
+  --qx-space-sm:  8px;
+  --qx-space-sm-plus: 10px;   /* dense row padding-x — between sm and md */
+  --qx-space-md:  12px;
+  --qx-space-lg:  16px;
+  --qx-space-xl:  24px;
+  --qx-space-2xl: 32px;
+
+  /* Gap scale — flex/grid gaps between related items */
+  --qx-gap-none: 0;
+  --qx-gap-xs:   2px;   /* list / nav item gaps */
+  --qx-gap-sm:   4px;
+  --qx-gap-md:   8px;   /* default control gap (icon↔label) */
+  --qx-gap-lg:   12px;
+
+  /* Common control heights (density-driven) */
+  --qx-control-height:    32px;  /* default field / button / tab height */
+  --qx-control-height-sm: 28px;
+  --qx-control-height-lg: 38px;
+}

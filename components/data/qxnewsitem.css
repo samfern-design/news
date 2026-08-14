@@ -1,0 +1,204 @@
+/* ============================================================
+   QX-NewsItem — component styles
+   Namespaced under .qx-newsitem. Every var() carries a resolved
+   fallback so a missing token degrades to the right value.
+   Depends on QX tokens (tokens/semantic.css et al).
+   ============================================================ */
+
+/* Screen-reader-only helper (locked-state description text). */
+.qx-newsitem .qx-sr-only,
+.qx-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---- Row ------------------------------------------------------------- */
+.qx-newsitem {
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+  text-decoration: none;
+  color: var(--qx-text-primary, #222222);
+  background: var(--qx-surface-0, #FFFFFF);
+  font-family: var(--qx-font-sans, 'Roboto', system-ui, sans-serif);
+  padding: var(--qx-space-md, 12px);
+  cursor: pointer;
+  outline: none;
+  transition: background var(--qx-duration-fast, 120ms) var(--qx-ease, cubic-bezier(0.4,0,0.2,1));
+}
+.qx-newsitem[data-density='compact'] { padding: var(--qx-space-sm, 8px) var(--qx-space-sm-plus, 10px); }
+
+/* Whole row is the hover / active target, not just the headline. */
+.qx-newsitem:hover,
+.qx-newsitem[data-state='hover'] { background: var(--qx-state-hover-bg, #F6F6F6); }
+.qx-newsitem:active,
+.qx-newsitem[data-state='active'] { background: var(--qx-surface-100, #EDEDED); }
+.qx-newsitem:hover .qx-ni-title,
+.qx-newsitem[data-state='hover'] .qx-ni-title { color: var(--qx-text-link-hover, #0477D1); }
+
+/* Focus: visible 2px ring on the row bounds, 2px offset, primary token.
+   Colour change alone is never sufficient (WCAG 2.4.7). */
+.qx-newsitem:focus-visible,
+.qx-newsitem[data-state='focus'] {
+  outline: 2px solid var(--qx-primary, #0477D1);
+  outline-offset: 2px;
+  background: var(--qx-state-hover-bg, #F6F6F6);
+  z-index: 1;
+}
+
+/* ---- Signal spine — 3px left border by importance rank --------------- */
+.qx-newsitem[data-signal] { padding-left: calc(var(--qx-space-md, 12px) + 3px); }
+.qx-newsitem[data-density='compact'][data-signal] { padding-left: calc(var(--qx-space-sm-plus, 10px) + 3px); }
+.qx-newsitem[data-signal]::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--qx-surface-300, #C7C7C7);
+}
+.qx-newsitem[data-signal='high']::before   { background: var(--qx-amber-500, #F59E0B); }
+.qx-newsitem[data-signal='medium']::before { background: var(--qx-primary, #0477D1); }
+.qx-newsitem[data-signal='low']::before    { background: var(--qx-surface-300, #C7C7C7); }
+
+/* ---- Inner layout: media + body ------------------------------------- */
+.qx-ni-inner { display: flex; gap: var(--qx-space-md, 12px); align-items: flex-start; }
+.qx-newsitem[data-density='compact'] .qx-ni-inner { gap: var(--qx-space-sm, 8px); }
+.qx-newsitem[data-image-pos='above'] .qx-ni-inner { flex-direction: column; }
+.qx-ni-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--qx-space-xs, 4px); }
+
+/* ---- Media ----------------------------------------------------------- */
+.qx-ni-media-wrap { position: relative; flex: 0 0 auto; }
+.qx-ni-media {
+  width: 116px; aspect-ratio: 16 / 9; border-radius: var(--qx-radius-sm, 4px);
+  overflow: hidden; background: var(--qx-surface-100, #EDEDED);
+  border: 1px solid var(--qx-surface-200, #E3E3E3);
+}
+.qx-newsitem[data-density='compact'] .qx-ni-media { width: 96px; }
+.qx-newsitem[data-image-pos='above'] .qx-ni-media-wrap { width: 100%; }
+.qx-newsitem[data-image-pos='above'] .qx-ni-media { width: 100%; aspect-ratio: 16 / 9; }
+.qx-ni-thumb { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Branded fallback tile — never letterbox. */
+.qx-ni-media-fallback { display: flex; align-items: center; justify-content: center; background: var(--qx-primary-subtle, #F2F8FE); }
+.qx-ni-fallback-mark {
+  font-size: var(--qx-text-sm, 12px); font-weight: 700; letter-spacing: .04em;
+  color: var(--qx-primary, #0477D1); text-transform: uppercase;
+}
+
+/* ---- Title ----------------------------------------------------------- */
+.qx-ni-title {
+  margin: 0; order: 2;
+  font-size: var(--qx-text-base, 14px); font-weight: 600; line-height: 1.34;
+  color: var(--qx-text-primary, #222222);
+  display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;
+  -webkit-line-clamp: 2;
+}
+.qx-newsitem[data-title-lines='1'] .qx-ni-title { -webkit-line-clamp: 1; }
+.qx-newsitem[data-title-lines='2'] .qx-ni-title { -webkit-line-clamp: 2; }
+.qx-newsitem[data-title-lines='3'] .qx-ni-title { -webkit-line-clamp: 3; }
+.qx-newsitem[data-title-lines='full'] .qx-ni-title { -webkit-line-clamp: unset; display: block; }
+/* Editorial + Lead read as curated stories: larger, heavier headline. */
+.qx-newsitem[data-preset='editorial'] .qx-ni-title,
+.qx-newsitem[data-preset='lead'] .qx-ni-title { font-size: var(--qx-text-lg, 16px); font-weight: 700; line-height: 1.28; }
+
+/* ---- Description ----------------------------------------------------- */
+.qx-ni-desc {
+  margin: 0; order: 3;
+  font-size: 13px; line-height: 1.45; color: var(--qx-text-secondary, #575757);
+  display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;
+  -webkit-line-clamp: 2;
+}
+.qx-newsitem[data-desc-lines='1'] .qx-ni-desc { -webkit-line-clamp: 1; }
+.qx-newsitem[data-desc-lines='2'] .qx-ni-desc { -webkit-line-clamp: 2; }
+.qx-newsitem[data-desc-lines='3'] .qx-ni-desc { -webkit-line-clamp: 3; }
+
+/* ---- Badge row ------------------------------------------------------- */
+.qx-ni-badges { order: 4; display: flex; flex-wrap: wrap; align-items: center; gap: var(--qx-gap-md, 8px); margin-top: var(--qx-space-xxs, 2px); }
+
+.qx-ni-symbol {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 1px 6px; border-radius: 2px;
+  background: var(--qx-surface-100, #EDEDED); color: var(--qx-text-primary, #222222);
+  font-size: var(--qx-text-xs, 11px); font-weight: 700; letter-spacing: .02em;
+  font-variant-numeric: tabular-nums;
+}
+.qx-ni-symbol-chg { font-weight: 500; }
+.qx-ni-symbol.qx-ni-up   .qx-ni-symbol-chg { color: var(--qx-market-up, #2B7F45); }
+.qx-ni-symbol.qx-ni-down .qx-ni-symbol-chg { color: var(--qx-market-down, #D02A48); }
+
+.qx-ni-topic {
+  display: inline-flex; align-items: center;
+  padding: 1px 6px; border-radius: 2px;
+  background: var(--qx-surface-100, #EDEDED); color: var(--qx-text-secondary, #575757);
+  font-size: var(--qx-text-xs, 11px); font-weight: 600;
+}
+
+.qx-ni-sentiment { font-size: 12px; line-height: 1; }
+.qx-ni-sentiment.qx-ni-pos { color: var(--qx-market-up, #2B7F45); }
+.qx-ni-sentiment.qx-ni-neg { color: var(--qx-market-down, #D02A48); }
+.qx-ni-sentiment.qx-ni-neu { color: var(--qx-market-hold, #F5C63F); }
+
+.qx-ni-ai {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; border-radius: var(--qx-radius-sm, 4px);
+  background: var(--qx-info-bg, #F2F8FE); color: var(--qx-primary, #0477D1);
+}
+
+/* ---- Meta row -------------------------------------------------------- */
+.qx-ni-meta {
+  order: 5; display: flex; align-items: center; gap: 6px;
+  font-size: var(--qx-text-sm, 12px); color: var(--qx-text-muted, #707070);
+}
+.qx-ni-source { font-weight: 600; color: var(--qx-text-secondary, #575757); }
+.qx-ni-sep { color: var(--qx-surface-300, #C7C7C7); }
+.qx-ni-time { color: var(--qx-text-muted, #707070); }
+/* metaPosition=top lifts the meta row above the title, visually only. */
+.qx-newsitem[data-meta-pos='top'] .qx-ni-meta { order: 1; margin-bottom: var(--qx-space-xxs, 2px); }
+
+/* ---- Read / visited -------------------------------------------------- */
+.qx-newsitem[data-state='read'] .qx-ni-title { color: var(--qx-text-secondary, #575757); font-weight: 500; }
+.qx-newsitem[data-state='read'] .qx-ni-media { opacity: .7; }
+
+/* ---- Locked / entitlement-gated ------------------------------------- */
+/* Headline + meta stay fully legible; description + media are frosted. */
+.qx-newsitem[data-state='locked'] .qx-ni-desc {
+  filter: blur(3px); opacity: .55; user-select: none; pointer-events: none;
+}
+.qx-newsitem[data-state='locked'] .qx-ni-media { filter: blur(3px); }
+.qx-ni-media-lock {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: var(--qx-surface-0, #fff); background: rgba(0,0,0,.32); border-radius: var(--qx-radius-sm, 4px);
+}
+.qx-ni-lock-badge {
+  order: 0; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start;
+  margin-bottom: var(--qx-space-xs, 4px);
+  padding: 2px 8px; border-radius: 999px;
+  background: var(--qx-primary-subtle, #F2F8FE); color: var(--qx-primary, #0477D1);
+  border: 1px solid var(--qx-blue-200, #C0DEF7);
+  font-size: var(--qx-text-xs, 11px); font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  position: relative; z-index: 2;
+}
+.qx-ni-lockglyph { display: block; }
+
+/* ---- Skeleton (loading) --------------------------------------------- */
+.qx-newsitem[data-state='loading'] { cursor: default; }
+@keyframes qx-ni-sheen { 0% { background-position: -160px 0; } 100% { background-position: 240px 0; } }
+.qx-ni-sk-media, .qx-ni-sk-line, .qx-ni-sk-meta, .qx-ni-sk-badges > span {
+  background: var(--qx-skeleton-bg, #EDEDED);
+  background-image: linear-gradient(90deg, var(--qx-skeleton-bg, #EDEDED) 0, var(--qx-skeleton-sheen, #F6F6F6) 40px, var(--qx-skeleton-bg, #EDEDED) 80px);
+  background-size: 240px 100%; background-repeat: no-repeat;
+  animation: qx-ni-sheen 1.2s var(--qx-ease, ease) infinite;
+  border-radius: var(--qx-radius-sm, 4px);
+}
+.qx-ni-sk-media { width: 116px; aspect-ratio: 16/9; flex: 0 0 auto; }
+.qx-newsitem[data-image-pos='above'] .qx-ni-sk-media { width: 100%; }
+.qx-ni-sk-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.qx-ni-sk-meta { width: 120px; height: 10px; }
+.qx-ni-sk-title { display: flex; flex-direction: column; gap: 6px; }
+.qx-ni-sk-desc { display: flex; flex-direction: column; gap: 5px; margin-top: 2px; }
+.qx-ni-sk-line { height: 12px; }
+.qx-ni-sk-desc .qx-ni-sk-line { height: 9px; }
+.qx-ni-sk-badges { display: flex; gap: 8px; margin-top: 2px; }
+.qx-ni-sk-badges > span { width: 46px; height: 14px; }
+
+/* ---- List container -------------------------------------------------- */
+/* Divider is owned by the list, not the row (0.5px rule between rows). */
+.qx-news-list { display: flex; flex-direction: column; background: var(--qx-surface-0, #fff); }
+.qx-news-list > .qx-newsitem + .qx-newsitem { border-top: 1px solid var(--qx-surface-200, #E3E3E3); }

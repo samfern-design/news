@@ -1,0 +1,17 @@
+/* ============================================================
+   Qmodii — RADIUS & BORDERS  (px, from qmodii/primative)
+   ============================================================ */
+.qx-root {
+  --qx-radius-none: 0;
+  --qx-radius-xs:   2px;   /* tags */
+  --qx-radius-sm:   4px;   /* DEFAULT — fields, buttons, cards, menus */
+  --qx-radius-md:   6px;
+  --qx-radius-lg:   8px;
+  --qx-radius-xl:   12px;  /* rounded tags / pills small */
+  --qx-radius-full: 9999px;
+
+  /* Border widths */
+  --qx-border-thin:   1px;   /* default */
+  --qx-border-medium: 2px;
+  --qx-border-thick:  4px;
+}

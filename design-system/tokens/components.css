@@ -1,0 +1,1030 @@
+/* ============================================================
+   Qmodii — COMPONENT TOKENS  (light)
+   The third tier, mirroring the Figma "components" variable set.
+   Each value resolves up through the semantic aliases (semantic.css)
+   to a primitive (palette.css). Consumers can retheme a single
+   component by overriding just these variables.
+   ============================================================ */
+.qx-root {
+  /* ---------- Control sizing (shared field/button size maps) ----------
+     Font-size + line-height per control size (sm / md / lg). */
+  --qx-control-font-sm: var(--qx-text-sm);    /* 12px */
+  --qx-control-font-md: var(--qx-text-base);  /* 14px */
+  --qx-control-font-lg: var(--qx-text-lg);    /* 16px */
+  --qx-control-lh-sm:   var(--qx-leading-sm);   /* 16px */
+  --qx-control-lh-md:   var(--qx-leading-base); /* 20px */
+  --qx-control-lh-lg:   var(--qx-leading-lg);   /* 24px */
+  /* Text fields (Input / Select / DatePicker) — larger lg step */
+  --qx-field-font-sm:   var(--qx-text-base);  /* 14px */
+  --qx-field-font-md:   var(--qx-text-base);  /* 14px */
+  --qx-field-font-lg:   var(--qx-text-xl);    /* 18px */
+  --qx-field-lh-sm:     var(--qx-leading-base); /* 20px */
+  --qx-field-lh-md:     var(--qx-leading-base); /* 20px */
+  --qx-field-lh-lg:     var(--qx-leading-lg);   /* 24px */
+
+  /* ---------- Button ---------- */
+  --qx-btn-radius: var(--qx-radius-sm);
+  --qx-btn-height: var(--qx-control-height);
+  --qx-btn-height-sm: var(--qx-control-height-sm);
+  --qx-btn-height-lg: var(--qx-control-height-lg);
+
+  --qx-btn-primary-bg:            var(--qx-primary);
+  --qx-btn-primary-fg:            var(--qx-primary-contrast);
+  --qx-btn-primary-hover-bg:      var(--qx-primary-hover);
+  --qx-btn-primary-active-bg:     var(--qx-primary-active);
+  --qx-btn-secondary-bg:          var(--qx-surface-100);
+  --qx-btn-secondary-fg:          var(--qx-text-primary);
+  --qx-btn-secondary-hover-bg:    var(--qx-surface-200);
+  --qx-btn-secondary-active-bg:   var(--qx-surface-200);
+  --qx-btn-negative-bg:           var(--qx-red-700);
+  --qx-btn-negative-fg:           #FFFFFF;
+  --qx-btn-negative-hover-bg:     var(--qx-red-800);
+  --qx-btn-negative-active-bg:    var(--qx-red-800);
+
+  --qx-btn-outlined-primary-fg:       var(--qx-primary);
+  --qx-btn-outlined-primary-border:   var(--qx-blue-200);
+  --qx-btn-outlined-primary-hover-bg: var(--qx-blue-50);
+  --qx-btn-outlined-secondary-fg:     var(--qx-text-primary);
+  --qx-btn-outlined-secondary-border: var(--qx-surface-200);
+  --qx-btn-outlined-secondary-hover-bg: var(--qx-state-hover-bg);
+
+  --qx-btn-text-primary-fg:        var(--qx-primary);
+  --qx-btn-text-primary-hover-bg:  var(--qx-blue-50);
+
+  /* surface variant (tinted fill + subtle border) */
+  --qx-btn-surface-primary-fg:          var(--qx-primary);
+  --qx-btn-surface-primary-bg:          var(--qx-blue-50);
+  --qx-btn-surface-primary-border:      var(--qx-blue-200);
+  --qx-btn-surface-primary-hover-border:var(--qx-blue-300);
+  --qx-btn-surface-primary-active-bg:   var(--qx-blue-100);
+  --qx-btn-surface-secondary-fg:        var(--qx-text-primary);
+  --qx-btn-surface-secondary-bg:        var(--qx-surface-50);
+  --qx-btn-surface-secondary-border:    var(--qx-surface-200);
+  --qx-btn-surface-secondary-active-bg: var(--qx-surface-100);
+  --qx-btn-surface-negative-fg:         var(--qx-red-600);
+  --qx-btn-surface-negative-bg:         var(--qx-red-50);
+  --qx-btn-surface-negative-border:     var(--qx-red-300);
+  --qx-btn-surface-negative-hover-bg:   var(--qx-red-100);
+
+  /* ---------- Form fields (InputText / Select / Password) ---------- */
+  /* Shared --field-* tokens removed — components use their own
+     --input-text-* / --select-field-* tokens (which alias --form-field-*). */
+
+  /* ---------- InputText (component tokens → form-field semantics) ---------- */
+  --qx-input-text-bg:             var(--qx-form-field-bg);
+  --qx-input-text-fg:          var(--qx-form-field-fg);
+  --qx-input-text-placeholder:    var(--qx-form-field-placeholder);
+  --qx-input-text-border-color:   var(--qx-form-field-border-color);
+  --qx-input-text-hover-border:   var(--qx-form-field-hover-border);
+  --qx-input-text-focus-border:   var(--qx-form-field-focus-border);
+  --qx-input-text-invalid-border: var(--qx-form-field-invalid-border);
+  --qx-input-text-radius:         var(--qx-form-field-border-radius);
+  --qx-input-text-icon-color:     var(--qx-form-field-icon-color);
+  --qx-input-text-disabled-fg:    var(--qx-form-field-disabled-fg);
+  --qx-input-text-disabled-bg:    var(--qx-form-field-disabled-bg);
+
+  /* ---------- Select field / trigger (component tokens → form-field semantics) ---------- */
+  --qx-select-field-bg:             var(--qx-form-field-bg);
+  --qx-select-field-fg:          var(--qx-form-field-fg);
+  --qx-select-field-placeholder:    var(--qx-form-field-placeholder);
+  --qx-select-field-border-color:   var(--qx-form-field-border-color);
+  --qx-select-field-hover-border:   var(--qx-form-field-hover-border);
+  --qx-select-field-focus-border:   var(--qx-form-field-focus-border);
+  --qx-select-field-invalid-border: var(--qx-form-field-invalid-border);
+  --qx-select-field-radius:         var(--qx-form-field-border-radius);
+
+  /* Select overlay */
+  --qx-select-icon-color:     var(--qx-surface-500);       /* #575757 */
+  --qx-select-overlay-bg:     var(--qx-overlay-bg);
+  --qx-select-overlay-fg:  var(--qx-overlay-fg);
+  --qx-select-overlay-border: var(--qx-overlay-border);
+  --qx-select-overlay-radius: var(--qx-overlay-radius);
+  --qx-select-overlay-shadow: var(--qx-overlay-shadow);
+  --qx-select-option-fg:       var(--qx-text-primary);   /* #222222 */
+  --qx-select-option-radius:      var(--qx-radius-sm);
+  --qx-select-option-focus-bg: var(--qx-state-hover-bg);
+  --qx-select-option-focus-fg:    var(--qx-text-primary);
+  --qx-select-option-selected-bg: var(--qx-state-selected-bg);
+  --qx-select-option-selected-fg: var(--qx-state-selected-fg);
+  --qx-select-option-selected-focus-bg: var(--qx-state-selected-bg);
+  --qx-select-option-selected-focus-fg: var(--qx-state-selected-fg-strong);
+  --qx-select-checkmark-color:    var(--qx-text-primary);
+  --qx-select-clear-icon-color:   var(--qx-surface-500);
+  --qx-select-group-fg:           var(--qx-text-muted);       /* group / accordion header label */
+  --qx-select-group-bg:           var(--qx-surface-50);        /* accordion header background */
+  --qx-select-group-size:         var(--qx-text-xs);          /* 11px @kind spacing */
+  --qx-select-empty-fg:           var(--qx-text-muted);        /* "no results" / loading text */
+
+  /* ---------- List item (reusable menu / list rows) ---------- */
+  --qx-list-item-radius:        var(--qx-radius-sm);
+  --qx-list-item-fg:         var(--qx-text-primary);
+  --qx-list-item-sublabel-fg:   var(--qx-text-muted);
+  --qx-list-item-icon-color:    var(--qx-surface-500);
+  --qx-list-item-hover-bg: var(--qx-state-hover-bg);
+  --qx-list-item-selected-bg:   var(--qx-state-selected-bg);
+  --qx-list-item-selected-fg:   var(--qx-state-selected-fg);
+  --qx-list-item-selected-icon: var(--qx-primary);              /* #0477D1 */
+  --qx-list-item-disabled-fg:   var(--qx-surface-500);          /* #575757 */
+  --qx-list-item-check-color:   var(--qx-primary);
+
+  /* ---------- Checkbox / Radio ---------- */
+  --qx-check-size: 18px;   /* @kind spacing */
+  --qx-check-size-sm: 14px;
+  --qx-check-size-lg: 21px;
+  --qx-check-radius: var(--qx-radius-sm);
+  --qx-check-bg: var(--qx-surface-0);
+  --qx-check-border: var(--qx-surface-200);
+  --qx-check-hover-border: var(--qx-state-hover-border);
+  --qx-check-checked-bg: var(--qx-primary);
+  --qx-check-checked-hover-bg: var(--qx-primary-hover);
+  --qx-check-checked-border: var(--qx-primary);
+  --qx-check-icon-color: #FFFFFF;
+  --qx-check-invalid-border: var(--qx-red-400);
+
+  /* ---------- ToggleSwitch ---------- */
+  --qx-switch-w: 35px;
+  --qx-switch-h: 21px;
+  --qx-switch-handle: 14px;
+  --qx-switch-track-off: var(--qx-surface-300);
+  --qx-switch-track-off-hover: var(--qx-surface-400);
+  --qx-switch-track-on: var(--qx-primary);
+  --qx-switch-track-on-hover: var(--qx-primary-hover);
+  --qx-switch-track-disabled: var(--qx-surface-200);
+  --qx-switch-handle-bg: #FFFFFF;
+
+  /* ---------- ToggleButton (segmented) ---------- */
+  --qx-toggle-track-bg: var(--qx-surface-50);
+  --qx-toggle-radius: var(--qx-radius-sm);
+  --qx-toggle-seg-selected-bg: var(--qx-surface-0);
+  --qx-toggle-seg-selected-fg: var(--qx-surface-900);
+  --qx-toggle-seg-fg: var(--qx-text-secondary);
+  --qx-toggle-seg-hover-fg: var(--qx-surface-700);
+
+  /* ---------- Tag ---------- */
+  --qx-tag-radius: var(--qx-radius-xs);
+  --qx-tag-radius-rounded: var(--qx-radius-xl);
+  --qx-tag-font-size: var(--qx-text-sm);
+  --qx-tag-font-weight: var(--qx-weight-bold);
+  --qx-tag-padding: var(--qx-space-xxs) var(--qx-space-xxs-plus);   /* 2px 6px */
+  /* fg is blue-800, not --primary: #0477D1 on the blue-100 chip measures 3.29:1
+     at 12px/700, short of AA. */
+  --qx-tag-primary-bg:   var(--qx-blue-100);  --qx-tag-primary-fg:   var(--qx-blue-800);
+  --qx-tag-secondary-bg: var(--qx-surface-100);  --qx-tag-secondary-fg: var(--qx-surface-600);
+  --qx-tag-success-bg:   var(--qx-green-100);    --qx-tag-success-fg:   var(--qx-green-700);
+  --qx-tag-info-bg:      var(--qx-sky-100);      --qx-tag-info-fg:      var(--qx-sky-700);
+  --qx-tag-warn-bg:      color-mix(in srgb, var(--qx-yellow-500) 12%, transparent);--qx-tag-warn-fg:      var(--qx-warn-fg);
+  --qx-tag-danger-bg:    var(--qx-red-100);      --qx-tag-danger-fg:    var(--qx-red-700);
+  --qx-tag-contrast-bg:  var(--qx-neutral-950);  --qx-tag-contrast-fg:  #FFFFFF;
+  /* Mixed from the token, not a frozen rgba of its old value — retinting the
+     market ramp now carries these fills with it. */
+  --qx-tag-buy-bg:  color-mix(in srgb, var(--qx-market-up-fill) 12%, transparent);    --qx-tag-buy-fg:  var(--qx-market-up);
+  --qx-tag-sell-bg: color-mix(in srgb, var(--qx-market-down-fill) 12%, transparent);  --qx-tag-sell-fg: var(--qx-market-down);
+  --qx-tag-call-bg: color-mix(in srgb, var(--qx-market-up-fill) 12%, transparent);    --qx-tag-call-fg: var(--qx-market-up);
+  --qx-tag-put-bg:  color-mix(in srgb, var(--qx-market-down-fill) 12%, transparent);  --qx-tag-put-fg:  var(--qx-market-down);
+
+  /* ---------- RatingChip (analyst ratings — display only) ----------
+     Filled buy→sell scale; dark text on every step keeps the fill legible. */
+  --qx-rating-radius:      var(--qx-radius-sm);
+  --qx-rating-padding:     var(--qx-space-xs) var(--qx-space-sm);  /* 4px 8px */
+  --qx-rating-fg:          var(--qx-text-primary);        /* shared dark label #222 */
+  /* Five bands over one up/down axis: strong buy and buy are steps of the up
+     ramp, sell and strong sell steps of the down ramp, hold the neutral gold.
+     Previously ten hand-picked hexes, which made a "buy" rating pill a different
+     green from a "buy" price change. */
+  --qx-rating-strong-buy-bg:    var(--qx-up-300);    --qx-rating-strong-buy-border:  var(--qx-up-400);    --qx-rating-strong-buy-fg:  var(--qx-rating-fg);
+  --qx-rating-buy-bg:           var(--qx-up-200);    --qx-rating-buy-border:         var(--qx-up-300);    --qx-rating-buy-fg:         var(--qx-rating-fg);
+  --qx-rating-hold-bg:          var(--qx-market-hold);      --qx-rating-hold-border:        var(--qx-market-hold-border); --qx-rating-hold-fg:        var(--qx-rating-fg);
+  --qx-rating-sell-bg:          var(--qx-down-200);  --qx-rating-sell-border:        var(--qx-down-300);  --qx-rating-sell-fg:        var(--qx-rating-fg);
+  --qx-rating-strong-sell-bg:   var(--qx-down-300);  --qx-rating-strong-sell-border: var(--qx-down-400);  --qx-rating-strong-sell-fg: var(--qx-rating-fg);
+
+  /* ---------- Chip ---------- */
+  --qx-chip-height: 28px;
+  --qx-chip-radius: var(--qx-radius-sm);
+  --qx-chip-bg: var(--qx-surface-50);
+  --qx-chip-fg: var(--qx-text-primary);
+  --qx-chip-border: var(--qx-surface-200);
+  --qx-chip-hover-border: var(--qx-state-hover-border);
+  --qx-chip-selected-bg: var(--qx-state-selected-bg);
+  --qx-chip-selected-fg: var(--qx-state-selected-fg);
+  --qx-chip-selected-border: var(--qx-state-selected-border);
+
+  /* ---------- Message ---------- */
+  --qx-message-radius: var(--qx-radius-sm);
+  --qx-message-pad-y: var(--qx-space-xxs-plus);   /* 6px */
+  --qx-message-pad-x: var(--qx-space-sm);        /* 8px */
+  /* info-fg is blue-800: --primary #0477D1 on the blue-50 fill measures 4.30:1,
+     just short of AA. There is no step between 700 and 800 in the brand ramp
+     (the cliff noted in the colour audit), so 800 is the nearest passing value. */
+  --qx-message-info-bg: var(--qx-blue-50);   --qx-message-info-fg: var(--qx-blue-800);      --qx-message-info-border: var(--qx-blue-200);
+  --qx-message-success-bg: var(--qx-green-50);  --qx-message-success-fg: var(--qx-green-600); --qx-message-success-border: var(--qx-green-200);
+  --qx-message-warn-bg: color-mix(in srgb, var(--qx-yellow-100) 95%, transparent); --qx-message-warn-fg: var(--qx-warn-fg); --qx-message-warn-border: color-mix(in srgb, var(--qx-yellow-600) 35%, transparent);
+  --qx-message-error-bg: var(--qx-red-50);      --qx-message-error-fg: var(--qx-red-700);     --qx-message-error-border: var(--qx-red-300);
+  --qx-message-secondary-bg: var(--qx-surface-50);  --qx-message-secondary-fg: var(--qx-surface-700);  --qx-message-secondary-border: var(--qx-surface-200);
+  --qx-message-secondary-outlined-fg: var(--qx-surface-500);
+  --qx-message-contrast-bg: var(--qx-surface-900);  --qx-message-contrast-fg: var(--qx-surface-50);    --qx-message-contrast-border: var(--qx-surface-950);
+  --qx-message-contrast-outlined-fg: var(--qx-surface-950);
+
+  /* ---------- Card ---------- */
+  --qx-card-bg: var(--qx-content-bg);
+  --qx-card-border: var(--qx-surface-200);
+  --qx-card-radius: var(--qx-radius-sm);
+  --qx-card-padding: var(--qx-space-md);        /* 12px — body padding */
+  --qx-card-content-padding: 0px;            /* extra padding around content slot @kind spacing */
+  --qx-card-footer-padding-top: var(--qx-gap-md); /* 8px — space above footer @kind spacing */
+  --qx-card-title-size: var(--qx-text-lg);
+  --qx-card-title-weight: var(--qx-weight-medium);
+  --qx-card-title-fg: var(--qx-text-primary);
+  --qx-card-subtitle-fg: var(--qx-text-secondary);
+  --qx-card-subtitle-size: var(--qx-text-base);
+  --qx-card-subtitle-line-height: var(--qx-leading-snug);
+  --qx-card-body-line-height: var(--qx-leading-base);
+  --qx-card-title-line-height: var(--qx-leading-xtight);
+  --qx-card-fg: var(--qx-text-primary);
+  --qx-card-shadow: var(--qx-shadow-md);        /* only when raised */
+
+  /* ---------- Dialog / Drawer ---------- */
+  --qx-dialog-bg: var(--qx-overlay-bg);
+  --qx-dialog-border: var(--qx-overlay-border);
+  --qx-dialog-radius: var(--qx-overlay-radius);
+  --qx-dialog-padding: var(--qx-space-lg);
+  --qx-dialog-shadow: var(--qx-shadow-dialog);
+  --qx-dialog-title-size: var(--qx-text-lg);
+  --qx-dialog-title-weight: var(--qx-weight-semibold);
+  --qx-dialog-mask: var(--qx-mask-bg);
+  --qx-drawer-bg: var(--qx-surface-0);
+  --qx-drawer-border: var(--qx-surface-200);
+  --qx-drawer-header-padding: var(--qx-space-sm) var(--qx-space-md);   /* 8px 12px */
+  --qx-drawer-body-padding:   var(--qx-space-md);                  /* 12px */
+  --qx-drawer-footer-padding: var(--qx-space-sm) var(--qx-space-md);  /* 8px 12px */
+
+  /* ---------- Bottom sheet (mobile) ----------
+     DEFAULT IS FLOATING: inset on all four sides, all four corners rounded.
+     QMODs are frequently embedded in partner iframes — an edge-to-edge sheet
+     reads as the host page's own chrome and makes the "tool within a tool"
+     transition jarring. Floating keeps the sheet legibly ours.
+     Set --qx-sheet-inset: 0 and --qx-sheet-radius-bottom: 0 for a docked sheet
+     (only appropriate in a full-screen, non-embedded app shell). */
+  --qx-sheet-inset: 14px;                       /* margin on all sides @kind spacing */
+  --qx-sheet-radius: var(--qx-radius-lg);          /* 8px — top corners */
+  --qx-sheet-radius-bottom: var(--qx-radius-lg);   /* 8px — bottom corners (0 when docked) */
+  --qx-sheet-bg: var(--qx-surface-0);
+  --qx-sheet-shadow: var(--qx-shadow-sheet);
+  --qx-sheet-mask: var(--qx-mask-bg);
+  --qx-sheet-handle-width: 36px;                /* @kind spacing */
+  --qx-sheet-handle-height: 4px;                /* @kind spacing */
+  --qx-sheet-handle-color: var(--qx-surface-300);
+  --qx-sheet-max-height: calc(100dvh - (var(--qx-sheet-inset) * 3) - env(safe-area-inset-bottom));
+  /* On a wide viewport a full-width sheet is a band across the screen, so it
+     caps and centres instead — the sheet stays a sheet rather than becoming a
+     bottom-docked dialog. */
+  --qx-sheet-max-width: 560px;                  /* @kind spacing */
+  --qx-sheet-border: var(--qx-surface-200);
+  --qx-sheet-handle-area: 20px;                 /* grab strip above the header @kind spacing */
+  --qx-sheet-header-padding: var(--qx-space-sm) var(--qx-space-md);   /* 8px 12px */
+  --qx-sheet-body-padding:   var(--qx-space-md);                      /* 12px */
+  --qx-sheet-footer-padding: var(--qx-space-sm) var(--qx-space-md);   /* 8px 12px */
+  --qx-sheet-title-size:   var(--qx-text-base);
+  --qx-sheet-title-weight: var(--qx-weight-semibold);
+  /* Fraction of the sheet's own height it must be dragged past to dismiss.
+     Proportional, so a short sheet needs a short drag. */
+  --qx-sheet-dismiss-ratio: 0.35;               /* @kind other */
+
+  /* ---------- Accordion ----------
+     Rows read as a list of headlines, not as chrome: full-strength ink at rest,
+     regular weight, and the chevron carrying the affordance on its own. */
+  --qx-accordion-border: var(--qx-surface-200);
+  --qx-accordion-radius: var(--qx-radius-sm);
+  --qx-accordion-header-padding: var(--qx-space-sm-plus) var(--qx-space-md);   /* 10px 12px */
+  --qx-accordion-header-fg: var(--qx-text-primary);
+  --qx-accordion-header-active-fg: var(--qx-text-primary);
+  --qx-accordion-header-weight: var(--qx-weight-regular);
+  --qx-accordion-header-size: var(--qx-text-base);
+  --qx-accordion-header-hover-bg: var(--qx-state-hover-bg);
+  --qx-accordion-chevron-size: 16px;                /* @kind spacing */
+  --qx-accordion-chevron-stroke: 1.5;               /* lighter than an icon stroke @kind other */
+  --qx-accordion-chevron-color: var(--qx-surface-500);
+  --qx-accordion-content-padding: 0 var(--qx-space-md) var(--qx-space-md);
+  --qx-accordion-content-bg: var(--qx-surface-0);      /* matches the header — an open panel is one surface */
+  /* Expand / collapse. M3 emphasized easing, but shorter than an overlay: the
+     panel travels a fraction of the distance a dialog does, and M3 scales
+     duration with distance. Opacity is faster than height and delayed on enter
+     so text arrives into a box that already has room for it. */
+  --qx-accordion-expand-duration:   260ms;          /* @kind other */
+  --qx-accordion-collapse-duration: 180ms;          /* @kind other */
+  --qx-accordion-expand-ease:   var(--qx-motion-enter-ease);
+  --qx-accordion-collapse-ease: var(--qx-motion-exit-ease);
+  --qx-accordion-fade-duration: 140ms;              /* @kind other */
+  --qx-accordion-chevron-duration: var(--qx-duration-base);
+
+  /* ---------- Tabs ---------- */
+  --qx-tab-border: var(--qx-surface-200);
+  --qx-tab-fg: var(--qx-text-secondary);
+  --qx-tab-active-fg: var(--qx-primary);
+  --qx-tab-active-bar: var(--qx-primary);
+  --qx-tab-active-weight: var(--qx-weight-semibold);
+  --qx-tab-chip-track-bg: transparent;             /* chips are individually bordered — no track */
+  --qx-tab-chip-bg: var(--qx-surface-0);              /* inactive chip fill */
+  --qx-tab-chip-border: var(--qx-surface-200);        /* inactive chip border */
+  --qx-tab-chip-hover-border: var(--qx-state-hover-border);
+  --qx-tab-chip-selected-bg: var(--qx-state-selected-bg);
+  --qx-tab-chip-selected-border: var(--qx-state-selected-border);
+  --qx-tab-chip-selected-fg: var(--qx-primary);
+  --qx-tab-chip-padding: 0 var(--qx-space-md);   /* 0 12px */
+
+  /* ---------- Divider ---------- */
+  --qx-divider-color: var(--qx-surface-200);
+  --qx-divider-thickness: 1px;                     /* @kind spacing */
+  --qx-divider-margin: var(--qx-space-lg);            /* 16px — gap around a horizontal divider */
+  --qx-divider-content-fg: var(--qx-text-muted);
+  --qx-divider-content-size: var(--qx-text-base);     /* 14px */
+
+  /* ---------- DataTable ---------- */
+  --qx-table-border: var(--qx-surface-200);
+  --qx-table-cell-border: var(--qx-surface-100);
+  --qx-table-header-bg: var(--qx-surface-0);
+  --qx-table-header-fg: var(--qx-text-primary);
+  --qx-table-header-size: var(--qx-text-sm);
+  --qx-table-header-pad-y: var(--qx-space-xs);             /* 4px */
+  --qx-table-header-pad-x: var(--qx-space-md);             /* 12px */
+  --qx-table-header-action-pad-x: var(--qx-space-xxs-plus);/* 6px — action column */
+  --qx-table-row-striped-bg: var(--qx-surface-50);
+  --qx-table-row-hover-bg: var(--qx-state-hover-bg);
+  --qx-table-row-selected-bg: var(--qx-state-selected-bg);
+  --qx-table-row-selected-fg: var(--qx-state-selected-fg);
+  --qx-table-buy-fg: var(--qx-market-up);
+  --qx-table-sell-fg: var(--qx-market-down);
+  --qx-table-itm-call-bg: color-mix(in srgb, var(--qx-market-down-hot) 6%, transparent);  /* in-the-money call row/cell tint */
+  --qx-table-itm-put-bg:  color-mix(in srgb, var(--qx-market-up-fill) 6%, transparent);   /* in-the-money put row/cell tint */
+
+  /* Options-chain price cells (Bid / Ask) — hover + selected states */
+  --qx-chain-cell-radius:        var(--qx-radius-xs);
+  --qx-chain-ask-hover-bg:       color-mix(in srgb, var(--qx-market-up-fill) 16%, transparent);   /* Ask = green */
+  --qx-chain-ask-selected-bg:    color-mix(in srgb, var(--qx-market-up-fill) 32%, transparent);
+  --qx-chain-ask-selected-border: var(--qx-market-up-fill);
+  --qx-chain-ask-selected-fg:    var(--qx-market-up);
+  --qx-chain-bid-hover-bg:       color-mix(in srgb, var(--qx-market-down-hot) 12%, transparent);   /* Bid = red */
+  --qx-chain-bid-selected-bg:    color-mix(in srgb, var(--qx-market-down-hot) 26%, transparent);
+  --qx-chain-bid-selected-border: var(--qx-market-down-hot);
+  --qx-chain-bid-selected-fg:    var(--qx-market-down);
+  --qx-table-header-hover-bg: var(--qx-state-hover-bg);
+  /* column resize */
+  --qx-table-resize-hit: var(--qx-space-sm-plus);          /* 10px — handle hit area, flush right */
+  --qx-table-resize-inset: 0px;                         /* flush to the boundary */
+  --qx-table-resize-bar: rgba(4,119,209,0.5);           /* brand blue @ 50% */
+  --qx-table-col-min: 56px;                             /* --col-w-min */
+  --qx-table-col-max: 280px;                            /* --col-w-max */
+  /* column reorder */
+  --qx-table-grip-color: var(--qx-surface-400);            /* #707070 grip dots */
+  --qx-table-drop-indicator: var(--qx-primary);            /* 2px accent bar */
+  --qx-table-drag-source-opacity: 0.4;   /* @kind other */
+  /* group rows (full-width group bar) */
+  --qx-table-group-bar-bg: var(--qx-surface-100);
+  --qx-table-group-bar-hover-bg: var(--qx-surface-200);
+  --qx-table-group-bar-fg: var(--qx-text-secondary);       /* group name + chevron */
+  --qx-table-group-bar-count-fg: var(--qx-text-muted);     /* "(n)" row count */
+  --qx-table-group-bar-border: var(--qx-table-border);
+  --qx-table-group-bar-pad-y: var(--qx-space-xxs-plus);     /* 6px */
+  --qx-table-group-bar-pad-x: var(--qx-space-md);          /* 12px */
+  --qx-table-group-bar-size: var(--qx-text-sm);
+  --qx-table-group-bar-weight: var(--qx-weight-medium);
+  /* shadow cast by a sticky column/header over content scrolling under it */
+  --qx-table-sticky-shadow-x: 6px 0 8px -6px rgba(0, 0, 0, 0.22);
+  --qx-table-sticky-shadow-x-left: -6px 0 8px -6px rgba(0, 0, 0, 0.22);  /* right-pinned column casting left */
+  --qx-table-sticky-shadow-y: 0 6px 8px -6px rgba(0, 0, 0, 0.22);
+
+  /* ---------- Change (delta value + direction "dorito") ---------- */
+  /* text */
+  --qx-change-up-text:      var(--qx-market-up);          /* #2B7F45 */
+  --qx-change-down-text:    var(--qx-market-down);        /* #D02A48 */
+  --qx-change-neutral-text: var(--qx-text-primary); /* #222222 — used when text is not coloured */
+  /* dorito (direction triangle) — fill and border kept separate */
+  --qx-change-up-dorito-fill:     var(--qx-market-up);        /* #2B7F45 */
+  --qx-change-up-dorito-border:   var(--qx-market-up);
+  --qx-change-down-dorito-fill:   var(--qx-market-down); /* #D02A48 — matches its text, as the up side does */
+  --qx-change-down-dorito-border: var(--qx-market-down);
+  --qx-change-dorito-stroke: 1px;                 /* dorito border width @kind spacing */
+  /* sizes */
+  --qx-change-weight:    var(--qx-weight-medium);    /* one weight for every Change, at every size */
+  --qx-change-font-md:   var(--qx-text-base);        /* 14px */
+  --qx-change-font-sm:   var(--qx-text-sm);          /* 12px */
+  --qx-change-dorito-md: 9px;                     /* @kind spacing */
+  --qx-change-dorito-sm: 8px;                     /* @kind spacing */
+
+  /* ---------- SymbolTag ---------- */
+  --qx-symbol-tag-padding: var(--qx-space-xs) var(--qx-space-sm);   /* 4px 8px — roomier than Tag */
+
+  /* ---------- Paginator ---------- */
+  --qx-paginator-btn-size: 35px;
+  --qx-paginator-btn-radius: var(--qx-radius-full);
+  --qx-paginator-btn-fg: var(--qx-text-muted);
+  --qx-paginator-font-size: var(--qx-text-sm);        /* 12px @kind spacing */
+  --qx-paginator-btn-hover-bg: var(--qx-state-hover-bg);
+  --qx-paginator-btn-selected-bg: var(--qx-state-selected-bg);
+  --qx-paginator-btn-selected-fg: var(--qx-state-selected-fg);
+
+  /* ---------- TimeHorizon (bordered chips) ---------- */
+  --qx-th-height: var(--qx-control-height);
+  --qx-th-radius: var(--qx-radius-sm);
+  --qx-th-padding: 0 var(--qx-space-sm-plus);   /* 10px */
+  /* Identical to Chip by design — aliased, not re-declared. */
+  --qx-th-bg: var(--qx-chip-bg);
+  --qx-th-border: var(--qx-chip-border);
+  --qx-th-hover-border: var(--qx-state-hover-border);
+  --qx-th-fg: var(--qx-chip-fg);
+  --qx-th-font-size: var(--qx-text-sm);               /* 12px */
+  --qx-th-active-bg: var(--qx-state-selected-bg);
+  --qx-th-active-border: var(--qx-state-selected-border);
+  --qx-th-active-fg: var(--qx-primary);
+
+  /* ---------- Menu ---------- */
+  --qx-menu-bg: var(--qx-overlay-bg);
+  --qx-menu-fg: var(--qx-text-primary);
+  --qx-menu-border: var(--qx-overlay-border);
+  --qx-menu-radius: var(--qx-overlay-radius);
+  --qx-menu-shadow: var(--qx-overlay-shadow);
+  --qx-menu-item-fg: var(--qx-text-primary);
+  --qx-menu-item-size: var(--qx-text-base);
+  --qx-menu-section-size: var(--qx-text-xs);          /* 11px */
+  --qx-menu-sublabel-size: var(--qx-text-sm);
+  --qx-menu-item-radius: var(--qx-radius-sm);
+  --qx-menu-item-focus-bg: var(--qx-state-selected-bg);
+  --qx-menu-item-focus-fg: var(--qx-state-selected-fg);
+  --qx-menu-item-icon: var(--qx-surface-500);
+  --qx-menu-submenu-label-fg: var(--qx-text-secondary);
+  --qx-menu-submenu-label-weight: var(--qx-weight-semibold);
+  --qx-menu-separator-border: var(--qx-surface-200);
+
+  /* ---------- Overlay / Popover ---------- */
+  --qx-popover-bg: var(--qx-overlay-bg);
+  --qx-popover-fg: var(--qx-text-primary);
+  --qx-popover-border: var(--qx-overlay-border);
+  --qx-popover-radius: var(--qx-overlay-radius);
+  --qx-popover-shadow: var(--qx-overlay-shadow);
+  --qx-popover-gutter: var(--qx-space-sm-plus);       /* 10px — distance from anchor */
+  --qx-popover-arrow-offset: var(--qx-space-lg);      /* 16px */
+  --qx-popover-content-padding: var(--qx-space-lg);   /* 16px */
+
+  /* ---------- DatePicker ---------- */
+  --qx-datepicker-overlay-bg: var(--qx-overlay-bg);
+  --qx-datepicker-overlay-border: var(--qx-overlay-border);
+  --qx-datepicker-overlay-radius: var(--qx-overlay-radius);
+  --qx-datepicker-overlay-shadow: var(--qx-overlay-shadow);
+  --qx-datepicker-overlay-padding: var(--qx-space-sm);    /* 8px */
+  --qx-datepicker-header-fg: var(--qx-text-primary);
+  --qx-datepicker-title-size: var(--qx-text-base);
+  --qx-datepicker-weekday-size: var(--qx-text-xs);    /* 11px */
+  --qx-datepicker-day-size: var(--qx-text-sm);        /* 12px @kind spacing */
+  --qx-datepicker-weekday-fg: var(--qx-text-muted);
+  --qx-datepicker-day-fg: var(--qx-text-primary);
+  --qx-datepicker-day-radius: var(--qx-radius-sm);
+  --qx-datepicker-day-hover-bg: var(--qx-state-hover-bg);
+  --qx-datepicker-day-selected-bg: var(--qx-primary);
+  --qx-datepicker-day-selected-fg: #FFFFFF;
+  --qx-datepicker-day-today-border: var(--qx-blue-200);
+  --qx-datepicker-day-muted-fg: var(--qx-surface-400);
+  --qx-datepicker-day-disabled-fg: var(--qx-surface-300);
+  --qx-datepicker-nav-fg: var(--qx-text-secondary);
+  --qx-datepicker-nav-hover-bg: var(--qx-state-hover-bg);
+  --qx-datepicker-icon-color: var(--qx-form-field-icon-color);
+  --qx-datepicker-button-bg: var(--qx-surface-50);
+  --qx-datepicker-button-border: var(--qx-form-field-border-color);
+  --qx-datepicker-cell-size: 34px;                     /* @kind spacing */
+
+  /* ---------- Tooltip ---------- */
+  --qx-tooltip-bg: var(--qx-surface-900);              /* dark, per PrimeVue default */
+  --qx-tooltip-fg: var(--qx-surface-0);
+  --qx-tooltip-radius: var(--qx-radius-sm);
+  --qx-tooltip-padding-y: var(--qx-space-xxs-plus);     /* 6px */
+  --qx-tooltip-padding-x: var(--qx-space-sm);           /* 8px */
+  --qx-tooltip-font-size: var(--qx-text-sm);           /* 12px */
+  --qx-tooltip-line-height: var(--qx-leading-relaxed);  /* 1.4 — multi-line tooltips */
+  --qx-tooltip-max-width: 220px;                     /* @kind spacing */
+  --qx-tooltip-gutter: 8px;                          /* gap from anchor @kind spacing */
+  --qx-tooltip-arrow-size: var(--qx-space-xxs-plus);    /* 6px */
+  --qx-tooltip-shadow: var(--qx-shadow-md);
+
+  /* ---------- Faceted multiselect ---------- */
+  /* Trigger (matches the Select form field) */
+  --qx-multiselect-bg:            var(--qx-form-field-bg);
+  --qx-multiselect-border-color:          var(--qx-form-field-border-color);
+  --qx-multiselect-hover-border-color:    var(--qx-form-field-hover-border);
+  --qx-multiselect-focus-border-color:    var(--qx-form-field-focus-border);
+  --qx-multiselect-border-radius:         var(--qx-radius-sm);
+  --qx-multiselect-fg:                 var(--qx-form-field-fg);
+  --qx-multiselect-placeholder-fg:     var(--qx-form-field-placeholder);
+  --qx-multiselect-label-font-weight:     400;
+  --qx-multiselect-padding:               0 var(--qx-space-sm);   /* 8px */
+  --qx-multiselect-min-height:            32px;                 /* @kind spacing */
+  --qx-multiselect-dropdown-color:        var(--qx-select-icon-color);   /* chevron */
+  --qx-multiselect-focus-ring-color:      var(--qx-primary);
+  /* Count badge */
+  --qx-multiselect-badge-bg:      var(--qx-primary);
+  --qx-multiselect-badge-fg:           #FFFFFF;
+  /* Overlay / panel */
+  --qx-multiselect-overlay-bg:    var(--qx-overlay-bg);
+  --qx-multiselect-overlay-border-color:  var(--qx-overlay-border);
+  --qx-multiselect-overlay-border-radius: var(--qx-overlay-radius);
+  --qx-multiselect-overlay-shadow:        var(--qx-overlay-shadow);
+  --qx-multiselect-scrim-bg:      var(--qx-mask-bg);
+  /* Category rail */
+  --qx-multiselect-rail-bg:               var(--qx-surface-0);
+  --qx-multiselect-category-fg:                var(--qx-text-primary);
+  --qx-multiselect-category-hover-bg:     var(--qx-surface-100);
+  --qx-multiselect-category-active-bg:    var(--qx-state-selected-bg);
+  --qx-multiselect-category-active-fg:    var(--qx-state-selected-fg);
+  --qx-multiselect-category-active-accent-color:  var(--qx-primary);
+  --qx-multiselect-category-active-bar-width:     var(--qx-rangebar-marker-tick-width);  /* 3px — shared tick weight */
+  --qx-multiselect-category-active-bar-radius:    var(--qx-radius-full);
+  --qx-multiselect-category-badge-bg:     var(--qx-surface-100);
+  --qx-multiselect-category-badge-fg:          var(--qx-text-muted);
+  --qx-multiselect-category-badge-radius:         var(--qx-radius-sm);
+  /* Option list */
+  --qx-multiselect-header-fg:            var(--qx-text-primary);
+  --qx-multiselect-option-fg:            var(--qx-text-primary);
+  --qx-multiselect-option-min-height:       32px;               /* @kind spacing */
+  --qx-multiselect-option-border-radius:    var(--qx-radius-sm);
+  --qx-multiselect-option-hover-bg: var(--qx-state-hover-bg);
+  --qx-multiselect-option-selected-fg:   var(--qx-state-selected-fg);
+  --qx-multiselect-option-tag-fg:        var(--qx-text-muted);
+  /* Checkbox */
+  --qx-multiselect-checkbox-size:                 var(--qx-icon-size);     /* 16px */
+  --qx-multiselect-checkbox-border-color:         var(--qx-border-color-strong);
+  --qx-multiselect-checkbox-border-width:         var(--qx-border-thin);   /* 1px */
+  --qx-multiselect-checkbox-border-radius:        var(--qx-radius-sm);
+  --qx-multiselect-checkbox-checked-bg:   var(--qx-primary);
+  --qx-multiselect-checkbox-checked-border-color: var(--qx-primary);
+  /* Footer */
+  --qx-multiselect-footer-bg:    var(--qx-surface-0);
+  --qx-multiselect-footer-border-color:  var(--qx-border-color);
+  --qx-multiselect-footer-count-fg:   var(--qx-text-secondary);
+  /* Search field */
+  --qx-multiselect-search-divider-color:       var(--qx-border-color);
+  --qx-multiselect-search-field-bg:    var(--qx-surface-0);
+  --qx-multiselect-search-field-border-color:  var(--qx-border-color-strong);
+  --qx-multiselect-search-field-border-radius: var(--qx-radius-sm);
+  --qx-multiselect-search-placeholder-fg:   var(--qx-text-muted);
+  --qx-multiselect-search-focus-border-color:  var(--qx-primary);
+
+  /* ============================================================
+     Charts — color + dimension tokens (Figma "Chart" set)
+     ============================================================ */
+  /* Frame */
+  --qx-chart-bg:              var(--qx-surface-0);           /* plot background #FFFFFF */
+  --qx-chart-grid-line:       var(--qx-surface-200);         /* horizontal grid #E3E3E3 */
+  --qx-chart-axis-line:       var(--qx-surface-400);         /* base / zero axis #707070 */
+  --qx-chart-prevclose-line:  var(--qx-viz-reference-line);  /* previous-close reference */
+  --qx-chart-tick-color:      var(--qx-text-secondary);      /* axis tick labels #575757 */
+  --qx-chart-tick-size:       var(--qx-text-sm);             /* 12px */
+  --qx-chart-crosshair-line:  var(--qx-surface-300);         /* hover crosshair */
+
+  /* Dimensions */
+  --qx-chart-grid-line-width:    1px;    /* @kind spacing */
+  --qx-chart-axis-line-width:    1px;    /* @kind spacing */
+  --qx-chart-line-width:         2px;    /* @kind spacing */ /* series stroke */
+  --qx-chart-line-width-base:    1.5px;  /* @kind spacing */ /* base/neutral series */
+  --qx-chart-dot-radius:         3px;    /* @kind spacing */ /* data point / last dot */
+  --qx-chart-area-opacity:       0.40;   /* @kind other */ /* area fill top-stop alpha (Figma 40%) */
+  --qx-chart-candle-width:       7px;    /* @kind spacing */ /* candle body */
+  --qx-chart-candle-gap:         4px;    /* @kind spacing */ /* space between candles */
+  --qx-chart-candle-wick-width:  1px;    /* @kind spacing */
+
+  /* Brand area (gradient fill under a primary line) */
+  --qx-chart-area-stroke:     var(--qx-primary);             /* #0477D1 */
+  --qx-chart-area-fill-top:   var(--qx-primary);             /* gradient top → 40% */
+  --qx-chart-area-fill-bottom: transparent;               /* gradient bottom — not white, so it fades on any surface */
+
+  /* Brand line */
+  --qx-chart-line-stroke:     var(--qx-primary);             /* #0477D1 */
+  --qx-chart-line-dot:        var(--qx-primary);
+
+  /* Base line (neutral) */
+  --qx-chart-line-base-stroke: var(--qx-surface-400);        /* #707070 */
+  --qx-chart-line-base-dot:    var(--qx-surface-400);
+
+  /* Candlesticks — on the market ramps, so a green candle and a green delta are
+     the same green. Border is the fill's darker neighbour. */
+  --qx-chart-candle-up-border:   var(--qx-market-up-fill);      /* #5DB678 */
+  --qx-chart-candle-up-fill:     var(--qx-market-up-subtle);    /* #D6EBDE */
+  --qx-chart-candle-down-border: var(--qx-market-down-fill);    /* #E04E6E */
+  --qx-chart-candle-down-fill:   var(--qx-market-down-subtle);  /* #FAD3DB */
+  --qx-chart-candle-up-wick:     var(--qx-chart-candle-up-border);    /* wick = candle border */
+  --qx-chart-candle-down-wick:   var(--qx-chart-candle-down-border);
+
+  /* Session-state plot backgrounds — pre and post share one dormant tint */
+  --qx-chart-session-premarket-bg:  var(--qx-session-dormant-bg);
+  --qx-chart-session-postmarket-bg: var(--qx-session-dormant-bg);
+  --qx-chart-session-open-bg:       var(--qx-chart-bg);   /* regular hours */
+
+  /* Spark / baseline area — filled sparkline scale. border = stroke, mixed from
+     the shared --viz-line-* hue; top/bottom = the shared area stops. */
+  --qx-chart-spark-label-size: 7px;                 /* CLOSED · PREV DAY micro-label @kind spacing */
+  --qx-chart-spark-label-weight: var(--qx-weight-semibold);
+  --qx-chart-spark-positive-border: var(--qx-viz-line-positive);
+  --qx-chart-spark-positive-top:    color-mix(in srgb, var(--qx-viz-line-positive) var(--qx-viz-area-top), transparent);
+  --qx-chart-spark-positive-bottom: color-mix(in srgb, var(--qx-viz-line-positive) var(--qx-viz-area-bottom), transparent);
+  --qx-chart-spark-negative-border: var(--qx-viz-line-negative);
+  --qx-chart-spark-negative-top:    color-mix(in srgb, var(--qx-viz-line-negative) var(--qx-viz-area-top), transparent);
+  --qx-chart-spark-negative-bottom: color-mix(in srgb, var(--qx-viz-line-negative) var(--qx-viz-area-bottom), transparent);
+  --qx-chart-spark-closed-border:   var(--qx-viz-line-dormant);
+  --qx-chart-spark-closed-top:      color-mix(in srgb, var(--qx-viz-line-dormant) var(--qx-viz-area-top), transparent);
+  --qx-chart-spark-closed-bottom:   color-mix(in srgb, var(--qx-viz-line-dormant) var(--qx-viz-area-bottom), transparent);
+  /* Session bands at sparkline scale — the stronger dormant tint plus a
+     boundary hairline, because 26px of pale fill alone does not register. */
+  --qx-chart-spark-session-bg:      var(--qx-session-dormant-bg-strong);
+  --qx-chart-spark-session-edge:    var(--qx-viz-session-edge);
+  /* No-data state — dashed rule where the line would be, plus a micro-label */
+  --qx-chart-spark-empty-line:      var(--qx-surface-300);
+  --qx-chart-spark-empty-fg:        var(--qx-text-muted);
+
+  /* Series ramp — aliases of the shared --viz-series-* ramp in semantic.css.
+     Retained so existing chart code keeps reading --chart-series-N; override
+     the semantic ramp, not these. */
+  --qx-chart-series-1: var(--qx-viz-series-1);
+  --qx-chart-series-2: var(--qx-viz-series-2);
+  --qx-chart-series-3: var(--qx-viz-series-3);
+  --qx-chart-series-4: var(--qx-viz-series-4);
+  --qx-chart-series-5: var(--qx-viz-series-5);
+  --qx-chart-series-6: var(--qx-viz-series-6);
+  --qx-chart-series-7: var(--qx-viz-series-7);
+  --qx-chart-series-8: var(--qx-viz-series-8);
+
+  /* ---------- ChartTip (QX-ChartTip — transient hover / scrub readout) ----------
+     Container tokens are NOT white-label-exposed: contrast inside the box stays
+     under QuoteMedia's control while remaining QuoteMedia's a11y obligation. */
+  --qx-charttip-bg:              var(--qx-overlay-bg);
+  --qx-charttip-border-color:    var(--qx-border-color);
+  --qx-charttip-radius:          var(--qx-radius-sm);          /* 4px */
+  --qx-charttip-shadow:          var(--qx-shadow-md);          /* overlay layer */
+  --qx-charttip-padding:         var(--qx-space-sm);           /* 8px @kind spacing */
+  --qx-charttip-padding-compact: var(--qx-space-xxs-plus);     /* 6px */
+  --qx-charttip-min-width:       132px;                     /* @kind spacing */
+  --qx-charttip-max-width:       320px;                     /* @kind spacing */
+  --qx-charttip-cursor-offset:   14px;                      /* gap from crosshair, both axes @kind spacing */
+  --qx-charttip-plot-inset:      var(--qx-space-xxs-plus);     /* 6px — clamp margin inside plot rect */
+  --qx-charttip-fade-duration:   90ms;                      /* @kind other */ /* entry fade only — never animate position */
+  --qx-charttip-row-height:      22px;                      /* @kind spacing */
+  --qx-charttip-row-height-compact: 18px;                   /* @kind spacing */
+  --qx-charttip-font-size:       var(--qx-text-sm);            /* 12px */
+  --qx-charttip-font-size-compact: var(--qx-text-xs);          /* 11px */
+  --qx-charttip-headline-size:   var(--qx-text-base);          /* 14px — primary value */
+  --qx-charttip-headline-weight: var(--qx-weight-semibold);
+  --qx-charttip-label-color:     var(--qx-text-secondary);     /* field keys */
+  --qx-charttip-value-color:     var(--qx-text-primary);
+  --qx-charttip-emphasis-weight: var(--qx-weight-bold);        /* nearest-series row */
+  --qx-charttip-timestamp-size:  var(--qx-text-sm);            /* 12px, uppercase */
+  --qx-charttip-timestamp-color: var(--qx-text-secondary);
+  --qx-charttip-timestamp-tracking: 0.06em;                 /* @kind other */
+  --qx-charttip-divider-color:   var(--qx-border-color);       /* rule under timestamp */
+  --qx-charttip-swatch-size:     8px;                       /* @kind spacing */
+  --qx-charttip-swatch-radius:   var(--qx-radius-xs);          /* 2px */
+  --qx-charttip-footnote-size:   var(--qx-text-xs);            /* 11px — feed qualifier */
+  --qx-charttip-footnote-color:  var(--qx-text-muted);
+
+  /* ---------- ChartStrip (QX-ChartStrip — persistent in-plot readout) ----------
+     A scrim, not a card: no border, no radius, no shadow.
+     Shares the tooltip's type, row heights and ink — the two are read as one
+     family, so only what is genuinely unique to the strip is defined here.
+     Reused from ChartTip: --qx-charttip-font-size(-compact), --qx-charttip-row-height(-compact),
+     --qx-charttip-label-color, --qx-charttip-value-color. */
+  --qx-chartstrip-scrim-bg:      color-mix(in srgb, var(--qx-surface-0) 90%, transparent);  /* ≥0.85 alpha or dense candles bleed through */
+  --qx-chartstrip-scrim-blur:    3px;                     /* @kind spacing */
+  --qx-chartstrip-padding-y:     var(--qx-space-xs);         /* 4px — tighter than the tooltip's box @kind spacing */
+  --qx-chartstrip-padding-x:     var(--qx-space-sm);         /* 8px @kind spacing */
+  --qx-chartstrip-symbol-weight: var(--qx-weight-semibold);
+  --qx-chartstrip-gutter-width:  20px;                    /* disclosure gutter @kind spacing */
+  --qx-chartstrip-rule-width:    3px;                     /* series rule, not the tooltip's square swatch @kind spacing */
+  --qx-chartstrip-rule-height:   13px;                    /* @kind spacing */
+  --qx-chartstrip-rule-radius:   1px;                     /* @kind spacing */
+  --qx-chartstrip-chevron-size:  16px;                    /* glyph; hit area is 44px @kind spacing */
+  --qx-chartstrip-chevron-color: var(--qx-text-secondary);
+  --qx-chartstrip-chevron-hover-color: var(--qx-text-primary);
+  --qx-chartstrip-reserve:       34px;                    /* plot padding = COLLAPSED height @kind spacing */
+  --qx-chartstrip-reserve-compact: 29px;                  /* @kind spacing */
+
+  /* ---------- RangeBar (QX-RangeBar — bounded-domain linear gauge) ----------
+     One primitive behind 52wk range / support-resistance / price target /
+     volume comparison. Every colour resolves through the semantic layer so a
+     WMID theme and a future CVD ramp are theme swaps, not component variants.
+     Tone is always set explicitly by the caller — never derived from whether a
+     value sits left or right on the track (see the guideline note).
+     Fills come from the shared --viz-fill-* set; absent values from
+     --qx-value-null-color; loading from --skeleton-*; markers focus on --qx-focus-ring. */
+  --qx-rangebar-track-bg:            var(--qx-surface-100);
+  --qx-rangebar-track-radius:        var(--qx-radius-xs);    /* 2px */
+  --qx-rangebar-track-height:        10px;                /* @kind spacing */
+  --qx-rangebar-track-height-compact:     6px;            /* @kind spacing */
+  --qx-rangebar-track-height-comfortable: 14px;           /* @kind spacing */
+
+  /* bands — fills come from the shared --viz-fill-* set in semantic.css */
+  --qx-rangebar-band-tint-alpha:  0.16;                   /* @kind other */
+  --qx-rangebar-gradient-mid:     var(--qx-market-hold);  /* #F5C63F — shared with the scoring bands */
+
+  /* markers */
+  --qx-rangebar-marker-current-bg:   var(--qx-primary);
+  --qx-rangebar-marker-current-ring: var(--qx-surface-0);    /* halo so the dot reads on any band */
+  --qx-rangebar-marker-ring-width:   var(--qx-border-medium);/* 2px */
+  --qx-rangebar-marker-size:             10px;            /* @kind spacing */
+  --qx-rangebar-marker-size-compact:      8px;            /* @kind spacing */
+  --qx-rangebar-marker-size-comfortable: 12px;            /* @kind spacing */
+  --qx-rangebar-marker-reference: var(--qx-text-primary);    /* the AVG tick */
+  --qx-rangebar-marker-bound:     var(--qx-surface-300);     /* endpoint caps */
+  --qx-rangebar-marker-tick-width:  3px;                  /* matches --qx-chartstrip-rule-width @kind spacing */
+  --qx-rangebar-marker-tick-radius: 1px;                  /* @kind spacing */
+  --qx-rangebar-marker-overhang:  var(--qx-space-xxs);       /* 2px past the track edge @kind spacing */
+
+  /* labels — two sizes only, per the type rules */
+  --qx-rangebar-value-size:             var(--qx-text-sm);   /* 12px */
+  --qx-rangebar-value-size-compact:     var(--qx-text-xs);   /* 11px */
+  --qx-rangebar-value-size-comfortable: var(--qx-text-base); /* 14px */
+  --qx-rangebar-value-weight:   var(--qx-weight-semibold);
+  --qx-rangebar-value-color:    var(--qx-text-primary);
+  --qx-rangebar-value-positive: var(--qx-buy);
+  --qx-rangebar-value-negative: var(--qx-sell);
+  --qx-rangebar-value-accent:   var(--qx-primary);
+  --qx-rangebar-caption-size:   var(--qx-text-xs);           /* 11px — 52L, SUP, RES, AVG, LAST */
+  --qx-rangebar-caption-weight: var(--qx-weight-regular);
+  --qx-rangebar-caption-color:  var(--qx-text-secondary);
+
+  /* callout (the bordered current-value box) */
+  --qx-rangebar-callout-bg:           var(--qx-surface-0);
+  --qx-rangebar-callout-border-color: var(--qx-border-color);
+  --qx-rangebar-callout-radius:       var(--qx-radius-sm);   /* 4px */
+  --qx-rangebar-callout-shadow:       var(--qx-shadow-xs);
+  --qx-rangebar-callout-padding-y:    var(--qx-space-xxs);   /* 2px @kind spacing */
+  --qx-rangebar-callout-padding-x:    var(--qx-space-xxs-plus); /* 6px */
+
+  /* header + legend */
+  --qx-rangebar-title-size:      var(--qx-text-base);        /* 14px */
+  --qx-rangebar-title-weight:    var(--qx-weight-semibold);
+  --qx-rangebar-title-color:     var(--qx-text-primary);
+  --qx-rangebar-summary-size:    var(--qx-text-sm);          /* 12px */
+  --qx-rangebar-summary-color:   var(--qx-text-secondary);
+  --qx-rangebar-legend-size:     var(--qx-text-xs);          /* 11px */
+  --qx-rangebar-legend-color:    var(--qx-text-secondary);
+  --qx-rangebar-legend-dot-size: var(--qx-charttip-swatch-size); /* 8px — same swatch as the tooltip */
+
+  /* rhythm */
+  --qx-rangebar-title-gap:   var(--qx-space-xxs);            /* title ↔ summary 2px @kind spacing */
+  --qx-rangebar-header-gap:  var(--qx-space-sm);             /* header ↔ track 8px @kind spacing */
+  --qx-rangebar-label-gap:   var(--qx-space-xs);             /* track ↔ label row 4px @kind spacing */
+  --qx-rangebar-caption-gap: var(--qx-space-xxs);            /* value ↔ caption 2px @kind spacing */
+  --qx-rangebar-series-gap:  var(--qx-gap-sm);               /* between stacked bars 4px @kind spacing */
+  --qx-rangebar-bounds-gap:  var(--qx-gap-lg);              /* min gap between min/max labels 12px @kind spacing */
+  --qx-rangebar-inline-gap:  var(--qx-gap-md);              /* track ↔ inline bound label 8px @kind spacing */
+  --qx-rangebar-track-radius-pill: var(--qx-radius-full);   /* trackShape="pill" — inline rows read as one object */
+  --qx-rangebar-legend-gap:  var(--qx-space-lg);             /* between legend items 16px @kind spacing */
+  --qx-rangebar-label-row-height:             38px;       /* reserved: callout + caption @kind spacing */
+  --qx-rangebar-label-row-height-compact:     34px;       /* @kind spacing */
+  --qx-rangebar-label-row-height-comfortable: 42px;       /* @kind spacing */
+  /* Marker labels are absolutely positioned, so the row has no intrinsic
+     height — it must always reserve one or the label sits on the track. This
+     is the single-line case: one value line, no caption. */
+  --qx-rangebar-label-row-height-nocaption: calc(var(--qx-rangebar-value-size) * 1.3 + var(--qx-rangebar-callout-padding-y) * 2 + var(--qx-border-thin) * 2);
+
+  /* out-of-range indicator + non-default states */
+  --qx-rangebar-overflow-size:  var(--qx-text-xs);           /* 11px caret */
+  --qx-rangebar-overflow-color: var(--qx-text-muted);
+  --qx-rangebar-message-color:  var(--qx-text-secondary);    /* empty / error copy */
+  --qx-rangebar-skeleton-line-width: 120px;               /* stand-in for the title line @kind spacing */
+  --qx-rangebar-gate-blur:      3px;                      /* @kind spacing */
+  --qx-rangebar-gate-veil-alpha: 0.5;                     /* @kind other */
+
+  /* ---------- BarList (QX-BarList — proportional magnitude bars, one per row) ----------
+     Sibling to RangeBar, different job: RangeBar plots values inside a fixed
+     domain; BarList compares magnitudes across rows against one shared scale.
+     Fully rounded caps distinguish it at a glance from the square-capped
+     RangeBar track. Fills, skeleton and null ink all come from the shared
+     semantic sets (--viz-fill-*, --skeleton-*, --qx-value-null-color). */
+  --qx-barlist-bar-height:             8px;               /* @kind spacing */
+  --qx-barlist-bar-height-compact:     6px;               /* @kind spacing */
+  --qx-barlist-bar-height-comfortable: 10px;              /* @kind spacing */
+  --qx-barlist-bar-radius:      var(--qx-radius-full);       /* rounded caps — the component's signature */
+  --qx-barlist-bar-min-length:  var(--qx-barlist-bar-height); /* = bar height, so a near-zero value stays a round dot rather than a squashed nub @kind spacing */
+  --qx-barlist-track-bg:        var(--qx-surface-100);       /* omit with showTrack={false} on dark plots */
+  --qx-barlist-track-border-color: var(--qx-surface-200);     /* one step darker than the track — defines the empty extent */
+  --qx-barlist-track-radius:    var(--qx-barlist-bar-radius);
+
+  /* rows */
+  --qx-barlist-row-height:             24px;              /* @kind spacing */
+  --qx-barlist-row-height-compact:     20px;              /* @kind spacing */
+  --qx-barlist-row-height-comfortable: 28px;              /* @kind spacing */
+  --qx-barlist-row-hover-bg: var(--qx-state-hover-bg);
+  --qx-barlist-row-radius:   var(--qx-radius-xs);            /* 2px — hover/selection shape only */
+
+  /* label ↔ bar ↔ value */
+  --qx-barlist-label-size:   var(--qx-text-sm);              /* 12px */
+  --qx-barlist-label-weight: var(--qx-weight-regular);
+  --qx-barlist-label-color:  var(--qx-text-primary);
+  --qx-barlist-label-width:  96px;                        /* fixed column so bars share a left edge @kind spacing */
+  --qx-barlist-value-size:   var(--qx-text-sm);              /* 12px */
+  --qx-barlist-value-weight: var(--qx-weight-semibold);
+  --qx-barlist-value-color:  var(--qx-text-primary);
+  --qx-barlist-value-width:  56px;                        /* fixed column so bars share a right edge; sized to a formatted value, not to slack @kind spacing */
+
+  /* zero baseline (diverging bars) + reference line */
+  --qx-barlist-baseline-color: var(--qx-border-color-strong);
+  --qx-barlist-baseline-width: var(--qx-border-thin);        /* 1px */
+  --qx-barlist-target-color:   var(--qx-viz-reference-line); /* average / target rule — same reference slate as prev-close */
+
+  /* ============================================================
+     QMSymbolList — container, collapse, entitlement
+     ============================================================ */
+  /* collapse / expand reveal */
+  --qx-symbollist-fade-height:   40px;                    /* bottom fade in scroll mode @kind spacing */
+  --qx-symbollist-toggle-padding: var(--qx-space-sm-plus) var(--qx-space-md);
+  --qx-symbollist-toggle-fg:     var(--qx-text-link);
+  --qx-symbollist-toggle-size:   var(--qx-text-sm);
+  --qx-symbollist-toggle-weight: var(--qx-weight-semibold);
+  --qx-symbollist-toggle-divider: var(--qx-quoterow-divider-color);
+  /* entitlement gate — locked rows and the upgrade panel */
+  --qx-symbollist-lock-row-opacity: 0.55;                 /* @kind other */
+  --qx-symbollist-lock-bar-bg:   var(--qx-surface-100);       /* placeholder where a value would be */
+  --qx-symbollist-lock-panel-bg: var(--qx-surface-0);
+  --qx-symbollist-lock-panel-border: var(--qx-border-color);
+  --qx-symbollist-lock-panel-radius: var(--qx-radius-md);
+  --qx-symbollist-lock-panel-shadow: var(--qx-shadow-sm);
+  --qx-symbollist-lock-panel-padding: var(--qx-space-lg);
+  --qx-symbollist-lock-tile-size: 32px;                   /* @kind spacing */
+  --qx-symbollist-lock-tile-bg:  var(--qx-surface-100);
+  --qx-symbollist-lock-tile-fg:  var(--qx-text-secondary);
+  --qx-symbollist-lock-scrim:    color-mix(in srgb, var(--qx-surface-0) 72%, transparent);
+
+  /* ============================================================
+     WidgetHeader — dense panel header (icon tile + title + info)
+     ============================================================ */
+  --qx-widgetheader-padding:       var(--qx-space-sm) var(--qx-space-md);
+  --qx-widgetheader-gap:           var(--qx-gap-md);
+  --qx-widgetheader-bg:            var(--qx-surface-0);
+  --qx-widgetheader-divider-color: var(--qx-border-color);
+  --qx-widgetheader-icon-size:     24px;                  /* @kind spacing */
+  --qx-widgetheader-icon-radius:   var(--qx-radius-sm);
+  --qx-widgetheader-icon-bg:       var(--qx-surface-100);
+  --qx-widgetheader-icon-fg:       var(--qx-text-secondary);
+  --qx-widgetheader-icon-glyph:    18px;                  /* @kind spacing */
+  /* Denser than --card-title (16px/500) on purpose: a widget header labels a
+     panel inside a dashboard, a card title heads a standalone card. */
+  --qx-widgetheader-title-size:    var(--qx-text-base);
+  --qx-widgetheader-title-weight:  var(--qx-weight-bold);
+  --qx-widgetheader-title-fg:      var(--qx-text-primary);
+  --qx-widgetheader-info-size:     16px;                  /* @kind spacing */
+  --qx-widgetheader-info-fg:       var(--qx-text-muted);
+  --qx-widgetheader-info-hover-fg: var(--qx-text-secondary);
+  --qx-barlist-target-width:   var(--qx-rangebar-marker-tick-width); /* 3px — same tick weight as RangeBar */
+
+  /* ---------- QuoteRow (the individual row that makes up a symbol list) ----------
+     Four slots left to right: rank → logo → identity (required) → chart → data.
+     QMSymbolList repeats this row; the token set is here so a single row used
+     on its own (watchlist panel, search result, position row) themes the same.
+     Hover comes from --qx-state-hover-bg, skeletons from --skeleton-*, score
+     bands from --score-* — only geometry and the row's own ink live here. */
+  --qx-quoterow-bg:            transparent;
+  --qx-quoterow-hover-bg:      var(--qx-state-hover-bg);
+  --qx-quoterow-divider-color: var(--qx-border-color);
+  --qx-quoterow-padding-y:         var(--qx-space-sm);       /* 8px @kind spacing */
+  --qx-quoterow-padding-y-compact: var(--qx-space-xs);       /* 4px @kind spacing */
+  --qx-quoterow-padding-x:         var(--qx-space-md);       /* 12px @kind spacing */
+
+  /* rank */
+  --qx-quoterow-rank-width: 20px;                         /* @kind spacing */
+  --qx-quoterow-rank-size:  var(--qx-text-sm);               /* 12px */
+  --qx-quoterow-rank-leading: var(--qx-leading-tight);
+  --qx-quoterow-rank-color: var(--qx-text-muted);
+
+  /* logo */
+  --qx-quoterow-logo-size:         28px;                  /* @kind spacing */
+  --qx-quoterow-logo-size-compact: 22px;                  /* @kind spacing */
+  --qx-quoterow-logo-radius:       var(--qx-radius-full);
+  --qx-quoterow-logo-border:       var(--qx-border-color);
+  --qx-quoterow-logo-fallback-bg:  var(--qx-surface-100);
+  --qx-quoterow-logo-fallback-fg:  var(--qx-text-secondary);
+
+  /* identity — the only required slot */
+  --qx-quoterow-symbol-size:   var(--qx-text-base);          /* 14px */
+  --qx-quoterow-symbol-weight: var(--qx-weight-bold);
+  --qx-quoterow-symbol-color:  var(--qx-text-primary);
+  --qx-quoterow-symbol-leading: var(--qx-leading-tight);     /* single line — rhythm comes from --qx-quoterow-stack-gap */
+  --qx-quoterow-name-size:     var(--qx-text-sm);            /* 12px */
+  --qx-quoterow-name-color:    var(--qx-text-secondary);
+  --qx-quoterow-name-leading:  var(--qx-leading-sm);         /* 16px fixed — the second line's box, shared with the data slot's so both stacks align */
+  --qx-quoterow-stack-gap:     var(--qx-space-xxs);          /* 2px — the vertical gap in BOTH stacked slots: symbol↔name and price↔change @kind spacing */
+  --qx-quoterow-identity-width: 168px;                    /* fixed when a chart is present, so charts align @kind spacing */
+  --qx-quoterow-chart-gap:      var(--qx-space-md);          /* 12px — breathing room between the chart and the data slot @kind spacing */
+
+  /* data slot */
+  --qx-quoterow-data-min-width: 72px;                     /* keeps trailing values on one right edge @kind spacing */
+  --qx-quoterow-value-size:     var(--qx-text-base);         /* 14px */
+  --qx-quoterow-value-weight:   var(--qx-weight-semibold);
+  --qx-quoterow-value-color:    var(--qx-text-primary);
+  --qx-quoterow-value-leading:  var(--qx-leading-tight);
+  --qx-quoterow-meta-size:      var(--qx-text-xs);           /* 11px — the VOL / /100 suffix */
+  --qx-quoterow-meta-color:     var(--qx-text-muted);
+  --qx-quoterow-meta-leading:   var(--qx-quoterow-name-leading);  /* 11px VOL sits in the same 16px box as the 12px name */
+
+  /* score bar variant */
+  --qx-quoterow-scorebar-width:  64px;                    /* @kind spacing */
+  --qx-quoterow-scorebar-height: var(--qx-space-xxs-plus);   /* 6px */
+  --qx-quoterow-scorebar-track:  var(--qx-score-track-bg);
+  --qx-quoterow-scorebar-radius: var(--qx-radius-full);
+  /* filling H-bar (chart slot) — taller than the inline bar because it carries
+     the score on its own, with a bordered track and a same-hue fill edge */
+  --qx-quoterow-scorebar-hbar-height: 11px;               /* @kind spacing */
+  --qx-quoterow-scorebar-track-border: var(--qx-score-track-border);
+  --qx-quoterow-scorebar-fill-border-width: var(--qx-border-thin);
+  /* dot variant — number in primary ink, band carried by a dot instead of a bar */
+  --qx-quoterow-scoredot-size: var(--qx-space-sm);           /* 8px */
+  --qx-quoterow-scoredot-gap:  var(--qx-gap-sm);
+  /* peer comparison — industry average and signed diff */
+  --qx-quoterow-peer-avg-color: var(--qx-text-muted);
+  --qx-quoterow-peer-par-color: var(--qx-score-par-fg);
+
+  /* rank-badge variant */
+  --qx-quoterow-badge-width:  44px;                       /* @kind spacing */
+  --qx-quoterow-badge-height: 20px;                       /* @kind spacing */
+  --qx-quoterow-medal-gold-bg:       color-mix(in srgb, var(--qx-market-hold) 35%, transparent);
+  --qx-quoterow-medal-gold-border:   var(--qx-market-hold-border);
+  --qx-quoterow-medal-silver-bg:     var(--qx-surface-100);
+  --qx-quoterow-medal-silver-border: var(--qx-surface-300);
+  /* Bronze has no ramp of its own — it is a medal tint, not a system colour. */
+  --qx-quoterow-medal-bronze-bg:     color-mix(in srgb, #C98A3E 26%, transparent);
+  --qx-quoterow-medal-bronze-border: #C98A3E;
+
+  /* ---------- SecurityMark (the identity tile in a row's logo slot) ----------
+     A company has a logo; a barrel of crude, a 10-year note and the VIX do not.
+     One tinted tile per GROUP — not per contract — so a mixed list is scannable
+     without forty near-identical drawings. Tints are low-chroma on purpose: the
+     mark identifies a category, it never competes with a price or a delta.
+     Sizes track QuoteRow's logo slot so the two stay interchangeable. */
+  --qx-securitymark-size:          var(--qx-quoterow-logo-size);
+  --qx-securitymark-radius:        var(--qx-radius-sm);      /* only for shape="rounded" */
+  --qx-securitymark-border:        var(--qx-border-color);
+  --qx-securitymark-glyph-size:    68%;                   /* of the tile @kind other */
+  --qx-securitymark-glyph-stroke:  1.6;                   /* @kind other */
+  --qx-securitymark-monogram-bg:   var(--qx-surface-100);
+  --qx-securitymark-monogram-fg:   var(--qx-text-secondary);
+  --qx-securitymark-monogram-size: 0.4;                   /* ratio of the tile, not a length @kind other */
+  --qx-securitymark-brand-bg:      var(--qx-surface-0);      /* behind a coin brand mark */
+  --qx-securitymark-brand-border:  var(--qx-border-color);
+  --qx-securitymark-brand-inset:   0;                     /* one inset for EVERY image mark @kind other */
+
+  /* group tints — bg / fg / border per category */
+  --qx-securitymark-energy-bg:      #EFEDF6;
+  --qx-securitymark-energy-fg:      #4B4477;
+  --qx-securitymark-energy-border:  #DDD9EC;
+  --qx-securitymark-precious-bg:     #FAF2DE;
+  --qx-securitymark-precious-fg:     #8A6A16;
+  --qx-securitymark-precious-border: #F0E3C4;
+  /* per-metal tints — the metal itself is the identity, so gold, silver and
+     bronze keep their own colour rather than sharing one grey ingot */
+  --qx-securitymark-gold-bg:       #FAF2DE;
+  --qx-securitymark-gold-fg:       #8A6A16;
+  --qx-securitymark-gold-border:   #EFDFB4;
+  --qx-securitymark-silver-bg:     #F1F2F4;
+  --qx-securitymark-silver-fg:     #5C636E;
+  --qx-securitymark-silver-border: #DFE2E6;
+  --qx-securitymark-bronze-bg:     #F6EBE1;
+  --qx-securitymark-bronze-fg:     #8A5626;
+  --qx-securitymark-bronze-border: #EBD8C6;
+  --qx-securitymark-base-bg:        #F3EEEA;
+  --qx-securitymark-base-fg:        #7A5A45;
+  --qx-securitymark-base-border:    #E7DDD5;
+  --qx-securitymark-grains-bg:      #F6F1DF;
+  --qx-securitymark-grains-fg:      #79661D;
+  --qx-securitymark-grains-border:  #EBE3C8;
+  --qx-securitymark-softs-bg:       #EDF3EA;
+  --qx-securitymark-softs-fg:       #4A6B3E;
+  --qx-securitymark-softs-border:   #DCE8D6;
+  --qx-securitymark-livestock-bg:     #F7EEEC;
+  --qx-securitymark-livestock-fg:     #85504A;
+  --qx-securitymark-livestock-border: #EEDEDA;
+  --qx-securitymark-rates-bg:       var(--qx-primary-subtle);
+  --qx-securitymark-rates-fg:       var(--qx-blue-900);
+  --qx-securitymark-rates-border:   var(--qx-blue-200);
+  --qx-securitymark-volatility-bg:     #F7ECEC;
+  --qx-securitymark-volatility-fg:     var(--qx-sell);
+  --qx-securitymark-volatility-border: #EFD9D9;
+  --qx-securitymark-index-bg:       var(--qx-surface-100);
+  --qx-securitymark-index-fg:       var(--qx-text-primary);
+  --qx-securitymark-index-border:   var(--qx-surface-200);
+  --qx-securitymark-fx-bg:          #EAF1F5;
+  --qx-securitymark-fx-fg:          #38596B;
+  --qx-securitymark-fx-border:      #D8E5EC;
+  /* currency pair — two overlapping flag discs, base in front of quote */
+  --qx-securitymark-pair-disc:       72%;                 /* each disc, as a share of the tile @kind other */
+  --qx-securitymark-pair-ring:       var(--qx-surface-0);    /* separates the two discs */
+  --qx-securitymark-pair-ring-width: var(--qx-border-medium);/* 2px */
+  --qx-securitymark-pair-label-size: 0.26;                /* ratio of the tile, not a length @kind other */
+  --qx-securitymark-crypto-bg:      #FAF0E4;
+  --qx-securitymark-crypto-fg:      #8A5A17;
+  --qx-securitymark-crypto-border:  #F0E0C9;
+  --qx-securitymark-other-bg:       var(--qx-surface-100);
+  --qx-securitymark-other-fg:       var(--qx-text-secondary);
+  --qx-securitymark-other-border:   var(--qx-surface-200);
+
+  /* ---------- AxisPill (last-value chip — load-bearing on independently-scaled charts) ---------- */
+  --qx-axispill-padding-y:    1px;                          /* @kind spacing */
+  --qx-axispill-padding-x:    var(--qx-space-xs);              /* 4px @kind spacing */
+  --qx-axispill-radius:       var(--qx-radius-xs);             /* 2px */
+  --qx-axispill-font-size:    var(--qx-text-xs);               /* 11px */
+  --qx-axispill-fg:           var(--qx-surface-0);             /* pill ink on series-coloured fill */
+  --qx-axispill-min-gap:      var(--qx-space-lg);              /* 16px — de-collision spacing */
+}

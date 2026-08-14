@@ -1,0 +1,292 @@
+/* ============================================================
+   Qmodii — SEMANTIC ALIASES (light theme)
+   The vocabulary product code should use. Every value resolves to a
+   primitive in palette.css. Mirrors the Figma "qmodii/semantic light"
+   and component token sets.
+   ============================================================ */
+.qx-root {
+  /* -- Brand / primary -- */
+  --qx-primary:            var(--qx-blue-700);   /* #0477D1 */
+  --qx-primary-hover:      var(--qx-blue-600);   /* #1D86D8 */
+  --qx-primary-active:     var(--qx-blue-700);
+  --qx-primary-contrast:   #FFFFFF;              /* text/icon on primary — meets 3:1 */
+  --qx-primary-subtle:     var(--qx-blue-50);    /* tinted hover/selected bg */
+  --qx-primary-subtle-2:   var(--qx-blue-100);   /* pressed tint */
+
+  /* -- Surfaces -- */
+  --qx-surface-ground: var(--qx-neutral-50);   /* dashboard / app canvas behind a group of cards */
+  --qx-surface-0:    var(--qx-neutral-0);    /* page / card base */
+  --qx-surface-50:   var(--qx-neutral-50);   /* hover row, subtle fill */
+  --qx-surface-100:  var(--qx-neutral-100);  /* secondary button, chips */
+  --qx-surface-200:  var(--qx-neutral-200);  /* borders, dividers */
+  --qx-surface-300:  var(--qx-neutral-300);  /* hover borders, disabled fill */
+  --qx-surface-400:  var(--qx-neutral-400);
+  --qx-surface-500:  var(--qx-neutral-500);
+  --qx-surface-600:  var(--qx-neutral-600);
+  --qx-surface-700:  var(--qx-neutral-700);
+  --qx-surface-800:  var(--qx-neutral-800);
+  --qx-surface-900:  var(--qx-neutral-900);
+  --qx-surface-950:  var(--qx-neutral-950);
+
+  /* -- Text -- */
+  --qx-text-primary:    var(--qx-neutral-800);   /* #222222 */
+  --qx-text-secondary:  var(--qx-neutral-500);   /* #575757 */
+  --qx-text-muted:      var(--qx-neutral-400);   /* #707070 */
+  --qx-text-link:       var(--qx-blue-900);   /* #002C5A — QM's link color */
+  /* Links lighten toward brand on hover rather than darkening — the resting
+     colour is already the darkest blue in the ramp. Matches what every card in
+     the system was doing inline before this had a name. */
+  --qx-text-link-hover: var(--qx-primary);    /* #0477D1 */
+  --qx-text-on-primary: #FFFFFF;
+
+  /* -- Status text / accents -- */
+  --qx-text-positive:  var(--qx-market-up);     /* #2B7F45 */
+  --qx-text-negative:  var(--qx-market-down);   /* #D02A48 */
+
+  /* -- Score / quality bands (0–100 scoring bars — reusable across tools) --
+     Thresholds: 67–100 strong, 33–67 moderate, 0–33 weak. */
+  --qx-score-strong:   var(--qx-market-up-fill);     /* #5DB678 — favorable */
+  --qx-score-moderate: var(--qx-market-hold);        /* #F5C63F */
+  --qx-score-weak:     var(--qx-market-down-fill);   /* #E04E6E — unfavorable */
+  /* Same hue, darker — the border on a filled band so a pale fill still has an
+     edge against the track. Mixed, not hand-picked, so retinting a band brings
+     its border with it. */
+  --qx-score-strong-border:   color-mix(in srgb, var(--qx-score-strong) 76%, #000);
+  --qx-score-moderate-border: color-mix(in srgb, var(--qx-score-moderate) 76%, #000);
+  --qx-score-weak-border:     color-mix(in srgb, var(--qx-score-weak) 76%, #000);
+  /* Shared score track — one bordered track for every score treatment
+     (row bar, filling H-bar, table cell). */
+  --qx-score-track-bg:     var(--qx-surface-100);
+  --qx-score-track-border: var(--qx-surface-200);
+  /* At-par: a peer diff inside the epsilon band is neither good nor bad, and
+     colouring it green or red invents a signal that is not there. */
+  --qx-score-par-fg: var(--qx-text-secondary);
+
+  /* -- Shared row height --
+     List rows and table rows must agree, or switching layout makes the content
+     jump. Both read these; nothing else should hardcode a row height. */
+  --qx-row-height:         48px;   /* @kind spacing */
+  --qx-row-height-compact: 36px;   /* @kind spacing */
+
+  /* -- Borders & dividers -- */
+  --qx-border-color:        var(--qx-surface-200);   /* default 1px border */
+  --qx-border-color-hover:  var(--qx-surface-300);
+  --qx-border-color-strong: var(--qx-surface-300);
+
+  /* -- Fills for status surfaces (Message / Tag backgrounds) -- */
+  --qx-info-bg:     var(--qx-blue-50);   --qx-info-fg: var(--qx-blue-700);   --qx-info-border: var(--qx-blue-200);
+  --qx-success-bg:  var(--qx-green-50);     --qx-success-fg: var(--qx-green-600);  --qx-success-border: var(--qx-green-200);
+  /* warn-fg is amber-700, not -600: at 14px/400 on the pale warn fill the 600
+     step measures 3.19:1, short of AA's 4.5:1. -700 clears it at ~5:1. Warning
+     text is the one status colour where the accessible step is not the vivid
+     one — the border keeps -600 so the callout still reads as amber. */
+  --qx-warn-bg:     var(--qx-yellow-100);   --qx-warn-fg: var(--qx-amber-700);    --qx-warn-border: var(--qx-yellow-600);
+  --qx-danger-bg:   var(--qx-red-50);       --qx-danger-fg: var(--qx-red-700);     --qx-danger-border: var(--qx-red-300);
+
+  /* -- Component surfaces -- */
+  --qx-overlay-bg:     var(--qx-surface-0);
+  --qx-overlay-border: var(--qx-surface-200);
+
+  /* -- Interaction states --
+     ONE recipe for hover / selected across every row, option, chip and button.
+     Components alias these; they only redeclare a value when they genuinely
+     need to diverge. Change the hover tint here, not in fifteen places. */
+  --qx-state-hover-bg:          var(--qx-surface-50);
+  --qx-state-hover-border:      var(--qx-surface-300);
+  --qx-state-selected-bg:       var(--qx-primary-subtle);
+  --qx-state-selected-fg:       var(--qx-blue-900);
+  --qx-state-selected-fg-strong: var(--qx-blue-950);   /* selected AND focused */
+  --qx-state-selected-border:   var(--qx-blue-200);
+
+  /* -- Shared row padding --
+     Menu items, select options, list items and multiselect options are the
+     same row; they had five spellings of it. Section labels are the second. */
+  --qx-row-padding:       var(--qx-space-xxs-plus) var(--qx-space-sm-plus);                 /* 6px 10px */
+  --qx-row-group-padding: var(--qx-space-sm) var(--qx-space-sm-plus) var(--qx-space-xs);       /* 8px 10px 4px */
+
+  /* -- Data-visualisation fills --
+     RangeBar and BarList plot the same tones; one set serves both, and a CVD
+     ramp or WMID theme is a single override here. */
+  --qx-viz-fill-accent:     var(--qx-primary);
+  --qx-viz-fill-positive:   var(--qx-market-up-fill);
+  --qx-viz-fill-negative:   var(--qx-market-down-fill);
+  --qx-viz-fill-neutral:    var(--qx-surface-400);
+  --qx-viz-fill-comparison: var(--qx-surface-500);   /* the grey "previous period" bar */
+
+  /* -- Data-visualisation series ramp --
+     8-step, colour-vision-deficient-safe categorical ramp. Series identity for
+     any comparison overlay: chart line stroke, ChartTip swatch, ChartStrip
+     rule, BarList bar, legend dot. Nothing about it is chart-specific, so it
+     sits here beside --viz-fill-*; --chart-series-* aliases it for continuity.
+     One of only two ramps a WMID may override (see WHITELABEL.md). */
+  --qx-viz-series-1: var(--qx-primary);   /* base symbol — brand */
+  --qx-viz-series-2: #7B3FBF;
+  --qx-viz-series-3: #E07B00;
+  --qx-viz-series-4: #0F8A8A;
+  --qx-viz-series-5: #C2185B;
+  --qx-viz-series-6: #4A6FD4;
+  --qx-viz-series-7: #7A8B00;
+  --qx-viz-series-8: #A14300;
+
+  /* -- Directional plot lines + area stops --
+     One hue per state; the gradient stops are mixed from it, so retinting a
+     direction is one line rather than three. Deliberately darker than the
+     --viz-fill-* set: these are hairlines on white, not filled bars. */
+  --qx-viz-line-positive: var(--qx-text-positive);   /* #2B7F45 */
+  --qx-viz-line-negative: var(--qx-text-negative);   /* #D02A48 */
+  --qx-viz-line-dormant:  var(--qx-slate-600);    /* market closed — slate, not neutral grey */
+  --qx-viz-area-top:      30%;   /* alpha of the line hue at the top stop @kind other */
+  --qx-viz-area-bottom:   10%;   /* … and at the baseline @kind other */
+
+  /* -- Reference rules --
+     Previous close, target, average: a line the data is measured against, not
+     data itself. Same slate family as --qx-viz-line-dormant, one step lighter. */
+  --qx-viz-reference-line: var(--qx-slate-400);
+
+  /* -- Session state --
+     The tint behind pre-market / post-market / halted extents. Regular hours
+     take the plot background, so only the dormant tint needs a name.
+     -strong is the same tint pushed for small plots: at sparkline height a
+     band is 26px of very pale fill with no room for an axis label, so it needs
+     more separation than it does across a full chart. -edge is the hairline at
+     the session boundary — the cue that survives at any size. */
+  --qx-session-dormant-bg: var(--qx-slate-100);
+  --qx-session-dormant-bg-strong: var(--qx-slate-200);
+  --qx-viz-session-edge: var(--qx-slate-300);
+
+  /* -- Absent data + loading -- */
+  --qx-value-null-color: var(--qx-text-muted);    /* the em-dash for data that is not there */
+  --qx-skeleton-bg:      var(--qx-surface-100);
+  --qx-skeleton-sheen:   var(--qx-surface-50);
+
+  /* -- Icons -- */
+  --qx-icon-primary:   var(--qx-text-primary);
+  --qx-icon-secondary: var(--qx-text-secondary);
+  --qx-icon-muted:     var(--qx-text-muted);
+
+  /* -- Form fields (semantic `form.field` set) -- */
+  --qx-form-field-bg:            var(--qx-surface-0);
+  --qx-form-field-fg:         var(--qx-surface-800);
+  --qx-form-field-border-color:  var(--qx-surface-200);
+  --qx-form-field-border-radius: var(--qx-radius-sm);          /* 4px */
+  --qx-form-field-padding-x:     var(--qx-space-sm);           /* 8px */
+  --qx-form-field-padding-y:     5px;                        /* desired output — centers text in 32px control */
+  --qx-form-field-height:        var(--qx-control-height);      /* 32px */
+  --qx-form-field-gap:           var(--qx-gap-md);              /* 8px */
+  --qx-form-field-placeholder:   var(--qx-surface-500);
+  --qx-form-field-icon-color:    var(--qx-surface-500);
+
+  /* states */
+  --qx-form-field-hover-border:      var(--qx-surface-300);
+  --qx-form-field-focus-border:      var(--qx-primary);
+  --qx-form-field-focus-ring-width:  0px;  /* @kind spacing */
+  --qx-form-field-invalid-border:      var(--qx-red-400);       /* #E57969 */
+  --qx-form-field-invalid-placeholder: var(--qx-red-600);       /* #D4442E */
+  --qx-form-field-disabled-bg:       var(--qx-surface-0);
+  --qx-form-field-disabled-fg:    var(--qx-surface-500);
+  --qx-form-field-float-label:       var(--qx-surface-500);
+  --qx-form-field-shadow:            rgba(18, 18, 23, 0.05);
+
+  /* sizes */
+  --qx-form-field-sm-height:     var(--qx-control-height-sm);   /* 28px */
+  --qx-form-field-sm-font:       var(--qx-text-base);           /* 14px */
+  --qx-form-field-sm-padding-x:  10px;
+  --qx-form-field-sm-padding-y:  4px;
+  --qx-form-field-lg-height:     var(--qx-control-height-lg);   /* 38px */
+  --qx-form-field-lg-font:       var(--qx-text-xl);             /* 18px */
+  --qx-form-field-lg-padding-x:  14px;
+  --qx-form-field-lg-padding-y:  7px;
+
+  /* -- Form label + helper text -- */
+  --qx-form-label-fg:    var(--qx-surface-800);      /* #222 — label text */
+  --qx-form-label-size:     var(--qx-text-base);         /* 14px */
+  --qx-form-label-weight:   var(--qx-weight-semibold);
+  --qx-form-label-line-height: var(--qx-leading-xtight); /* 1.2 */
+  --qx-form-label-gap:      var(--qx-gap-sm);            /* 4px — label ↔ field ↔ helper */
+  --qx-form-helper-size:    var(--qx-text-sm);           /* 12px */
+  --qx-form-helper-line-height: var(--qx-leading-snug);  /* 1.3 */
+  --qx-form-helper-neutral: var(--qx-surface-500);       /* #575757 — neutral hint */
+  --qx-form-helper-error:   var(--qx-red-600);           /* #D4442E */
+  --qx-form-helper-positive: var(--qx-market-up);        /* #2B7F45 */
+
+  /* -- Market / financial state (semantic) --
+     THE up/down contract. Everything directional in the system resolves through
+     these four — delta text, direction triangles, spark lines, candlesticks,
+     score bands, rating pills, tag fills. Retint the --up-… / --down-… ramps in
+     palette.css and every one of them follows. */
+  --qx-market-up:          var(--qx-up-500);    /* up / buy text */
+  --qx-market-up-fill:     var(--qx-up-400);    /* fills, dorito, candle border */
+  --qx-market-up-subtle:   var(--qx-up-100);    /* tinted band / candle body */
+  --qx-market-down:        var(--qx-down-500);  /* down / sell text */
+  --qx-market-down-fill:   var(--qx-down-400);
+  --qx-market-down-subtle: var(--qx-down-100);
+  --qx-market-down-hot:    var(--qx-down-hot);  /* hover accent, hotter not lighter */
+  --qx-market-hold:        var(--qx-hold-400);  /* neutral / hold — neither up nor down */
+  --qx-market-hold-fill:   var(--qx-hold-300);
+  --qx-market-hold-border: var(--qx-hold-500);
+
+  /* Legacy names, kept so existing references resolve. Prefer --market-* above. */
+  --qx-buy:        var(--qx-market-up);
+  --qx-buy-fill:   var(--qx-market-up-fill);
+  --qx-sell:       var(--qx-market-down);
+  --qx-sell-fill:  var(--qx-market-down-fill);
+  --qx-sell-hot:   var(--qx-market-down-hot);
+
+  /* -- Text interaction states -- */
+  --qx-text-hover:        var(--qx-surface-800);   /* #222 — hovered text/menu item */
+  --qx-text-hover-muted:  var(--qx-surface-600);
+
+  /* -- Icon size / anchor -- */
+  --qx-icon-size:     16px;
+  --qx-icon-size-sm:  14px;                      /* menu / submenu icons */
+  --qx-anchor-gutter: 2px;
+
+  /* -- Highlight (text selection / search match / selected option) -- */
+  --qx-highlight-bg:        var(--qx-primary-subtle);   /* primary.50 */
+  --qx-highlight-fg:        var(--qx-blue-900);       /* primary.900 */
+  --qx-highlight-focus-bg:  var(--qx-primary-subtle);
+  --qx-highlight-focus-fg:  var(--qx-blue-950);       /* primary.950 */
+
+  /* -- Content surface (generic bordered content region) -- */
+  --qx-content-bg:        var(--qx-surface-0);
+  --qx-content-fg:        var(--qx-text-primary);
+  --qx-content-border:    var(--qx-surface-200);
+  --qx-content-radius:    var(--qx-radius-sm);
+  --qx-content-hover-bg:  var(--qx-surface-50);
+  --qx-content-hover-fg:  var(--qx-text-hover);
+
+  /* -- Overlay panels (select / popover / modal / menu) -- */
+  --qx-overlay-fg:     var(--qx-text-primary);
+  --qx-overlay-radius:    var(--qx-radius-sm);
+  --qx-overlay-shadow:    var(--qx-shadow-overlay);
+  --qx-popover-padding:   var(--qx-space-lg);       /* 16px */
+  --qx-modal-padding-sm:  var(--qx-space-sm);        /* 8px */
+  --qx-modal-padding-md:  var(--qx-space-lg);        /* 16px */
+  --qx-modal-padding-lg:  var(--qx-space-xl);        /* 24px */
+
+  /* -- List / menu options -- */
+  --qx-list-gap:                 var(--qx-gap-xs);   /* 2px */
+  --qx-list-option-fg:           var(--qx-text-primary);
+  --qx-list-option-radius:       var(--qx-radius-sm);
+  --qx-list-option-focus-bg:     var(--qx-surface-50);
+  --qx-list-option-focus-fg:     var(--qx-text-hover);
+  --qx-list-option-selected-bg:  var(--qx-highlight-bg);
+  --qx-list-option-selected-fg:  var(--qx-highlight-fg);
+  --qx-list-option-icon:         var(--qx-surface-400);
+  --qx-list-group-fg:            var(--qx-text-secondary);
+  --qx-list-group-weight:        var(--qx-weight-semibold);
+
+  /* -- Navigation items (menu / sidebar) -- */
+  --qx-nav-list-gap:             var(--qx-gap-xs);   /* 2px */
+  --qx-nav-item-gap:             var(--qx-gap-md);   /* 8px */
+  --qx-nav-item-fg:              var(--qx-text-primary);
+  --qx-nav-item-radius:          var(--qx-radius-sm);
+  --qx-nav-item-focus-bg:        var(--qx-surface-50);
+  --qx-nav-item-focus-fg:        var(--qx-text-hover);
+  --qx-nav-item-active-bg:       var(--qx-highlight-bg);
+  --qx-nav-item-active-fg:       var(--qx-highlight-fg);
+  --qx-nav-item-icon:            var(--qx-surface-500);
+  --qx-nav-submenu-label-fg:     var(--qx-text-secondary);
+  --qx-nav-submenu-label-weight: var(--qx-weight-semibold);
+  --qx-nav-submenu-icon:         var(--qx-surface-400);
+}

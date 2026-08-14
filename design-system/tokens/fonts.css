@@ -1,0 +1,11 @@
+/* Qmodii ships Roboto (UI) as the brand family (font.Family = "Roboto" in the
+   Figma tokens). In production, self-host the Roboto woff2 binaries and declare
+   them with @font-face here.
+
+   This prototype runs in a network-restricted environment (no Google Fonts /
+   CDN egress), so the import is intentionally omitted — the token stack in
+   --qx-font-sans falls back to system-ui, which keeps the layout honest without
+   an external request. Restore the line below when Roboto is vendored locally:
+
+   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+*/

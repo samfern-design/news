@@ -1,0 +1,82 @@
+/* ============================================================
+   Qmodii — COMPONENT ROOT RESET
+   Rule 4 of the QX scoping rules: inheritable properties flow in from the
+   host page whether we want them or not. Declare them explicitly on the
+   component root so a QX subtree renders identically inside any client site.
+
+   `.qx-root` is also where every token is defined (see tokens/*.css), so the
+   class is doing two jobs: it is the token scope AND the inheritance barrier.
+   Anything rendering QX components must carry it.
+   ============================================================ */
+
+.qx-root {
+  /* Inherited typography + colour. Every one of these is a property a host
+     page's `body {}` or `*{}` rule would otherwise dictate. */
+  font-family: var(--qx-font-sans, 'Roboto', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif);
+  font-size: var(--qx-text-base, 14px);
+  /* Unitless on purpose. --qx-leading-normal is 20px, correct for 14px body but
+     wrong as an INHERITED default: a fixed length would hand 20px leading to
+     every nested size, cramping anything larger. 1.4 is the same rhythm at base
+     size (14 → 19.6px) and scales with whatever a child sets. */
+  line-height: var(--qx-leading-relaxed, 1.4);
+  font-weight: var(--qx-weight-regular, 400);
+  letter-spacing: normal;
+  color: var(--qx-text-primary, #222222);
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
+  text-decoration: none;
+  font-variant-ligatures: normal;
+  /* Host resets frequently set these on a wrapper and we inherit the damage. */
+  word-spacing: normal;
+  white-space: normal;
+  direction: ltr;
+  /* Rendering hints. Cheap, inherited, and a host page setting the opposite on
+     body would otherwise change how our type renders. */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.qx-root *,
+.qx-root *::before,
+.qx-root *::after { box-sizing: border-box; }
+
+/* Interactive + tabular elements our components render. A host page's global
+   reset (`button { all: unset }`, `table { border-collapse: separate }`, a
+   normalize.css, a Tailwind preflight) lands on these before our own rules do,
+   so each one is neutralised here rather than defended per component.
+
+   Every element selector below sits inside `:where()`, which contributes ZERO
+   specificity — so each rule weighs exactly (0,1,0), the `.qx-root` class alone.
+   That still beats a host's bare `button {}` (0,0,1), but it loses to any
+   single-class component rule like `.qx-btn`. Without `:where()` these would be
+   (0,1,1) and would strip the padding and background off every class-styled
+   component we ship. */
+.qx-root :where(button, input, select, textarea) {
+  font: inherit; color: inherit; letter-spacing: inherit;
+  margin: 0; padding: 0; border: 0; background: none;
+  border-radius: 0; text-align: inherit; text-transform: none;
+  appearance: none; -webkit-appearance: none;
+}
+.qx-root :where(button) { cursor: pointer; }
+.qx-root :where(button:disabled) { cursor: default; }
+.qx-root :where(a) { color: var(--qx-text-link, #002C5A); text-decoration: none; }
+.qx-root :where(a:hover) { color: var(--qx-text-link-hover, #0477D1); text-decoration: underline; }
+/* Tables. Scoped to a QX table so a host page's own tables are untouched. */
+.qx-root :where(table) { border-collapse: collapse; border-spacing: 0; width: auto; }
+.qx-root :where(table th, table td) { vertical-align: middle; }
+/* Lists inside QX components are never bulleted; scoped to our own subtree so
+   a host page's prose lists on the same page are not stripped. */
+.qx-root :where(ul, ol) { margin: 0; padding: 0; }
+/* Margins only. Deliberately NOT font-size / font-weight: our components set
+   their type inline, so flattening headings buys nothing and destroys the
+   hierarchy on any QX-owned page that uses real heading elements. */
+.qx-root :where(p, h1, h2, h3, h4, h5, h6, figure, blockquote) { margin: 0; }
+.qx-root :where(img, svg) { max-width: none; }
+.qx-root :where(fieldset) { margin: 0; padding: 0; border: 0; }
+.qx-root :where(legend) { padding: 0; }
+.qx-root :where(hr) { border: 0; margin: 0; }
+
+/* Overlays portal to document.body, outside any .qx-root subtree, so they
+   carry the class themselves and re-establish the same scope. */
+.qx-portal { display: contents; }

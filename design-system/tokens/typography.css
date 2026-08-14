@@ -1,0 +1,40 @@
+/* ============================================================
+   Qmodii — TYPOGRAPHY
+   Family: Roboto (per Figma font.Family). Base UI size 14px.
+   Line-heights in the Figma tokens are set equal to font-size (tight,
+   for single-line controls); for multi-line content use the --leading-*
+   aliases below.
+   ============================================================ */
+.qx-root {
+  --qx-font-sans: 'Roboto', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  /* No monospace family is shipped — tabular/numeric alignment uses Roboto's own
+     tabular figures via font-variant-numeric: tabular-nums. */
+
+  /* Sizes (px, from font tokens) */
+  --qx-text-xs:   11px;   /* micro — weekday heads, group/section labels, badges */
+  --qx-text-sm:   12px;   /* font.sm.size — captions, meta, dense tables */
+  --qx-text-base: 14px;   /* font.size    — default UI text */
+  --qx-text-lg:   16px;   /* font.lg.size — card titles, section labels */
+  --qx-text-xl:   18px;   /* form lg / headings */
+  --qx-text-2xl:  22px;   /* page headings */
+  --qx-text-3xl:  28px;   /* display */
+
+  /* Weights */
+  --qx-weight-regular:  400;
+  --qx-weight-medium:   500;   /* card titles, toggle labels */
+  --qx-weight-semibold: 600;   /* group labels, nav headers, active tabs */
+  --qx-weight-bold:     700;   /* tags, emphasis */
+
+  /* Line-heights — fixed px so wrapping text keeps a predictable rhythm.
+     Pair each with its font-size: sm 12→16, base 14→20, lg 16→24. */
+  --qx-leading-sm:   16px;   /* 12px text */
+  --qx-leading-base: 20px;   /* 14px default text — handles 2-line wrapping */
+  --qx-leading-lg:   24px;   /* 16px text */
+
+  --qx-leading-none:   1;      /* single-glyph / icon-only contexts */
+  --qx-leading-tight:  1.25;
+  --qx-leading-snug:   1.3;    /* subtitles / helper copy */
+  --qx-leading-relaxed: 1.4;   /* multi-line tooltips */
+  --qx-leading-xtight: 1.2;    /* dense single-line labels */
+  --qx-leading-normal: 20px;   /* body copy default = --qx-leading-base */
+}

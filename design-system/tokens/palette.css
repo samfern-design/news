@@ -1,0 +1,158 @@
+/* ============================================================
+   Qmodii — PRIMITIVE PALETTE
+   Raw color scales. Do not use directly in product code; reference
+   the semantic aliases in semantic.css instead. Values are lifted
+   verbatim from the Figma "qmodii/primative" + "qmodii/semantic light"
+   variable sets.
+   ============================================================ */
+.qx-root {
+  /* -- Brand ramp (the single source of the primary hue) --
+     Override --qx-brand-* (e.g. in themes/whitelabel.css) to reskin the whole UI:
+     --qm-blue-* alias these, and every primary/link/focus/selected/tag/tab
+     token resolves through them. Qmodii's own blue is just the default theme. */
+  --qx-brand-50:  #F2F8FE;
+  --qx-brand-100: #C0DEF7;
+  --qx-brand-200: #A5D0F3;
+  --qx-brand-300: #89C1EF;
+  --qx-brand-400: #53A4E4;
+  --qx-brand-500: #3795DE;
+  --qx-brand-600: #1D86D8;
+  --qx-brand-700: #0477D1;   /* brand color */
+  --qx-brand-800: #00407F;
+  --qx-brand-900: #002C5A;
+  --qx-brand-950: #001831;
+
+  /* -- QM Blue (brand / primary) — alias the brand ramp -- */
+  --qx-blue-50:  var(--qx-brand-50);
+  --qx-blue-100: var(--qx-brand-100);
+  --qx-blue-200: var(--qx-brand-200);
+  --qx-blue-300: var(--qx-brand-300);
+  --qx-blue-400: var(--qx-brand-400);
+  --qx-blue-500: var(--qx-brand-500);
+  --qx-blue-600: var(--qx-brand-600);
+  --qx-blue-700: var(--qx-brand-700);   /* brand color */
+  --qx-blue-800: var(--qx-brand-800);
+  --qx-blue-900: var(--qx-brand-900);
+  --qx-blue-950: var(--qx-brand-950);
+
+  /* -- Neutral (surface / grays) -- */
+  --qx-neutral-0:   #FFFFFF;
+  --qx-neutral-50:  #F6F6F6;
+  --qx-neutral-100: #EEEEEE;
+  --qx-neutral-200: #E3E3E3;
+  --qx-neutral-300: #A7A7A7;
+  --qx-neutral-400: #707070;
+  --qx-neutral-500: #575757;
+  --qx-neutral-600: #444444;
+  --qx-neutral-700: #2F2F2F;
+  --qx-neutral-800: #222222;
+  --qx-neutral-900: #1E1E1E;
+  --qx-neutral-950: #111111;
+
+  /* -- Market up (positive / buy / success) --
+     Built around #2B7F45, the colour every price delta already used. Chosen over
+     the old pure-hue #007600 because its blue undertone supports a ramp either
+     side of it, and because #5DB678 was already in the system as its light step.
+     There is ONE green in the system: market up and status success are the same
+     ramp, since a system with two greens makes a rising price and a valid field
+     look like different kinds of good. */
+  --qx-up-50:  #F1F8F4;
+  --qx-up-100: #D6EBDE;
+  --qx-up-200: #B4DBC3;
+  --qx-up-300: #8ECBA5;
+  --qx-up-400: #5DB678;   /* fill / light step — the only green usable on dark */
+  --qx-up-500: #2B7F45;   /* base — up text, 5.4:1 on white */
+  --qx-up-600: #236839;
+  --qx-up-700: #1B522C;
+  --qx-up-800: #143C21;
+  --qx-up-900: #0D2716;
+  --qx-up-950: #061309;
+
+  /* -- Market down (negative / sell / danger) --
+     Built around #2B7F45's counterpart #D02A48. The previous --red-* ramp was
+     orange-leaning and contained neither of the two reds actually in use, which
+     is why a down row, a down spark and a down candle were three colours. */
+  --qx-down-50:  #FDEEF1;
+  --qx-down-100: #FAD3DB;
+  --qx-down-200: #F4AEBC;
+  --qx-down-300: #EC8598;
+  --qx-down-400: #E04E6E;   /* fill / light step */
+  --qx-down-500: #D02A48;   /* base — down text, 4.9:1 on white */
+  --qx-down-600: #B02240;
+  --qx-down-700: #8E1B33;
+  --qx-down-800: #6C1426;
+  --qx-down-900: #4A0D1A;
+  --qx-down-950: #2A070F;
+  /* Hotter than the base rather than lighter — a hover accent, not a ramp step,
+     so it sits outside the numbered scale. */
+  --qx-down-hot: #F14668;
+
+  /* -- Green / Red — alias the market ramps --
+     Kept so existing --green-… / --red-… references keep resolving. Override the
+     market ramp, not these. */
+  --qx-green-50:  var(--qx-up-50);
+  --qx-green-100: var(--qx-up-100);
+  --qx-green-200: var(--qx-up-200);
+  --qx-green-300: var(--qx-up-300);
+  --qx-green-400: var(--qx-up-400);
+  --qx-green-500: var(--qx-up-500);
+  --qx-green-600: var(--qx-up-600);
+  --qx-green-700: var(--qx-up-700);
+  --qx-green-800: var(--qx-up-800);
+  --qx-green-900: var(--qx-up-900);
+  --qx-green-950: var(--qx-up-950);
+
+  --qx-red-50:  var(--qx-down-50);
+  --qx-red-100: var(--qx-down-100);
+  --qx-red-200: var(--qx-down-200);
+  --qx-red-300: var(--qx-down-300);
+  --qx-red-400: var(--qx-down-400);
+  --qx-red-500: var(--qx-down-500);
+  --qx-red-600: var(--qx-down-600);
+  --qx-red-700: var(--qx-down-700);
+  --qx-red-800: var(--qx-down-800);
+  --qx-red-900: var(--qx-down-900);
+  --qx-red-950: var(--qx-down-950);
+
+  /* -- Amber (warning) -- */
+  --qx-amber-50:  #FFFBEB;
+  --qx-amber-100: #FEF3C7;
+  --qx-amber-200: #FDE68A;
+  --qx-amber-300: #FCD34D;
+  --qx-amber-400: #FBBF24;
+  --qx-amber-500: #F59E0B;
+  --qx-amber-600: #D97706;
+  --qx-amber-700: #B45309;
+  --qx-amber-800: #92400E;
+  --qx-amber-900: #78350F;
+
+  /* -- Yellow — alias the amber ramp --
+     One warning family, not two. The old --yellow-* values were within a step of
+     their amber equivalents and only existed because Message and Tag were built
+     before the amber ramp landed. */
+  --qx-yellow-100: var(--qx-amber-100);
+  --qx-yellow-500: var(--qx-amber-500);
+  --qx-yellow-600: var(--qx-amber-600);
+
+  /* -- Hold / neutral rating --
+     The warm gold that means "neither" — rating hold, the mid stop on a range
+     gradient, the moderate score band. Deliberately not on the amber ramp:
+     amber means warning, and a hold rating is not a warning. */
+  --qx-hold-300: #F7D66E;
+  --qx-hold-400: #F5C63F;   /* base */
+  --qx-hold-500: #E3B12E;   /* border step */
+
+  /* -- Sky (info accents) -- */
+  --qx-sky-100:  #E0F2FE;   /* tag.info bg */
+  --qx-sky-700:  #0369A1;   /* tag.info fg */
+
+  /* -- Slate (chart dormant / reference / session state) --
+     A blue-grey family, distinct from --neutral-* on purpose: a market-closed
+     band and a disabled control should not be the same grey. */
+  --qx-slate-100: #EEF1F7;
+  --qx-slate-200: #E3E9F5;
+  --qx-slate-300: #C6D0E4;
+  --qx-slate-400: #9193AC;
+  --qx-slate-600: #535863;
+
+}

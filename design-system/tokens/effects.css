@@ -1,0 +1,50 @@
+/* ============================================================
+   Qmodii — EFFECTS: shadows, focus ring, motion, disabled
+   Overlay shadows in the Figma set are all soft rgba(0,0,0,.10).
+   Qmodii is a low-elevation, border-first system: most containers use
+   a 1px --qx-border-color rather than a drop shadow. Shadows are reserved
+   for floating overlays (menus, dialogs, drawers, popovers).
+   ============================================================ */
+.qx-root {
+  /* Elevation (overlay layers) */
+  --qx-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --qx-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.10);
+  --qx-shadow-md: 0 2px 6px rgba(0, 0, 0, 0.10), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --qx-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
+  --qx-shadow-overlay: var(--qx-shadow-md);   /* menus / selects / popovers */
+  --qx-shadow-dialog:  var(--qx-shadow-lg);   /* modal dialogs / drawers */
+  --qx-shadow-sheet:   0 -8px 28px rgba(0, 0, 0, 0.20);   /* upward cast — bottom sheets */
+
+  /* Scrim behind modals */
+  --qx-mask-bg: rgba(0, 0, 0, 0.4);
+
+  /* Focus ring — 1px primary, 2px offset */
+  --qx-focus-ring-width:  1px;
+  --qx-focus-ring-offset: 2px;
+  --qx-focus-ring-color:  var(--qx-primary);
+  --qx-focus-ring: 0 0 0 var(--qx-focus-ring-offset) var(--qx-surface-0),
+                0 0 0 calc(var(--qx-focus-ring-offset) + var(--qx-focus-ring-width)) var(--qx-focus-ring-color);
+
+  /* Disabled */
+  --qx-disabled-opacity: 0.6;   /* @kind other */
+
+  /* Motion — quick, functional, no bounce */
+  --qx-duration-fast: 120ms;    /* @kind other */
+  --qx-duration-base: 160ms;    /* @kind other */
+  --qx-ease: cubic-bezier(0.4, 0, 0.2, 1);   /* @kind other */
+  --qx-transition: all var(--qx-duration-base) var(--qx-ease);
+
+  /* M3 emphasized motion — overlays (Dialog / Drawer) enter/exit */
+  --qx-motion-enter-duration: 400ms;   /* @kind other */
+  --qx-motion-exit-duration:  200ms;   /* @kind other */
+  --qx-motion-enter-ease: cubic-bezier(0.05, 0.7, 0.1, 1);   /* @kind other */
+  --qx-motion-exit-ease:  cubic-bezier(0.3, 0, 0.8, 0.15);   /* @kind other */
+  --qx-motion-scrim-duration: 150ms;   /* @kind other */
+
+  /* Expand / collapse (accordion, list reveal). Same emphasized easing as the
+     overlays above — a second name for an identical curve is duplication, so
+     these are durations only. Collapse is much faster than expand, as M3
+     specifies and every other surface in the DS already does. */
+  --qx-motion-duration-expand:   420ms;   /* @kind other */
+  --qx-motion-duration-collapse: 240ms;   /* @kind other */
+}
