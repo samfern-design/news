@@ -171,14 +171,14 @@
 
   /* ---- sample feed ---- */
   const STORIES = [
-    { title: 'Nvidia clears $4.5 trillion as data-center demand outruns supply forecasts', description: 'The chipmaker’s latest guidance implies another record quarter, with cloud providers front-loading orders ahead of the next accelerator generation. Analysts lifted price targets across the board.', source: 'Bloomberg', initials: 'BL', timestamp: '18m ago', datetime: '2026-08-14T13:42:00Z', symbol: 'NVDA', symbolChange: 3.11, sentiment: 'positive', topic: 'Earnings' },
+    { title: 'Nvidia clears $4.5 trillion as data-center demand outruns supply forecasts', description: 'The chipmaker’s latest guidance implies another record quarter, with cloud providers front-loading orders ahead of the next accelerator generation. Analysts lifted price targets across the board.', source: 'Bloomberg', initials: 'BL', timestamp: '18m ago', datetime: '2026-08-14T13:42:00Z', symbol: 'NVDA', symbolChange: 3.11, symbols: ['NVDA','AMD','TSM','AVGO','MU','ASML','QCOM'], sentiment: 'positive', topic: 'Earnings' },
     { title: 'Fed minutes signal a divided committee heading into September', description: 'Several members favored holding rates steady while a vocal minority pushed for a cut, citing softening in the labor market. Futures now price a coin-flip.', source: 'Reuters', initials: 'RE', timestamp: '1h ago', datetime: '2026-08-14T12:55:00Z', symbol: 'SPY', symbolChange: -0.42, sentiment: 'neutral', topic: 'Macro' },
-    { title: 'Apple’s services segment tops estimates as hardware cycle cools', description: 'Recurring revenue crossed a new high even as iPhone units slipped, underscoring the pivot analysts have watched for three years.', source: 'CNBC', initials: 'CN', timestamp: '2h ago', datetime: '2026-08-14T11:40:00Z', symbol: 'AAPL', symbolChange: 1.24, sentiment: 'positive', topic: 'Earnings' },
+    { title: 'Apple’s services segment tops estimates as hardware cycle cools', description: 'Recurring revenue crossed a new high even as iPhone units slipped, underscoring the pivot analysts have watched for three years.', source: 'CNBC', initials: 'CN', timestamp: '2h ago', datetime: '2026-08-14T11:40:00Z', symbol: 'AAPL', symbolChange: 1.24, symbols: ['AAPL','GOOGL','AMZN','META'], sentiment: 'positive', topic: 'Earnings' },
     { title: 'Tesla recalls 62,000 vehicles over software fault in driver-assist stack', description: 'The over-the-air fix ships this week; regulators opened a preliminary review of the underlying subsystem.', source: 'WSJ', initials: 'WS', timestamp: '3h ago', datetime: '2026-08-14T10:30:00Z', symbol: 'TSLA', symbolChange: -2.67, sentiment: 'negative', topic: 'Autos' },
     { title: 'Oil steadies near $71 as OPEC+ holds output through the quarter', description: 'Traders shrugged off inventory builds; the cartel reaffirmed its production ceiling in a brief statement.', source: 'MarketWatch', initials: 'MW', timestamp: '4h ago', datetime: '2026-08-14T09:15:00Z', symbol: 'USO', symbolChange: 0.18, sentiment: 'neutral', topic: 'Commodities' },
     { title: 'Microsoft folds new agent tooling into Copilot for enterprise tier', description: 'The update targets regulated industries with audit trails and per-seat governance controls.', source: 'The Verge', initials: 'TV', timestamp: '5h ago', datetime: '2026-08-14T08:05:00Z', symbol: 'MSFT', symbolChange: 0.94, sentiment: 'positive', topic: 'AI' },
   ];
-  const storyProps = (s, seed) => ({ title: s.title, description: s.description, source: s.source, sourceInitials: s.initials, timestamp: s.timestamp, datetime: s.datetime, image: thumb((seed || '') + s.title), symbol: s.symbol, symbolChange: s.symbolChange, sentiment: s.sentiment, topic: s.topic, imageAlt: '' });
+  const storyProps = (s, seed) => ({ title: s.title, description: s.description, source: s.source, sourceInitials: s.initials, timestamp: s.timestamp, datetime: s.datetime, image: thumb((seed || '') + s.title), symbol: s.symbol, symbolChange: s.symbolChange, symbols: s.symbols, sentiment: s.sentiment, topic: s.topic, imageAlt: '' });
 
   /* ---- control widgets ---- */
   function segmented(value, options, onChange, disabled) {
@@ -328,7 +328,7 @@
     return el('div', { class: 'pg-grid-2' }, [
       galleryCard('Feed', 'feed', 'Default. Meta on top, 2-line title + description, leading image, full badge row.', presetList('feed', 2, 'f')),
       galleryCard('Editorial', 'editorial', 'Meta at the bottom, 3-line description, trailing image. Reads as a curated story.', presetList('editorial', 2, 'e')),
-      galleryCard('Compact', 'compact', '1-line title, no description, no image. Dense side rails and Most Read.', presetList('compact', 4, 'c')),
+      galleryCard('Compact', 'compact', '1-line title, 1-line description, no image. Dense side rails and Most Read.', presetList('compact', 4, 'c')),
       galleryCard('Embed', 'embed', '1-line title, source + time only, no badge row. WMID widget contexts.', presetList('embed', 4, 'm')),
     ]);
   }
@@ -375,7 +375,7 @@
       NI.render(Object.assign({ preset: 'editorial', showSymbol: true, showTopic: true, topicPosition: 'top', showSentiment: true, metaPosition: 'right' }, storyProps(s, 'top' + i)))));
 
     const most = moduleCard('≡', 'Most read', null, STORIES.slice(1, 6).map((s) =>
-      NI.render({ preset: 'compact', title: s.title, source: s.source, sourceInitials: s.initials, timestamp: s.timestamp, datetime: s.datetime, symbol: s.symbol, symbolChange: s.symbolChange, showSymbol: true, showTopic: false })));
+      NI.render({ preset: 'compact', title: s.title, description: s.description, source: s.source, sourceInitials: s.initials, timestamp: s.timestamp, datetime: s.datetime, symbol: s.symbol, symbolChange: s.symbolChange, showSymbol: true, showTopic: false })));
 
     const embedInner = el('div', { class: 'qx-news-list' }, STORIES.slice(2, 6).map((s) =>
       NI.render({ preset: 'embed', density: 'compact', title: s.title, source: s.source, sourceInitials: s.initials, timestamp: s.timestamp, datetime: s.datetime })));

@@ -27,7 +27,7 @@
   const PRESETS = {
     feed:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 2, showImage: true,  imagePosition: 'leading',  showBadgeRow: true },
     editorial: { metaPosition: 'bottom', titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'trailing', showBadgeRow: true, sentimentPosition: 'badge', aiPosition: 'badge' },
-    compact:   { metaPosition: 'top',    titleLines: 1, showDescription: false, descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: true },
+    compact:   { metaPosition: 'top',    titleLines: 1, showDescription: true,  descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: true },
     lead:      { metaPosition: 'top',    titleLines: 2, showDescription: true,  descriptionLines: 3, showImage: true,  imagePosition: 'above',    showBadgeRow: true },
     embed:     { metaPosition: 'top',    titleLines: 1, showDescription: false, descriptionLines: 1, showImage: false, imagePosition: 'leading',  showBadgeRow: false, minimalMeta: true },
   };
@@ -215,23 +215,46 @@
     }
 
     /* Reusable marks. */
-    const symbolChip = (r.showSymbol && symbol)
-      ? h('span', { key: 'sym', className: 'qx-ni-symbol' + (symbolChange != null ? (symbolChange >= 0 ? ' qx-ni-up' : ' qx-ni-down') : '') },
-          symbol,
-          symbolChange != null ? h('span', { className: 'qx-ni-symbol-chg' }, (symbolChange >= 0 ? '+' : '') + symbolChange.toFixed(2) + '%') : null)
-      : null;
+    // Symbols — a story can reference several. Cap the visible chips at 3 and
+    // show a "+N more" overflow count; show % only for a lone symbol.
+    const MAX_SYMBOLS = 3;
+    let symbolList = [];
+    if (Array.isArray(props.symbols) && props.symbols.length) symbolList = props.symbols.map(s => (typeof s === 'string' ? { symbol: s } : s));
+    else if (symbol) symbolList = [{ symbol, change: symbolChange }];
+    const symbolChipEl = (item, i, showChange) => {
+      const chg = showChange ? item.change : undefined;
+      return h('span', { key: 'sym' + i, className: 'qx-ni-symbol' + (chg != null ? (chg >= 0 ? ' qx-ni-up' : ' qx-ni-down') : '') },
+        item.symbol,
+        chg != null ? h('span', { className: 'qx-ni-symbol-chg' }, (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%') : null);
+    };
+    let symbolChips = [];
+    if (r.showSymbol && symbolList.length) {
+      const single = symbolList.length === 1;
+      symbolChips = symbolList.slice(0, MAX_SYMBOLS).map((item, i) => symbolChipEl(item, i, single));
+      if (symbolList.length > MAX_SYMBOLS) symbolChips.push(h('span', { key: 'more', className: 'qx-ni-symbol-more' }, '+' + (symbolList.length - MAX_SYMBOLS) + ' more'));
+    }
     const topicChip = (r.showTopic && topic) ? (key) => h('span', { key, className: 'qx-ni-topic' }, topic) : null;
     const sentimentChip = r.showSentiment ? h(SentimentIcon, { key: 'sent', sentiment }) : null;
     const aiBtn = r.showAI ? h(AIIcon, { key: 'ai', label: aiLabel, summary: props.aiSummary, updated: props.aiUpdated }) : null;
 
-    /* Left badge row — symbol + (topic/sentiment/ai only when placed 'badge').
-       Collapses entirely when empty, with no reserved space. */
+    /* Left badge row. Editorial reads topic → AI → sentiment → symbols;
+       other presets read symbols → topic → sentiment → AI. Collapses when empty. */
     const badges = [];
     if (r.showBadgeRow) {
-      if (symbolChip) badges.push(symbolChip);
-      if (topicChip && r.topicPosition === 'badge') badges.push(topicChip('topic'));
-      if (sentimentChip && r.sentimentPosition === 'badge') badges.push(sentimentChip);
-      if (aiBtn && r.aiPosition === 'badge') badges.push(aiBtn);
+      const topicEl = (topicChip && r.topicPosition === 'badge') ? topicChip('topic') : null;
+      const sentEl = (sentimentChip && r.sentimentPosition === 'badge') ? sentimentChip : null;
+      const aiEl = (aiBtn && r.aiPosition === 'badge') ? aiBtn : null;
+      if (preset === 'editorial') {
+        if (topicEl) badges.push(topicEl);
+        if (aiEl) badges.push(aiEl);
+        if (sentEl) badges.push(sentEl);
+        badges.push(...symbolChips);
+      } else {
+        badges.push(...symbolChips);
+        if (topicEl) badges.push(topicEl);
+        if (sentEl) badges.push(sentEl);
+        if (aiEl) badges.push(aiEl);
+      }
     }
     const badgeRow = badges.length ? h('div', { className: 'qx-ni-badges' }, badges) : null;
 

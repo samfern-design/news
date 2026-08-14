@@ -37,6 +37,8 @@ export interface QXNewsItemProps extends Omit<React.AnchorHTMLAttributes<HTMLAnc
   symbol?: string;
   /** Optional percent change shown inside the symbol chip, coloured by sign. */
   symbolChange?: number;
+  /** Multiple tickers. Renders up to 3 chips then a "+N more" overflow count; % is shown only for a lone symbol. Overrides `symbol`. */
+  symbols?: Array<string | { symbol: string; change?: number }>;
   /** Sentiment tone (semantic token + shape, never colour alone). @default 'neutral' */
   sentiment?: QXSentiment;
   /** Topic chip label. */

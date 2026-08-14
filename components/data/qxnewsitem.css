@@ -120,7 +120,7 @@
 .qx-newsitem[data-desc-lines='3'] .qx-ni-desc { -webkit-line-clamp: 3; }
 
 /* ---- Badge row ------------------------------------------------------- */
-.qx-ni-badges { order: 5; display: flex; flex-wrap: wrap; align-items: center; gap: var(--qx-gap-md, 8px); margin-top: var(--qx-space-xxs, 2px); }
+.qx-ni-badges { order: 5; display: flex; flex-wrap: wrap; align-items: center; gap: var(--qx-gap-md, 8px); margin-top: var(--qx-space-xs, 4px); }
 
 .qx-ni-symbol {
   display: inline-flex; align-items: center; gap: 4px;
@@ -132,6 +132,13 @@
 .qx-ni-symbol-chg { font-weight: 500; }
 .qx-ni-symbol.qx-ni-up   .qx-ni-symbol-chg { color: var(--qx-market-up, #2B7F45); }
 .qx-ni-symbol.qx-ni-down .qx-ni-symbol-chg { color: var(--qx-market-down, #D02A48); }
+/* Overflow count when a story lists more symbols than the cap (3). */
+.qx-ni-symbol-more {
+  display: inline-flex; align-items: center;
+  padding: 1px 6px; border-radius: 2px;
+  background: transparent; color: var(--qx-text-muted, #707070);
+  font-size: var(--qx-text-xs, 11px); font-weight: 600; letter-spacing: .01em;
+}
 
 .qx-ni-topic {
   display: inline-flex; align-items: center;

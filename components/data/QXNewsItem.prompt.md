@@ -24,8 +24,8 @@ separate components.
 | Preset | Meta | Title | Description | Image | Badges |
 |---|---|---|---|---|---|
 | `feed` (default) | top | 2 lines | 2 lines | leading | full |
-| `editorial` | bottom | 2 lines | 3 lines | trailing | full |
-| `compact` | top | 1 line | — | — | full |
+| `editorial` | bottom | 2 lines | 3 lines | trailing | full (sentiment + AI inline; order: topic · AI · sentiment · symbols) |
+| `compact` | top | 1 line | 1 line | — | full |
 | `lead` | top | 2 lines | 3 lines | above (full width) | full |
 | `embed` | top | 1 line | — | — | none |
 
@@ -51,6 +51,10 @@ when `metaPosition="right"`) · `Divider` (owned by the list, not the row).
 - `metaPosition`: `'top'` | `'bottom'` | `'right'`.
 
 Sentiment renders as a labelled chip (▲/▼/■ glyph + word + semantic tone token).
+
+Pass **multiple tickers** via `symbols` (`string[]` or `{symbol, change}[]`):
+the row shows up to 3 chips then a `+N more` count. A lone symbol also shows its
+% change; multiple symbols show tickers only.
 
 The **AI icon** is pink (distinct from the blue brand) and interactive: it's a
 `role="button"` with `aria-haspopup="dialog"` that opens an **AI summary
