@@ -1,18 +1,93 @@
-<title>QX-NewsItem Playground</title>
+<title>QX-NewsItem Component Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+
 <style>
-/* ===== Qmodii design tokens ===== */
-/* Qmodii ships Roboto (UI) as the brand family (font.Family = "Roboto" in the
-   Figma tokens). In production, self-host the Roboto woff2 binaries and declare
-   them with @font-face here.
+:root{
+  --sx-bg:#EBEEF2; --sx-panel:#FFFFFF; --sx-panel-2:#F5F7F9;
+  --sx-ink:#16212B; --sx-ink-2:#525C66; --sx-muted:#7A828B;
+  --sx-line:#E0E4E9; --sx-line-2:#EDF0F3;
+  --sx-blue:#0477D1; --sx-blue-ink:#075FA6; --sx-blue-tint:#EAF4FD;
+  --sx-pink:#C4238C; --sx-pink-tint:#FCEAF4;
+  --sx-up:#2B7F45; --sx-down:#D02A48;
+  --sx-sans:'Roboto',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --sx-mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--sx-bg);color:var(--sx-ink);font-family:var(--sx-sans);-webkit-font-smoothing:antialiased;line-height:1.6}
+.sx{max-width:960px;margin:0 auto;padding:0 24px 96px}
+a{color:var(--sx-blue-ink);text-decoration:none}
+a:hover{text-decoration:underline}
 
-   This prototype runs in a network-restricted environment (no Google Fonts /
-   CDN egress), so the import is intentionally omitted — the token stack in
-   --qx-font-sans falls back to system-ui, which keeps the layout honest without
-   an external request. Restore the line below when Roboto is vendored locally:
+/* header */
+.sx-head{display:flex;align-items:center;gap:14px;padding:20px 0 18px;border-bottom:1px solid var(--sx-line);position:sticky;top:0;background:var(--sx-bg);z-index:5}
+.sx-wm{font-size:19px;font-weight:700;letter-spacing:-.02em}
+.sx-wm .d{color:var(--sx-blue)}
+.sx-head .nm{font-size:13px;font-weight:600;color:var(--sx-ink)}
+.sx-head .sp{flex:1}
+.sx-pill{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--sx-blue-ink);background:var(--sx-blue-tint);border:1px solid #CDE6FA;border-radius:2px;padding:3px 7px}
+.sx-open{font-size:13px;font-weight:600}
 
-   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-*/
+/* sections */
+section{padding-top:48px}
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--sx-muted);margin:0 0 10px}
+h1{font-size:34px;line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0 0 16px;text-wrap:balance}
+h2{font-size:23px;line-height:1.2;font-weight:700;letter-spacing:-.01em;margin:0 0 12px;text-wrap:balance}
+h3{font-size:15px;font-weight:700;margin:0 0 4px}
+.lead{font-size:18px;line-height:1.55;color:var(--sx-ink-2);max-width:68ch;margin:0 0 8px}
+p{font-size:15px;color:var(--sx-ink-2);max-width:70ch;margin:0 0 14px}
+.hr{height:1px;background:var(--sx-line);border:0;margin:0}
+strong{color:var(--sx-ink);font-weight:600}
+code{font-family:var(--sx-mono);font-size:.88em;background:var(--sx-panel-2);border:1px solid var(--sx-line);border-radius:3px;padding:1px 5px;color:#334}
 
+/* live demo frames */
+.demo{background:var(--sx-panel);border:1px solid var(--sx-line);border-radius:10px;overflow:hidden}
+.demo .qx-news-list{background:var(--sx-panel)}
+.cap{font-size:12.5px;color:var(--sx-muted);margin:10px 0 0}
+.cap b{color:var(--sx-ink-2);font-weight:600}
+
+/* surfaces chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 4px}
+.chip{font-size:12.5px;font-weight:500;color:var(--sx-ink-2);background:var(--sx-panel);border:1px solid var(--sx-line);border-radius:999px;padding:5px 12px}
+
+/* table */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--sx-line);border-radius:10px;background:var(--sx-panel)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
+th{text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--sx-muted);padding:12px 14px;border-bottom:1px solid var(--sx-line);white-space:nowrap}
+td{padding:12px 14px;border-bottom:1px solid var(--sx-line-2);color:var(--sx-ink-2);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.k{font-weight:700;color:var(--sx-ink);white-space:nowrap}
+td.k .mono{font-family:var(--sx-mono);font-weight:400;font-size:12px;color:var(--sx-muted);display:block;margin-top:2px}
+
+/* placement / def grid */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:720px){.grid2,.grid3{grid-template-columns:1fr}}
+.card{background:var(--sx-panel);border:1px solid var(--sx-line);border-radius:10px;padding:16px 18px}
+.card h3{display:flex;align-items:center;gap:8px}
+.card p{font-size:13.5px;margin:6px 0 0}
+.dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.dot.blue{background:var(--sx-blue)} .dot.pink{background:var(--sx-pink)} .dot.up{background:var(--sx-up)} .dot.down{background:var(--sx-down)} .dot.amber{background:#F59E0B} .dot.slate{background:#64748B}
+.opt{font-family:var(--sx-mono);font-size:12px;color:var(--sx-ink)}
+.opt .def{color:var(--sx-blue-ink);font-weight:600}
+.deflist{list-style:none;margin:0;padding:0}
+.deflist li{padding:11px 0;border-bottom:1px solid var(--sx-line-2)}
+.deflist li:last-child{border-bottom:0}
+.deflist .t{font-family:var(--sx-mono);font-size:12.5px;color:var(--sx-ink);font-weight:500}
+.deflist .v{font-size:13.5px;color:var(--sx-ink-2);margin-top:3px}
+
+ul.plain{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+ul.plain li{font-size:14px;color:var(--sx-ink-2);line-height:1.5;padding-left:20px;position:relative;max-width:72ch}
+ul.plain li::before{content:"";position:absolute;left:2px;top:8px;width:6px;height:6px;border-radius:50%;background:var(--sx-blue)}
+ul.plain li b{color:var(--sx-ink)}
+
+.foot{margin-top:52px;padding-top:22px;border-top:1px solid var(--sx-line);display:flex;flex-wrap:wrap;gap:8px 28px;align-items:baseline}
+.foot .meta{font-size:12.5px;color:var(--sx-muted)}
+.foot .meta b{color:var(--sx-ink-2);font-weight:600}
+</style>
+<style>
+/* ===== Qmodii tokens ===== */
 /* ============================================================
    Qmodii — PRIMITIVE PALETTE
    Raw color scales. Do not use directly in product code; reference
@@ -2003,125 +2078,147 @@
 .qx-news-list { display: flex; flex-direction: column; background: var(--qx-surface-0, #fff); }
 .qx-news-list > .qx-newsitem + .qx-newsitem { border-top: 1px solid var(--qx-surface-200, #E3E3E3); }
 
-/* ===== Playground chrome ===== */
-body { margin: 0; }
-.qx-root.pg-page { min-height: 100vh; background: var(--qx-surface-ground, #F6F6F6); color: var(--qx-text-primary, #222); font-family: var(--qx-font-sans, system-ui, sans-serif); -webkit-font-smoothing: antialiased; }
-
-  :root { color-scheme: light; }
-  .qx-root.pg-page {
-    margin: 0;
-    background: var(--qx-surface-ground, #F6F6F6);
-    color: var(--qx-text-primary, #222);
-    font-family: var(--qx-font-sans, system-ui, sans-serif);
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* ---- App chrome ---- */
-  .pg-appbar {
-    position: sticky; top: 0; z-index: 20;
-    background: var(--qx-surface-0, #fff);
-    border-bottom: 1px solid var(--qx-surface-200, #E3E3E3);
-    padding: 14px 24px; display: flex; align-items: center; gap: 16px;
-  }
-  .pg-wordmark { font-size: 18px; font-weight: 700; letter-spacing: -.01em; }
-  .pg-wordmark .dot { color: var(--qx-primary, #0477D1); }
-  .pg-appbar .pg-title { font-size: 14px; font-weight: 600; }
-  .pg-appbar .pg-sub { font-size: 12px; color: var(--qx-text-muted, #707070); }
-  .pg-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
-    color: var(--qx-primary, #0477D1); background: var(--qx-primary-subtle, #F2F8FE);
-    border: 1px solid var(--qx-blue-200, #C0DEF7); border-radius: 2px; padding: 2px 6px; }
-  .pg-spacer { flex: 1 1 auto; }
-
-  .pg-wrap { max-width: 1220px; margin: 0 auto; padding: 24px; }
-
-  /* ---- Section scaffolding ---- */
-  .pg-section { margin-bottom: 40px; }
-  .pg-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--qx-text-muted, #707070); margin: 0 0 6px; }
-  .pg-h2 { font-size: 18px; font-weight: 700; margin: 0 0 4px; }
-  .pg-lede { font-size: 13px; color: var(--qx-text-secondary, #575757); margin: 0 0 18px; max-width: 72ch; line-height: 1.5; }
-
-  .pg-card { background: var(--qx-surface-0, #fff); border: 1px solid var(--qx-surface-200, #E3E3E3); border-radius: 8px; }
-  .pg-card-pad { padding: 16px; }
-  .pg-card-head { padding: 12px 16px; border-bottom: 1px solid var(--qx-surface-200, #E3E3E3); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-  .pg-card-head .t { font-size: 14px; font-weight: 700; }
-  .pg-card-head .s { font-size: 12px; color: var(--qx-text-muted, #707070); }
-
-  /* ---- Playground grid ---- */
-  .pg-play { display: grid; grid-template-columns: 300px 1fr; gap: 20px; align-items: start; }
-  @media (max-width: 900px) { .pg-play { grid-template-columns: 1fr; } }
-  .pg-controls { position: sticky; top: 74px; }
-  .pg-ctrl-group { padding: 14px 16px; border-bottom: 1px solid var(--qx-surface-100, #EDEDED); }
-  .pg-ctrl-group:last-child { border-bottom: 0; }
-  .pg-ctrl-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--qx-text-muted, #707070); margin: 0 0 8px; }
-  .pg-subctrl { margin-top: 8px; transition: opacity 120ms; }
-  .pg-subctrl.off { opacity: .4; pointer-events: none; }
-  .pg-place { margin: 6px 0 10px 12px; padding-left: 10px; border-left: 2px solid var(--qx-surface-200, #E3E3E3); }
-  .pg-place .pg-seg button { font-size: 11px; padding: 4px 7px; }
-
-  /* segmented */
-  .pg-seg { display: inline-flex; flex-wrap: wrap; gap: 4px; }
-  .pg-seg button {
-    font-family: inherit; font-size: 12px; font-weight: 500; padding: 5px 9px;
-    border-radius: var(--qx-radius-sm, 4px); cursor: pointer;
-    background: var(--qx-surface-0, #fff); color: var(--qx-text-secondary, #575757);
-    border: 1px solid var(--qx-surface-200, #E3E3E3); transition: all 120ms var(--qx-ease, ease);
-  }
-  .pg-seg button:hover { background: var(--qx-surface-50, #F6F6F6); border-color: var(--qx-surface-300, #C7C7C7); }
-  .pg-seg button[aria-pressed='true'] { background: var(--qx-primary-subtle, #F2F8FE); color: var(--qx-blue-900, #002C5A); border-color: var(--qx-blue-200, #C0DEF7); font-weight: 600; }
-  .pg-seg button:disabled { opacity: .5; cursor: not-allowed; }
-
-  /* toggle row */
-  .pg-toggle { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; font-size: 13px; }
-  .pg-toggle:not(:last-child) { border-bottom: 1px dashed var(--qx-surface-100, #EDEDED); }
-  .pg-toggle.dim { opacity: .45; }
-  .pg-switch { position: relative; width: 34px; height: 20px; flex: 0 0 auto; }
-  .pg-switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
-  .pg-switch .track { position: absolute; inset: 0; border-radius: 999px; background: var(--qx-surface-300, #C7C7C7); transition: background 140ms var(--qx-ease, ease); }
-  .pg-switch .thumb { position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform 140ms var(--qx-ease, ease); box-shadow: var(--qx-shadow-xs, 0 1px 2px rgba(0,0,0,.06)); }
-  .pg-switch input:checked + .track { background: var(--qx-primary, #0477D1); }
-  .pg-switch input:checked + .track + .thumb { transform: translateX(14px); }
-
-  /* ---- Preview stage ---- */
-  .pg-stage { background: var(--qx-surface-ground, #F6F6F6); border: 1px solid var(--qx-surface-200, #E3E3E3); border-radius: 8px; padding: 28px; }
-  .pg-stage-inner { max-width: 560px; margin: 0 auto; }
-  .pg-list-frame { border: 1px solid var(--qx-surface-200, #E3E3E3); border-radius: 8px; overflow: hidden; }
-  .pg-hint { font-size: 12px; color: var(--qx-text-muted, #707070); text-align: center; margin: 14px 0 0; }
-
-  /* generated code */
-  .pg-code { margin-top: 20px; background: var(--qx-surface-900, #1a1a1a); color: #e8e8e8; border-radius: 8px; padding: 16px 18px; overflow-x: auto;
-    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 12px; line-height: 1.7; white-space: pre; }
-  .pg-code .k { color: #6cb6ff; } .pg-code .a { color: #f5c63f; } .pg-code .v { color: #7ee787; } .pg-code .p { color: #b0b0b0; }
-
-  /* ---- Galleries ---- */
-  .pg-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .pg-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  @media (max-width: 900px) { .pg-grid-2, .pg-grid-3 { grid-template-columns: 1fr; } }
-  .pg-gal-note { margin: 0 0 12px; font-size: 12px; color: var(--qx-text-secondary, #575757); line-height: 1.5; }
-  .pg-inner-list { border: 1px solid var(--qx-surface-200, #E3E3E3); border-radius: 6px; overflow: hidden; }
-
-  .pg-usage { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; align-items: start; }
-  @media (max-width: 900px) { .pg-usage { grid-template-columns: 1fr; } }
-  .pg-rail { display: flex; flex-direction: column; gap: 20px; }
-  .pg-module-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--qx-surface-200, #E3E3E3); }
-  .pg-module-head .icon { width: 22px; height: 22px; border-radius: 4px; background: var(--qx-primary-subtle, #F2F8FE); color: var(--qx-primary, #0477D1); display: flex; align-items: center; justify-content: center; font-size: 13px; }
-  .pg-module-head .t { font-size: 14px; font-weight: 700; }
-  .pg-module-head .more { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--qx-primary, #0477D1); text-decoration: none; }
-  .pg-embed-frame { border: 1px dashed var(--qx-surface-300, #C7C7C7); border-radius: 8px; padding: 12px; background: repeating-linear-gradient(45deg, var(--qx-surface-50, #F6F6F6) 0 10px, var(--qx-surface-0, #fff) 10px 20px); }
-  .pg-embed-note { font-size: 11px; color: var(--qx-text-muted); margin: 0 0 8px; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; }
-
-  table.pg-anat { width: 100%; border-collapse: collapse; font-size: 13px; }
-  table.pg-anat th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--qx-text-muted); padding: 0 12px 10px 0; border-bottom: 1px solid var(--qx-surface-200, #E3E3E3); }
-  table.pg-anat td { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--qx-surface-100, #EDEDED); color: var(--qx-text-secondary); vertical-align: top; line-height: 1.5; }
-  table.pg-anat td.n { font-weight: 700; color: var(--qx-text-primary); white-space: nowrap; }
-  table.pg-anat td.req.yes { color: var(--qx-text-positive, #2B7F45); font-weight: 600; white-space: nowrap; }
-  table.pg-anat td.req { color: var(--qx-text-muted); white-space: nowrap; }
-  .pg-a11y { margin: 0; padding-left: 18px; }
-  .pg-a11y li { font-size: 13px; color: var(--qx-text-secondary); line-height: 1.55; margin-bottom: 8px; }
-  .pg-a11y code { background: var(--qx-surface-100, #EDEDED); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+/* ===== Firewall: keep the brief's doc-chrome element selectors from leaking
+   into the embedded .qx-root component rows (title clamp, row link, widths) ===== */
+.qx-root .qx-ni-title{display:-webkit-box;-webkit-box-orient:vertical}
+.qx-root a,.qx-root a:hover{text-decoration:none}
+.qx-root p{max-width:none}
 
 </style>
 
-<div class="qx-root pg-page"><div id="app"></div></div>
+<div class="sx">
+  <header class="sx-head">
+    <span class="sx-wm">Qmodii<span class="d">.</span></span>
+    <span class="nm">QX-NewsItem</span>
+    <span class="sp"></span>
+    <span class="sx-pill">Draft</span>
+    <a class="sx-open" href="https://claude.ai/code/artifact/d4b4620f-aaba-4ee0-bd79-075aba6f07c6" target="_blank" rel="noopener">Open playground &rarr;</a>
+  </header>
+
+  <section style="padding-top:40px">
+    <p class="eyebrow">Component brief &middot; for Claude Design</p>
+    <h1>QX-NewsItem</h1>
+    <p class="lead">One list row for a single news story &mdash; headline, source, timestamp, and optional media and signal metadata. It is the single row behind every news feed across QSweb, Quotestream Mobile, Research Hub, and the QX / QMOD embeddable widgets.</p>
+    <p>It is configured entirely by props. <strong>Presets are named prop bundles, not separate components</strong>: pick a preset for the surface you&rsquo;re on, then override any individual prop. Everything below is the real component, driven by Qmodii design tokens.</p>
+    <div class="demo" id="demo-hero" style="margin-top:20px"></div>
+    <p class="cap"><b>Live.</b> Click the pink AI icon to open its summary; tab into a row to see the focus ring.</p>
+  </section>
+
+  <hr class="hr" style="margin-top:44px">
+
+  <section>
+    <p class="eyebrow">Where it&rsquo;s used</p>
+    <h2>One row, many surfaces</h2>
+    <p>Any vertical feed of stories &mdash; and a few adjacent contexts. Reach for a different component when the <em>symbol</em> is the subject (QMSymbolList) or when the identity is a form type rather than a headline (a filings row).</p>
+    <div class="chips">
+      <span class="chip">Market news feed</span>
+      <span class="chip">Symbol-scoped news</span>
+      <span class="chip">Watchlist &amp; portfolio news</span>
+      <span class="chip">Top stories &amp; breaking</span>
+      <span class="chip">Most read rails</span>
+      <span class="chip">Related articles</span>
+      <span class="chip">News search results</span>
+      <span class="chip">WMID / third-party widgets</span>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Variants</p>
+    <h2>Five presets</h2>
+    <p>Choosing a preset sets defaults; every prop stays overridable. One preset per module &mdash; a single <strong>Lead</strong> row is the only permitted exception.</p>
+    <div class="tbl-wrap" style="margin-bottom:20px">
+      <table>
+        <thead><tr><th>Preset</th><th>Meta</th><th>Title</th><th>Description</th><th>Media</th><th>Signals</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Feed<span class="mono">default</span></td><td>Top</td><td>2 lines</td><td>2 lines</td><td>Leading</td><td>Sentiment + AI, right</td></tr>
+          <tr><td class="k">Editorial</td><td>Bottom</td><td>2 lines</td><td>3 lines</td><td>Trailing</td><td>Sentiment + AI stack under the image</td></tr>
+          <tr><td class="k">Compact</td><td>Top</td><td>1 line</td><td>2 lines</td><td>&mdash;</td><td>Symbols only (no topic)</td></tr>
+          <tr><td class="k">Lead</td><td>Top</td><td>2 lines</td><td>3 lines</td><td>Above, full width</td><td>Sentiment + AI, right</td></tr>
+          <tr><td class="k">Embed</td><td>Top</td><td>1 line</td><td>&mdash;</td><td>&mdash;</td><td>None (no badge row)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid2" id="demo-presets"></div>
+    <div style="margin-top:16px;max-width:560px" class="demo" id="demo-lead"></div>
+    <p class="cap"><b>Lead.</b> Full-width image above the text, one per module, always first &mdash; with the signal spine on.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Composition model</p>
+    <h2>Parts move, not just toggle</h2>
+    <p>Beyond show / hide, each signal has a <em>placement</em>. That&rsquo;s what lets one row read correctly in a wide feed and a narrow rail without a second component.</p>
+    <div class="grid2">
+      <div class="card"><h3>Topic</h3><p class="opt"><span class="def">badge</span> &middot; top</p><p>Inline in the badge row, or promoted to its own kicker row above the headline. Topic always leads the badge row, before symbols.</p></div>
+      <div class="card"><h3><span class="dot pink"></span>Sentiment &amp; AI</h3><p class="opt"><span class="def">right</span> &middot; badge</p><p>Default home is a right-hand cluster; on Editorial they stack beneath the trailing image. Can drop inline into the badge row.</p></div>
+      <div class="card"><h3>Meta row</h3><p class="opt"><span class="def">top</span> &middot; bottom &middot; right</p><p>Source &middot; timestamp. Exactly one renders &mdash; above the headline, below the badges, or parked in the right aside.</p></div>
+      <div class="card"><h3>Media</h3><p class="opt"><span class="def">leading</span> &middot; trailing &middot; above</p><p>16:9, crop to fill, never letterbox. A branded source monogram stands in when a thumbnail is missing.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Anatomy</p>
+    <h2>Top to bottom</h2>
+    <ul class="deflist">
+      <li><span class="t">Row</span><div class="v">The outer container and the single interactive target &mdash; a native <code>&lt;a&gt;</code>. Required.</div></li>
+      <li><span class="t">Signal spine</span><div class="v">3px leading edge coloured by importance rank (high / medium / low). Off by default.</div></li>
+      <li><span class="t">Media</span><div class="v">Thumbnail or branded fallback tile. Leading, trailing, or above.</div></li>
+      <li><span class="t">Topic kicker</span><div class="v">Topic chip on its own row above the headline, when promoted.</div></li>
+      <li><span class="t">Meta row</span><div class="v">Source &middot; relative time. Top, bottom, or right &mdash; only one.</div></li>
+      <li><span class="t">Title</span><div class="v">The headline. Line-clamped. The accessible name. Required.</div></li>
+      <li><span class="t">Description</span><div class="v">Story snippet. Line-clamped.</div></li>
+      <li><span class="t">Badge row</span><div class="v">Topic &rarr; symbols, then any inline sentiment / AI. Collapses with no reserved space.</div></li>
+      <li><span class="t">Right aside</span><div class="v">Sentiment chip + AI icon &mdash; their default home &mdash; and, optionally, the meta row.</div></li>
+      <li><span class="t">Divider</span><div class="v">Hairline rule between rows &mdash; owned by the list, not the row.</div></li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="eyebrow">States</p>
+    <h2>Six render states</h2>
+    <div class="grid2" id="demo-states"></div>
+    <p class="cap">Loading skeleton mirrors the configured anatomy exactly, so nothing shifts when data lands.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Signature behaviors</p>
+    <h2>The details worth a look</h2>
+    <div class="grid2">
+      <div class="card"><h3><span class="dot pink"></span>AI summary popover</h3><p>The AI mark is pink &mdash; deliberately off the blue brand so AI-generated content reads as its own thing. It&rsquo;s a real affordance (<code>role="button"</code>, <code>aria-haspopup</code>): click or Enter opens a dialog with key points, a disclaimer, and a last-updated line. Portaled to <code>body</code> so a list&rsquo;s overflow can&rsquo;t clip it.</p></div>
+      <div class="card"><h3>Symbols that never wrap</h3><p>A story can name several tickers, each with its % change. A ResizeObserver fits as many chips as the row allows on one line and folds the rest into <code>+N&nbsp;more</code> &mdash; recomputed on every resize, so 3 chips in a wide feed become 1 in a narrow rail.</p></div>
+      <div class="card"><h3><span class="dot up"></span>Sentiment chip</h3><p>A light pill: a coloured direction glyph (&#9650; / &#9660; / &ndash;), a hairline divider, then the word. Shape <em>and</em> word, never colour alone, and drawn from the semantic market up / down / hold tokens.</p></div>
+      <div class="card"><h3><span class="dot amber"></span>Signal spine</h3><p>An optional 3px importance edge for breaking / ranked feeds &mdash; amber, blue, or grey by rank. Reads as urgency without stealing the row&rsquo;s colour budget.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Accessibility</p>
+    <h2>Built in, not bolted on</h2>
+    <ul class="plain">
+      <li>The row is a native <code>&lt;a&gt;</code> and a <b>single tab stop</b>; <code>Enter</code> opens the story, or the upgrade modal when locked.</li>
+      <li>The <b>accessible name is the headline alone</b>. Source, time, symbol, topic, and sentiment stay in DOM order after the title even when <code>metaPosition</code> reorders them visually.</li>
+      <li>Focus is a visible <b>2px ring at 2px offset</b> &mdash; colour change is never the only signal (WCAG 2.4.7).</li>
+      <li>Sentiment and the AI icon carry <code>aria-label</code>s; the timestamp is a <code>&lt;time datetime&gt;</code>. The AI popover is a labelled dialog with Esc / outside-click to close.</li>
+      <li>Locked rows keep the headline fully legible and add <code>aria-describedby</code> explaining the upgrade &mdash; the headline is <b>never blurred</b>.</li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="eyebrow">Design-system fidelity</p>
+    <h2>Reads the Qmodii tokens end to end</h2>
+    <ul class="plain">
+      <li>Every colour, space, radius, and shadow is a <code>--qx-*</code> token &mdash; no hardcoded hex. Retint the theme and the row retints with it.</li>
+      <li>Sentiment and importance come from <b>semantic</b> tokens, so CVD themes and white-label palettes come along automatically.</li>
+      <li>Namespaced under <code>.qx-newsitem</code> with resolved <code>var()</code> fallbacks, per the WMID scoping rules &mdash; safe to embed in a third-party page whose CSS we don&rsquo;t control.</li>
+      <li>Ships as a React component (<code>QXNewsItem.jsx</code> + types) and a dependency-free renderer &mdash; the same markup, so this brief and the playground run with no build step.</li>
+    </ul>
+  </section>
+
+  <div class="foot">
+    <a href="https://claude.ai/code/artifact/d4b4620f-aaba-4ee0-bd79-075aba6f07c6" target="_blank" rel="noopener">Interactive playground &rarr;</a>
+    <span class="meta"><b>Source</b> samfern-design/news &middot; branch claude/news-articles-playground-o8rqoh</span>
+    <span class="meta"><b>Spec</b> QX-NewsItem &middot; Sam Fernandes, Design</span>
+  </div>
+</div>
 
 <script>
 /* ============================================================
@@ -2492,329 +2589,61 @@ body { margin: 0; }
 
 </script>
 <script>
-
-/* ============================================================
-   Playground — dependency-free. Renders the QX-NewsItem component
-   (window.QXNewsItem) across a live configurator, preset & state
-   galleries, and real feed modules.
-   ============================================================ */
-(function () {
-  'use strict';
-  const NI = window.QXNewsItem;
-  const PRESETS = NI.PRESETS;
-
-  /* ---- tiny DOM helper ---- */
-  function el(tag, attrs, children) {
-    const n = document.createElement(tag);
-    if (attrs) for (const k in attrs) {
-      const v = attrs[k];
-      if (v === undefined || v === null || v === false) continue;
-      if (k === 'text') n.textContent = v;
-      else if (k === 'html') n.innerHTML = v;
-      else if (k === 'onclick') n.addEventListener('click', v);
-      else if (k === 'onchange') n.addEventListener('change', v);
-      else n.setAttribute(k, v === true ? '' : v);
-    }
-    if (children != null) [].concat(children).forEach(c => { if (c != null && c !== false) n.appendChild(typeof c === 'object' ? c : document.createTextNode(String(c))); });
-    return n;
-  }
-  const clear = (n) => { while (n.firstChild) n.removeChild(n.firstChild); return n; };
-
-  /* ---- deterministic placeholder thumbnails ---- */
-  const TINTS = [['#0477D1','#C0DEF7'],['#2B7F45','#CFE9D6'],['#575757','#E3E3E3'],['#D02A48','#F6D6DD'],['#F59E0B','#FBE6C2'],['#334155','#CBD5E1']];
-  function thumb(seed) {
-    let hs = 0; for (let i = 0; i < seed.length; i++) hs = (hs * 31 + seed.charCodeAt(i)) & 0xffffff;
-    const t = TINTS[hs % TINTS.length], c1 = t[0], c2 = t[1];
-    const r = (n) => ((hs >> n) & 0xff) / 255;
-    const s =
-      "<svg xmlns='http://www.w3.org/2000/svg' width='320' height='180' viewBox='0 0 320 180'>" +
-      "<rect width='320' height='180' fill='" + c2 + "'/>" +
-      "<circle cx='" + (40 + r(3) * 240) + "' cy='" + (30 + r(7) * 90) + "' r='" + (40 + r(5) * 50) + "' fill='" + c1 + "' opacity='0.9'/>" +
-      "<rect x='" + (r(11) * 200) + "' y='" + (90 + r(9) * 60) + "' width='" + (80 + r(13) * 160) + "' height='70' fill='" + c1 + "' opacity='0.35'/>" +
-      "<path d='M0 " + (120 + r(2) * 30) + " Q 80 " + (60 + r(4) * 40) + ", 160 110 T 320 90' stroke='" + c1 + "' stroke-width='4' fill='none' opacity='0.7'/>" +
-      "</svg>";
-    return 'data:image/svg+xml;utf8,' + encodeURIComponent(s);
-  }
-
-  /* ---- sample feed ---- */
-  const STORIES = [
-    { title: 'Nvidia clears $4.5 trillion as data-center demand outruns supply forecasts', description: 'The chipmaker’s latest guidance implies another record quarter, with cloud providers front-loading orders ahead of the next accelerator generation. Analysts lifted price targets across the board.', source: 'Bloomberg', initials: 'BL', timestamp: '18m ago', datetime: '2026-08-14T13:42:00Z', symbol: 'NVDA', symbolChange: 3.11, symbols: [{symbol:'NVDA',change:3.11},{symbol:'AMD',change:2.44},{symbol:'TSM',change:1.02},{symbol:'AVGO',change:0.83},{symbol:'MU',change:-1.12},{symbol:'ASML',change:1.97},{symbol:'QCOM',change:0.55}], sentiment: 'positive', topic: 'Earnings' },
-    { title: 'Fed minutes signal a divided committee heading into September', description: 'Several members favored holding rates steady while a vocal minority pushed for a cut, citing softening in the labor market. Futures now price a coin-flip.', source: 'Reuters', initials: 'RE', timestamp: '1h ago', datetime: '2026-08-14T12:55:00Z', symbol: 'SPY', symbolChange: -0.42, sentiment: 'neutral', topic: 'Macro' },
-    { title: 'Apple’s services segment tops estimates as hardware cycle cools', description: 'Recurring revenue crossed a new high even as iPhone units slipped, underscoring the pivot analysts have watched for three years.', source: 'CNBC', initials: 'CN', timestamp: '2h ago', datetime: '2026-08-14T11:40:00Z', symbol: 'AAPL', symbolChange: 1.24, symbols: [{symbol:'AAPL',change:1.24},{symbol:'GOOGL',change:0.61},{symbol:'AMZN',change:-0.32},{symbol:'META',change:1.83}], sentiment: 'positive', topic: 'Earnings' },
-    { title: 'Tesla recalls 62,000 vehicles over software fault in driver-assist stack', description: 'The over-the-air fix ships this week; regulators opened a preliminary review of the underlying subsystem.', source: 'WSJ', initials: 'WS', timestamp: '3h ago', datetime: '2026-08-14T10:30:00Z', symbol: 'TSLA', symbolChange: -2.67, sentiment: 'negative', topic: 'Autos' },
-    { title: 'Oil steadies near $71 as OPEC+ holds output through the quarter', description: 'Traders shrugged off inventory builds; the cartel reaffirmed its production ceiling in a brief statement.', source: 'MarketWatch', initials: 'MW', timestamp: '4h ago', datetime: '2026-08-14T09:15:00Z', symbol: 'USO', symbolChange: 0.18, sentiment: 'neutral', topic: 'Commodities' },
-    { title: 'Microsoft folds new agent tooling into Copilot for enterprise tier', description: 'The update targets regulated industries with audit trails and per-seat governance controls.', source: 'The Verge', initials: 'TV', timestamp: '5h ago', datetime: '2026-08-14T08:05:00Z', symbol: 'MSFT', symbolChange: 0.94, sentiment: 'positive', topic: 'AI' },
+(function(){
+  var NI = window.QXNewsItem;
+  var TINTS=[['#0477D1','#C0DEF7'],['#2B7F45','#CFE9D6'],['#575757','#E3E3E3'],['#D02A48','#F6D6DD'],['#F59E0B','#FBE6C2'],['#334155','#CBD5E1']];
+  function thumb(seed){var hs=0;for(var i=0;i<seed.length;i++)hs=(hs*31+seed.charCodeAt(i))&0xffffff;var t=TINTS[hs%TINTS.length],c1=t[0],c2=t[1];var r=function(n){return((hs>>n)&0xff)/255;};
+    var s="<svg xmlns='http://www.w3.org/2000/svg' width='320' height='180' viewBox='0 0 320 180'><rect width='320' height='180' fill='"+c2+"'/><circle cx='"+(40+r(3)*240)+"' cy='"+(30+r(7)*90)+"' r='"+(40+r(5)*50)+"' fill='"+c1+"' opacity='0.9'/><rect x='"+(r(11)*200)+"' y='"+(90+r(9)*60)+"' width='"+(80+r(13)*160)+"' height='70' fill='"+c1+"' opacity='0.35'/><path d='M0 "+(120+r(2)*30)+" Q 80 "+(60+r(4)*40)+", 160 110 T 320 90' stroke='"+c1+"' stroke-width='4' fill='none' opacity='0.7'/></svg>";
+    return 'data:image/svg+xml;utf8,'+encodeURIComponent(s);}
+  var S=[
+    {title:'Nvidia clears $4.5 trillion as data-center demand outruns supply forecasts',description:'The chipmaker’s latest guidance implies another record quarter, with cloud providers front-loading orders ahead of the next accelerator generation. Analysts lifted price targets across the board.',source:'Bloomberg',initials:'BL',timestamp:'18m ago',datetime:'2026-08-14T13:42:00Z',symbols:[{symbol:'NVDA',change:3.11},{symbol:'AMD',change:2.44},{symbol:'TSM',change:1.02},{symbol:'AVGO',change:0.83},{symbol:'MU',change:-1.12},{symbol:'ASML',change:1.97}],sentiment:'positive',topic:'Earnings'},
+    {title:'Fed minutes signal a divided committee heading into September',description:'Several members favored holding rates steady while a vocal minority pushed for a cut, citing softening in the labor market. Futures now price a coin-flip.',source:'Reuters',initials:'RE',timestamp:'1h ago',datetime:'2026-08-14T12:55:00Z',symbol:'SPY',symbolChange:-0.42,sentiment:'neutral',topic:'Macro'},
+    {title:'Apple’s services segment tops estimates as hardware cycle cools',description:'Recurring revenue crossed a new high even as iPhone units slipped, underscoring the pivot analysts have watched for three years.',source:'CNBC',initials:'CN',timestamp:'2h ago',datetime:'2026-08-14T11:40:00Z',symbol:'AAPL',symbolChange:1.24,sentiment:'positive',topic:'Earnings'},
+    {title:'Tesla recalls 62,000 vehicles over software fault in driver-assist stack',description:'The over-the-air fix ships this week; regulators opened a preliminary review of the underlying subsystem.',source:'WSJ',initials:'WS',timestamp:'3h ago',datetime:'2026-08-14T10:30:00Z',symbol:'TSLA',symbolChange:-2.67,sentiment:'negative',topic:'Autos'}
   ];
-  const storyProps = (s, seed) => ({ title: s.title, description: s.description, source: s.source, sourceInitials: s.initials, timestamp: s.timestamp, datetime: s.datetime, image: thumb((seed || '') + s.title), symbol: s.symbol, symbolChange: s.symbolChange, symbols: s.symbols, sentiment: s.sentiment, topic: s.topic, imageAlt: '' });
+  function sp(s,seed,extra){var o={title:s.title,description:s.description,source:s.source,sourceInitials:s.initials,timestamp:s.timestamp,datetime:s.datetime,image:thumb((seed||'')+s.title),symbol:s.symbol,symbolChange:s.symbolChange,symbols:s.symbols,sentiment:s.sentiment,topic:s.topic,imageAlt:''};if(extra)for(var k in extra)o[k]=extra[k];return o;}
+  function root(cls){var d=document.createElement('div');d.className='qx-root';if(cls)d.className+=' '+cls;return d;}
 
-  /* ---- control widgets ---- */
-  function segmented(value, options, onChange, disabled) {
-    return el('div', { class: 'pg-seg', role: 'group' }, options.map(o => {
-      const val = Array.isArray(o) ? o[0] : o, lbl = Array.isArray(o) ? o[1] : o;
-      return el('button', { type: 'button', 'aria-pressed': String(val) === String(value), disabled: disabled || undefined, onclick: () => onChange(val), text: lbl });
-    }));
-  }
-  function toggleRow(label, checked, onChange, disabled) {
-    const input = el('input', { type: 'checkbox', onchange: (e) => onChange(e.target.checked) });
-    input.checked = checked; if (disabled) input.disabled = true;
-    return el('label', { class: 'pg-toggle' + (disabled ? ' dim' : '') }, [
-      el('span', { text: label }),
-      el('span', { class: 'pg-switch' }, [input, el('span', { class: 'track' }), el('span', { class: 'thumb' })]),
-    ]);
-  }
-  const ctrlGroup = (label, kids) => el('div', { class: 'pg-ctrl-group' }, [el('p', { class: 'pg-ctrl-label', text: label })].concat(kids));
+  // hero
+  var hero=document.getElementById('demo-hero');
+  if(hero){var wrap=root();var list=document.createElement('div');list.className='qx-news-list';
+    list.appendChild(NI.render(sp(S[0],'h',{preset:'feed',showSymbol:true,showTopic:true,showSentiment:true,showAI:true})));
+    list.appendChild(NI.render(sp(S[1],'h',{preset:'feed',showSymbol:true,showTopic:true,showSentiment:true,showAI:true})));
+    wrap.appendChild(list);hero.appendChild(wrap);}
 
-  /* ---- generated code snippet ---- */
-  function codeSnippet(cfg) {
-    const DEF = { density: 'comfortable', state: 'default', signalLevel: 'high' };
-    const rows = [];
-    const add = (name, val, isStr) => {
-      if (typeof val === 'boolean') { if (val) rows.push([name, null]); return; }
-      if (val == null) return;
-      rows.push([name, isStr ? '"' + val + '"' : '{' + JSON.stringify(val) + '}']);
-    };
-    add('preset', cfg.preset, true);
-    if (cfg.density !== DEF.density) add('density', cfg.density, true);
-    if (cfg.state !== DEF.state) add('state', cfg.state, true);
-    add('titleLines', cfg.titleLines, typeof cfg.titleLines !== 'number');
-    add('showDescription', cfg.showDescription);
-    if (cfg.showDescription) add('descriptionLines', cfg.descriptionLines, false);
-    add('showImage', cfg.showImage);
-    if (cfg.showImage) add('imagePosition', cfg.imagePosition, true);
-    add('metaPosition', cfg.metaPosition, true);
-    add('showSymbol', cfg.showSymbol);
-    add('showTopic', cfg.showTopic);
-    if (cfg.showTopic && cfg.topicPosition !== 'badge') add('topicPosition', cfg.topicPosition, true);
-    add('showSentiment', cfg.showSentiment);
-    if (cfg.showSentiment && cfg.sentimentPosition !== 'right') add('sentimentPosition', cfg.sentimentPosition, true);
-    add('showAI', cfg.showAI);
-    if (cfg.showAI && cfg.aiPosition !== 'right') add('aiPosition', cfg.aiPosition, true);
-    add('showSignalSpine', cfg.showSignalSpine);
-    if (cfg.showSignalSpine && cfg.signalLevel !== DEF.signalLevel) add('signalLevel', cfg.signalLevel, true);
-
-    const pre = el('pre', { class: 'pg-code' });
-    pre.appendChild(el('span', { class: 'k', text: '<QXNewsItem' }));
-    pre.appendChild(document.createTextNode('\n'));
-    rows.forEach(([n, v]) => {
-      pre.appendChild(document.createTextNode('  '));
-      pre.appendChild(el('span', { class: 'a', text: n }));
-      if (v !== null) { pre.appendChild(el('span', { class: 'p', text: '=' })); pre.appendChild(el('span', { class: 'v', text: v })); }
-      pre.appendChild(document.createTextNode('\n'));
+  // presets gallery
+  var pg=document.getElementById('demo-presets');
+  if(pg){
+    var defs=[['feed','Feed',S[0]],['editorial','Editorial',S[2]],['compact','Compact',S[3]],['embed','Embed',S[1]]];
+    defs.forEach(function(d,i){
+      var cell=document.createElement('div');cell.className='card';cell.style.padding='0';cell.style.overflow='hidden';
+      var head=document.createElement('div');head.style.cssText='padding:11px 14px;border-bottom:1px solid var(--sx-line);display:flex;gap:8px;align-items:baseline';
+      head.innerHTML='<span style="font-size:13px;font-weight:700;color:var(--sx-ink)">'+d[1]+'</span><span style="font-family:var(--sx-mono);font-size:11.5px;color:var(--sx-muted)">preset="'+d[0]+'"</span>';
+      var body=root();var list=document.createElement('div');list.className='qx-news-list';
+      var extra=d[0]==='embed'?{preset:'embed'}:{preset:d[0],showSymbol:true,showTopic:true,showSentiment:true,showAI:true};
+      list.appendChild(NI.render(sp(d[2],'p'+i,extra)));
+      body.appendChild(list);cell.appendChild(head);cell.appendChild(body);pg.appendChild(cell);
     });
-    pre.appendChild(document.createTextNode('  '));
-    pre.appendChild(el('span', { class: 'a', text: 'title' }));
-    pre.appendChild(el('span', { class: 'p', text: '=' }));
-    pre.appendChild(el('span', { class: 'v', text: '"…"' }));
-    pre.appendChild(el('span', { class: 'k', text: ' />' }));
-    return pre;
   }
 
-  /* ---- playground ---- */
-  function playground() {
-    let cfg = { preset: 'feed', density: 'comfortable', state: 'default', titleLines: 2, showDescription: true, descriptionLines: 2, showImage: true, imagePosition: 'leading', metaPosition: 'top', showSymbol: true, showSentiment: true, showAI: true, showTopic: true, topicPosition: 'badge', sentimentPosition: 'right', aiPosition: 'right', showSignalSpine: false, signalLevel: 'high' };
+  // lead
+  var lead=document.getElementById('demo-lead');
+  if(lead){var w=root();var l=document.createElement('div');l.className='qx-news-list';
+    l.appendChild(NI.render(sp(S[0],'lead',{preset:'lead',showSymbol:true,showTopic:true,showSentiment:true,showAI:true,showSignalSpine:true,signalLevel:'high'})));
+    w.appendChild(l);lead.appendChild(w);}
 
-    const controlsEl = el('div', { class: 'pg-card pg-controls' });
-    const previewEl = el('div', { class: 'pg-list-frame' });
-    const codeHolder = el('div');
-    const stage = el('div', { class: 'pg-stage' }, [
-      el('div', { class: 'pg-stage-inner' }, [previewEl]),
-      el('p', { class: 'pg-hint', html: 'Live rows reflect the controls. Click the pink AI icon to open its summary; tab into the second row to see the focus ring.' }),
-    ]);
-
-    function effBadges() {
-      const off = cfg.preset === 'embed';
-      return { showSymbol: cfg.showSymbol && !off, showSentiment: cfg.showSentiment && !off, showAI: cfg.showAI && !off, showTopic: cfg.showTopic && !off };
-    }
-
-    function renderPreview() {
-      clear(previewEl);
-      const b = effBadges();
-      const base = { preset: cfg.preset, density: cfg.density, titleLines: cfg.titleLines, showDescription: cfg.showDescription, descriptionLines: cfg.descriptionLines, showImage: cfg.showImage, imagePosition: cfg.imagePosition, metaPosition: cfg.metaPosition, showSignalSpine: cfg.showSignalSpine, signalLevel: cfg.signalLevel, showSymbol: b.showSymbol, showSentiment: b.showSentiment, showAI: b.showAI, showTopic: b.showTopic, topicPosition: cfg.topicPosition, sentimentPosition: cfg.sentimentPosition, aiPosition: cfg.aiPosition };
-      const list = el('div', { class: 'qx-news-list' });
-      list.appendChild(NI.render(Object.assign({}, base, storyProps(STORIES[0]), { state: cfg.state, image: cfg.showImage ? thumb(STORIES[0].title) : undefined })));
-      list.appendChild(NI.render(Object.assign({}, base, storyProps(STORIES[1]), { image: cfg.showImage ? thumb(STORIES[1].title) : undefined })));
-      previewEl.appendChild(list);
-      clear(codeHolder).appendChild(codeSnippet(Object.assign({}, cfg, b)));
-    }
-
-    function renderControls() {
-      clear(controlsEl);
-      const off = cfg.preset === 'embed';
-      const set = (patch) => { cfg = Object.assign({}, cfg, patch); renderControls(); renderPreview(); };
-      const setPreset = (preset) => { const p = PRESETS[preset]; set({ preset, titleLines: p.titleLines, showDescription: p.showDescription, descriptionLines: p.descriptionLines, showImage: p.showImage, imagePosition: p.imagePosition, metaPosition: p.metaPosition, topicPosition: p.topicPosition || 'badge', sentimentPosition: p.sentimentPosition || 'right', aiPosition: p.aiPosition || 'right' }); };
-
-      controlsEl.appendChild(ctrlGroup('Preset', segmented(cfg.preset, [['feed','Feed'],['editorial','Editorial'],['compact','Compact'],['lead','Lead'],['embed','Embed']], setPreset)));
-      controlsEl.appendChild(ctrlGroup('Density', segmented(cfg.density, [['comfortable','Comfortable'],['compact','Compact']], v => set({ density: v }))));
-      controlsEl.appendChild(ctrlGroup('State', segmented(cfg.state, [['default','Default'],['hover','Hover'],['focus','Focus'],['read','Read'],['loading','Loading'],['locked','Locked']], v => set({ state: v }))));
-      controlsEl.appendChild(ctrlGroup('Title lines', segmented(cfg.titleLines, [[1,'1'],[2,'2'],[3,'3'],['full','Full']], v => set({ titleLines: v }))));
-      controlsEl.appendChild(ctrlGroup('Description', [
-        toggleRow('Show description', cfg.showDescription, v => set({ showDescription: v })),
-        el('div', { class: 'pg-subctrl' + (cfg.showDescription ? '' : ' off') }, [segmented(cfg.descriptionLines, [[1,'1 line'],[2,'2 lines'],[3,'3 lines']], v => set({ descriptionLines: v }), !cfg.showDescription)]),
-      ]));
-      controlsEl.appendChild(ctrlGroup('Media', [
-        toggleRow('Show image', cfg.showImage, v => set({ showImage: v })),
-        el('div', { class: 'pg-subctrl' + (cfg.showImage ? '' : ' off') }, [segmented(cfg.imagePosition, [['leading','Leading'],['trailing','Trailing'],['above','Above']], v => set({ imagePosition: v }), !cfg.showImage)]),
-      ]));
-      controlsEl.appendChild(ctrlGroup('Meta position', segmented(cfg.metaPosition, [['top','Top'],['bottom','Bottom'],['right','Right']], v => set({ metaPosition: v }))));
-      const placement = (on, value, opts, key) => el('div', { class: 'pg-subctrl pg-place' + (on ? '' : ' off') }, [segmented(value, opts, v => set({ [key]: v }), !on)]);
-      const badgeKids = [
-        toggleRow('Symbol chip', cfg.showSymbol && !off, v => set({ showSymbol: v }), off),
-        toggleRow('Topic chip', cfg.showTopic && !off, v => set({ showTopic: v }), off),
-        placement(cfg.showTopic && !off, cfg.topicPosition, [['badge','In badge row'],['top','Own row on top']], 'topicPosition'),
-        toggleRow('Sentiment chip', cfg.showSentiment && !off, v => set({ showSentiment: v }), off),
-        placement(cfg.showSentiment && !off, cfg.sentimentPosition, [['right','Right'],['badge','Badge row']], 'sentimentPosition'),
-        toggleRow('AI icon', cfg.showAI && !off, v => set({ showAI: v }), off),
-        placement(cfg.showAI && !off, cfg.aiPosition, [['right','Right'],['badge','Badge row']], 'aiPosition'),
-      ];
-      if (off) badgeKids.push(el('p', { style: 'font-size:11px;color:var(--qx-text-muted);margin:6px 0 0', text: 'Embed preset hides the badge row.' }));
-      controlsEl.appendChild(ctrlGroup('Badges & signals', badgeKids));
-      controlsEl.appendChild(ctrlGroup('Signal spine', [
-        toggleRow('Show signal spine', cfg.showSignalSpine, v => set({ showSignalSpine: v })),
-        el('div', { class: 'pg-subctrl' + (cfg.showSignalSpine ? '' : ' off') }, [segmented(cfg.signalLevel, [['high','High'],['medium','Medium'],['low','Low']], v => set({ signalLevel: v }), !cfg.showSignalSpine)]),
-      ]));
-    }
-
-    renderControls();
-    renderPreview();
-    return el('div', { class: 'pg-play' }, [controlsEl, el('div', {}, [stage, codeHolder])]);
+  // states
+  var st=document.getElementById('demo-states');
+  if(st){
+    var states=[['default','Default'],['focus','Focus'],['read','Read'],['locked','Locked'],['loading','Loading'],['hover','Hover']];
+    states.forEach(function(pair,i){
+      var cell=document.createElement('div');cell.className='card';cell.style.padding='0';cell.style.overflow='hidden';
+      var head=document.createElement('div');head.style.cssText='padding:9px 12px;border-bottom:1px solid var(--sx-line);display:flex;gap:8px;align-items:baseline';
+      head.innerHTML='<span style="font-size:12.5px;font-weight:700;color:var(--sx-ink)">'+pair[1]+'</span><span style="font-family:var(--sx-mono);font-size:11px;color:var(--sx-muted)">'+pair[0]+'</span>';
+      var body=root();
+      body.appendChild(NI.render(sp(S[2],'s'+i,{preset:'feed',state:pair[0],showSymbol:true,showTopic:true,showSentiment:true})));
+      cell.appendChild(head);cell.appendChild(body);st.appendChild(cell);
+    });
   }
-
-  /* ---- galleries ---- */
-  function galleryCard(name, presetName, desc, listNode) {
-    return el('div', { class: 'pg-card' }, [
-      el('div', { class: 'pg-card-head' }, [el('span', { class: 't', text: name }), el('span', { class: 's', text: 'preset="' + presetName + '"' })]),
-      el('div', { class: 'pg-card-pad' }, [el('p', { class: 'pg-gal-note', text: desc }), listNode]),
-    ]);
-  }
-  function presetList(preset, count, seed) {
-    const list = el('div', { class: 'qx-news-list pg-inner-list' });
-    STORIES.slice(0, count).forEach((s, i) => list.appendChild(NI.render(Object.assign({ preset, showSymbol: true, showTopic: preset !== 'compact', showSentiment: true, showAI: true }, storyProps(s, (seed || '') + i)))));
-    return list;
-  }
-  function presetGallery() {
-    return el('div', { class: 'pg-grid-2' }, [
-      galleryCard('Feed', 'feed', 'Default. Meta on top, 2-line title + description, leading image, full badge row.', presetList('feed', 2, 'f')),
-      galleryCard('Editorial', 'editorial', 'Meta at the bottom, 3-line description, trailing image. Reads as a curated story.', presetList('editorial', 2, 'e')),
-      galleryCard('Compact', 'compact', '1-line title, 2-line description, no image, no topic. Dense side rails and Most Read.', presetList('compact', 4, 'c')),
-      galleryCard('Embed', 'embed', '1-line title, source + time only, no badge row. WMID widget contexts.', presetList('embed', 4, 'm')),
-    ]);
-  }
-  function leadGallery() {
-    const list = el('div', { class: 'qx-news-list pg-inner-list' });
-    list.appendChild(NI.render(Object.assign({ preset: 'lead', showSymbol: true, showTopic: true, showSentiment: true, showSignalSpine: true, signalLevel: 'high' }, storyProps(STORIES[0], 'lead'))));
-    STORIES.slice(1, 4).forEach((s, i) => list.appendChild(NI.render(Object.assign({ preset: 'feed', showSymbol: true, showTopic: true }, storyProps(s, 'lf' + i)))));
-    return el('div', { class: 'pg-card' }, [
-      el('div', { class: 'pg-card-head' }, [el('span', { class: 't', text: 'Lead' }), el('span', { class: 's', text: 'preset="lead" — image above, full row width. One per module, always first.' })]),
-      el('div', { class: 'pg-card-pad' }, [list]),
-    ]);
-  }
-  function statesGallery() {
-    const states = [
-      ['default', 'Default', 'Row at container background, divider only.'],
-      ['hover', 'Hover', 'Row background shifts; headline takes link-hover colour.'],
-      ['focus', 'Focus', '2px ring on the row bounds, 2px offset (WCAG 2.4.7).'],
-      ['read', 'Read / visited', 'Headline drops to secondary; image at 70% opacity.'],
-      ['locked', 'Locked', 'Headline legible; description + image frosted with a lock affordance.'],
-      ['loading', 'Loading', 'Skeleton mirrors the configured anatomy — no layout shift.'],
-    ];
-    const s = STORIES[2];
-    return el('div', { class: 'pg-grid-3' }, states.map(([state, name, desc]) =>
-      el('div', { class: 'pg-card' }, [
-        el('div', { class: 'pg-card-head' }, [el('span', { class: 't', text: name }), el('span', { class: 's', text: state })]),
-        el('div', { class: 'pg-card-pad' }, [
-          el('p', { class: 'pg-gal-note', style: 'min-height:34px', text: desc }),
-          el('div', { class: 'pg-inner-list' }, [NI.render(Object.assign({ preset: 'feed', state, showSymbol: true, showTopic: true, showSentiment: true }, storyProps(s, 'st')))]),
-        ]),
-      ])
-    ));
-  }
-  function moduleCard(icon, title, more, rows) {
-    const head = el('div', { class: 'pg-module-head' }, [el('span', { class: 'icon', 'aria-hidden': 'true', text: icon }), el('span', { class: 't', text: title })]);
-    if (more) head.appendChild(el('a', { class: 'more', href: '#', text: more }));
-    return el('div', { class: 'pg-card' }, [head, el('div', { class: 'qx-news-list' }, rows)]);
-  }
-  function usageInContext() {
-    const feed = moduleCard('▤', 'Market news', 'See all', STORIES.map((s, i) =>
-      NI.render(Object.assign({ preset: 'feed', showSymbol: true, showTopic: true, showSentiment: true, showAI: true, showSignalSpine: i === 0, signalLevel: 'high' }, storyProps(s, 'ctx' + i)))));
-
-    // Top Stories shows the topic as a kicker on its own row and meta on the right.
-    const top = moduleCard('★', 'Top stories', null, STORIES.slice(0, 3).map((s, i) =>
-      NI.render(Object.assign({ preset: 'editorial', showSymbol: true, showTopic: true, topicPosition: 'top', showSentiment: true, metaPosition: 'right' }, storyProps(s, 'top' + i)))));
-
-    const most = moduleCard('≡', 'Most read', null, STORIES.slice(1, 6).map((s) =>
-      NI.render({ preset: 'compact', title: s.title, description: s.description, source: s.source, sourceInitials: s.initials, timestamp: s.timestamp, datetime: s.datetime, symbol: s.symbol, symbolChange: s.symbolChange, showSymbol: true, showTopic: false })));
-
-    const embedInner = el('div', { class: 'qx-news-list' }, STORIES.slice(2, 6).map((s) =>
-      NI.render({ preset: 'embed', density: 'compact', title: s.title, source: s.source, sourceInitials: s.initials, timestamp: s.timestamp, datetime: s.datetime })));
-    const embed = el('div', { class: 'pg-embed-frame' }, [
-      el('p', { class: 'pg-embed-note', text: 'Third-party page · QX widget (Embed)' }),
-      el('div', { class: 'pg-card', style: 'border-radius:6px' }, [
-        el('div', { class: 'pg-module-head', style: 'padding:8px 12px' }, [el('span', { class: 't', style: 'font-size:13px', text: 'AAPL · News' })]),
-        embedInner,
-      ]),
-    ]);
-
-    return el('div', { class: 'pg-usage' }, [feed, el('div', { class: 'pg-rail' }, [top, most, embed])]);
-  }
-
-  function anatomy() {
-    const rows = [
-      ['Row', 'Required', 'Outer container and the single interactive target / tab stop (native <a>).'],
-      ['Signal spine', 'Optional', '3px left border coloured by importance rank. Off by default.'],
-      ['Media', 'Optional', 'Thumbnail or branded fallback tile, 16:9 crop-to-fill. Position: leading / trailing / above.'],
-      ['Topic kicker', 'Optional', 'Topic chip on its own row above the headline (topicPosition="top").'],
-      ['Meta row', 'Optional pos.', 'Source · relative timestamp. Renders top, bottom, or in the right aside — only one at a time.'],
-      ['Title', 'Required', 'Headline. Line-clamped per titleLines. The accessible name.'],
-      ['Description', 'Optional', 'Story snippet. Line-clamped per descriptionLines.'],
-      ['Badge row', 'Optional', 'Symbol chip · topic (unless on top). Collapses with no reserved space.'],
-      ['Right aside', 'Optional', 'Sentiment chip + AI icon (their default home) and, optionally, the meta row.'],
-      ['Divider', 'Optional', '0.5px rule between rows — owned by the list container, not the row.'],
-    ];
-    const tbody = el('tbody', {}, rows.map(([n, req, note]) =>
-      el('tr', {}, [el('td', { class: 'n', text: n }), el('td', { class: 'req' + (req === 'Required' ? ' yes' : ''), text: req }), el('td', { text: note })])));
-    const table = el('table', { class: 'pg-anat' }, [
-      el('thead', {}, [el('tr', {}, [el('th', { text: 'Part' }), el('th', { text: 'Required' }), el('th', { text: 'Notes' })])]),
-      tbody,
-    ]);
-    const a11y = el('ul', { class: 'pg-a11y' });
-    [
-      'Row is a native <code>&lt;a&gt;</code> — one tab stop; <code>Enter</code> opens the story (or the upgrade modal when locked).',
-      'Accessible name is the headline alone; source, time, symbol, topic and sentiment stay in DOM order after the title even when <code>metaPosition="top"</code> reorders them visually.',
-      'Focus is a visible 2px ring at 2px offset — colour change is never the only signal (WCAG 2.4.7).',
-      'Sentiment pairs a shape with the tone token and carries an <code>aria-label</code> ("Positive sentiment"), not colour alone (WCAG 1.4.1).',
-      'The AI icon is an interactive control (<code>role="button"</code>, <code>aria-haspopup="dialog"</code>) labelled "Summary generated by AI" — click or Enter opens the summary popover, Esc closes it; the timestamp is wrapped in <code>&lt;time datetime&gt;</code>.',
-      'Locked rows keep the headline legible and add <code>aria-describedby</code> explaining the upgrade — the headline is never blurred.',
-    ].forEach(html => a11y.appendChild(el('li', { html })));
-    return el('div', { class: 'pg-grid-2' }, [
-      el('div', { class: 'pg-card' }, [el('div', { class: 'pg-card-head' }, [el('span', { class: 't', text: 'Anatomy' }), el('span', { class: 's', text: 'Feed configuration, top to bottom' })]), el('div', { class: 'pg-card-pad' }, [table])]),
-      el('div', { class: 'pg-card' }, [el('div', { class: 'pg-card-head' }, [el('span', { class: 't', text: 'Accessibility' }), el('span', { class: 's', text: 'Built into the component' })]), el('div', { class: 'pg-card-pad' }, [a11y])]),
-    ]);
-  }
-
-  function section(eyebrow, title, lede, body) {
-    const kids = [el('p', { class: 'pg-eyebrow', text: eyebrow }), el('h2', { class: 'pg-h2', text: title })];
-    if (lede) kids.push(el('p', { class: 'pg-lede', text: lede }));
-    kids.push(body);
-    return el('section', { class: 'pg-section' }, kids);
-  }
-
-  /* ---- mount ---- */
-  const app = document.getElementById('app');
-  app.appendChild(el('header', { class: 'pg-appbar' }, [
-    el('span', { class: 'pg-wordmark', html: 'Qmodii<span class="dot">.</span>' }),
-    el('span', { class: 'pg-title', text: 'QX-NewsItem' }),
-    el('span', { class: 'pg-sub', text: 'News article row · prototype playground' }),
-    el('span', { class: 'pg-spacer' }),
-    el('span', { class: 'pg-tag', text: 'Draft' }),
-  ]));
-  const wrap = el('div', { class: 'pg-wrap' });
-  wrap.appendChild(section('Playground', 'Configure the row', 'One row component for every news story across QSweb, Quotestream Mobile, Research Hub and QX/QMOD widgets. Presets are named prop bundles — pick one, then override any individual prop. Everything below is the live Qmodii component driven by design tokens.', playground()));
-  const presets = el('div', {}, [presetGallery(), el('div', { style: 'height:20px' }), leadGallery()]);
-  wrap.appendChild(section('Variants', 'Presets', 'Choosing a preset sets defaults; individual props stay overridable. One preset per list — a Lead row is the only permitted exception.', presets));
-  wrap.appendChild(section('States', 'Interactive & render states', 'Hover, focus, read, locked and loading. The skeleton mirrors the configured anatomy exactly so nothing shifts when data lands.', statesGallery()));
-  wrap.appendChild(section('In context', 'Real feed modules', 'The same component across a primary market-news feed (Feed + one Lead), a curated Top Stories rail (Editorial), a dense Most Read list (Compact), and a space-constrained third-party widget (Embed).', usageInContext()));
-  wrap.appendChild(section('Reference', 'Anatomy & accessibility', null, anatomy()));
-  app.appendChild(wrap);
 })();
-
 </script>

@@ -65,7 +65,9 @@
    row (.qx-ni-mainrow). */
 .qx-ni-inner { display: flex; gap: var(--qx-space-md, 12px); align-items: flex-start; }
 .qx-newsitem[data-density='compact'] .qx-ni-inner { gap: var(--qx-space-sm, 8px); }
-.qx-newsitem[data-image-pos='above'] .qx-ni-inner { flex-direction: column; }
+/* Above: stack vertically and stretch children to full width, so the main+aside
+   row is bounded by the row (not by its own content) and symbol-fit can measure it. */
+.qx-newsitem[data-image-pos='above'] .qx-ni-inner { flex-direction: column; align-items: stretch; }
 .qx-ni-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--qx-space-xs, 4px); }
 .qx-ni-mainrow { flex: 1 1 auto; min-width: 0; display: flex; gap: var(--qx-space-md, 12px); align-items: flex-start; }
 .qx-ni-aside { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-end; gap: var(--qx-space-sm, 8px); }

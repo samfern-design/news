@@ -283,6 +283,8 @@
         const run = () => fitSymbols(badgeRow, symbolChipEls, symbolMoreEl);
         if (typeof ResizeObserver !== 'undefined') { new ResizeObserver(run).observe(badgeRow); }
         else { (window.requestAnimationFrame || window.setTimeout)(run); }
+        // Chip widths change when the webfont swaps in — re-fit once it loads.
+        if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) document.fonts.ready.then(run);
       }
     }
 
