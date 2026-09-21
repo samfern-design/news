@@ -56,16 +56,16 @@
 
   /* ---- Sub-marks ------------------------------------------------------ */
   // Sentiment pairs a shape with the semantic tone token (never colour alone).
-  function SentimentIcon({ sentiment }) {
+  function SentimentIcon({ sentiment, iconOnly }) {
     const map = {
       positive: { glyph: '▲', word: 'Positive', label: 'Positive sentiment', cls: 'qx-ni-pos' },
       negative: { glyph: '▼', word: 'Negative', label: 'Negative sentiment', cls: 'qx-ni-neg' },
       neutral:  { glyph: '–', word: 'Neutral',  label: 'Neutral sentiment',  cls: 'qx-ni-neu' },
     };
     const s = map[sentiment] || map.neutral;
-    return h('span', { className: 'qx-ni-sentiment ' + s.cls, role: 'img', 'aria-label': s.label, title: s.label },
+    return h('span', { className: 'qx-ni-sentiment ' + s.cls + (iconOnly ? ' qx-ni-sentiment--icon' : ''), role: 'img', 'aria-label': s.label, title: s.label },
       h('span', { className: 'qx-ni-sentiment-glyph', 'aria-hidden': 'true' }, s.glyph),
-      h('span', { className: 'qx-ni-sentiment-label' }, s.word));
+      iconOnly ? null : h('span', { className: 'qx-ni-sentiment-label' }, s.word));
   }
 
   const AISparkle = () =>
@@ -267,7 +267,7 @@
       symbolChips.push(h('span', { key: 'more', className: 'qx-ni-symbol-more', style: { display: 'none' } }));
     }
     const topicChip = (r.showTopic && topic) ? (key) => h('span', { key, className: 'qx-ni-topic' }, topic) : null;
-    const sentimentChip = r.showSentiment ? h(SentimentIcon, { key: 'sent', sentiment }) : null;
+    const sentimentChip = r.showSentiment ? h(SentimentIcon, { key: 'sent', sentiment, iconOnly: props.sentimentIconOnly }) : null;
     const aiBtn = r.showAI ? h(AIIcon, { key: 'ai', label: aiLabel, summary: props.aiSummary, updated: props.aiUpdated }) : null;
 
     /* Left badge row — topic always leads, then symbols, then any sentiment/AI

@@ -169,6 +169,8 @@
 }
 .qx-ni-sentiment-glyph { display: inline-flex; align-items: center; padding: 4px 7px; font-size: 10px; }
 .qx-ni-sentiment-label { display: inline-flex; align-items: center; padding: 4px 9px; border-left: 1px solid var(--qx-surface-200, #E3E3E3); color: var(--qx-text-primary, #222222); }
+/* Icon-only: no word, no divider — a compact square chip. Keeps the aria-label. */
+.qx-ni-sentiment--icon .qx-ni-sentiment-glyph { padding: 4px 6px; }
 .qx-ni-sentiment.qx-ni-pos .qx-ni-sentiment-glyph { color: var(--qx-market-up, #2B7F45); }
 .qx-ni-sentiment.qx-ni-neg .qx-ni-sentiment-glyph { color: var(--qx-market-down, #D02A48); }
 .qx-ni-sentiment.qx-ni-neu .qx-ni-sentiment-glyph { color: var(--qx-text-secondary, #575757); font-weight: 700; }

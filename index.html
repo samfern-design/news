@@ -220,6 +220,7 @@
     if (cfg.showTopic && cfg.topicPosition !== 'badge') add('topicPosition', cfg.topicPosition, true);
     add('showSentiment', cfg.showSentiment);
     if (cfg.showSentiment && cfg.sentimentPosition !== 'right') add('sentimentPosition', cfg.sentimentPosition, true);
+    if (cfg.showSentiment && cfg.sentimentIconOnly) add('sentimentIconOnly', true);
     add('showAI', cfg.showAI);
     if (cfg.showAI && cfg.aiPosition !== 'right') add('aiPosition', cfg.aiPosition, true);
     add('showSignalSpine', cfg.showSignalSpine);
@@ -244,7 +245,7 @@
 
   /* ---- playground ---- */
   function playground() {
-    let cfg = { preset: 'feed', density: 'comfortable', state: 'default', titleLines: 2, showDescription: true, descriptionLines: 2, showImage: true, imagePosition: 'leading', metaPosition: 'top', showSymbol: true, showSentiment: true, showAI: true, showTopic: true, topicPosition: 'badge', sentimentPosition: 'right', aiPosition: 'right', showSignalSpine: false, signalLevel: 'high' };
+    let cfg = { preset: 'feed', density: 'comfortable', state: 'default', titleLines: 2, showDescription: true, descriptionLines: 2, showImage: true, imagePosition: 'leading', metaPosition: 'top', showSymbol: true, showSentiment: true, showAI: true, showTopic: true, topicPosition: 'badge', sentimentPosition: 'right', aiPosition: 'right', sentimentIconOnly: false, showSignalSpine: false, signalLevel: 'high' };
 
     const controlsEl = el('div', { class: 'pg-card pg-controls' });
     const previewEl = el('div', { class: 'pg-list-frame' });
@@ -262,7 +263,7 @@
     function renderPreview() {
       clear(previewEl);
       const b = effBadges();
-      const base = { preset: cfg.preset, density: cfg.density, titleLines: cfg.titleLines, showDescription: cfg.showDescription, descriptionLines: cfg.descriptionLines, showImage: cfg.showImage, imagePosition: cfg.imagePosition, metaPosition: cfg.metaPosition, showSignalSpine: cfg.showSignalSpine, signalLevel: cfg.signalLevel, showSymbol: b.showSymbol, showSentiment: b.showSentiment, showAI: b.showAI, showTopic: b.showTopic, topicPosition: cfg.topicPosition, sentimentPosition: cfg.sentimentPosition, aiPosition: cfg.aiPosition };
+      const base = { preset: cfg.preset, density: cfg.density, titleLines: cfg.titleLines, showDescription: cfg.showDescription, descriptionLines: cfg.descriptionLines, showImage: cfg.showImage, imagePosition: cfg.imagePosition, metaPosition: cfg.metaPosition, showSignalSpine: cfg.showSignalSpine, signalLevel: cfg.signalLevel, showSymbol: b.showSymbol, showSentiment: b.showSentiment, showAI: b.showAI, showTopic: b.showTopic, topicPosition: cfg.topicPosition, sentimentPosition: cfg.sentimentPosition, aiPosition: cfg.aiPosition, sentimentIconOnly: cfg.sentimentIconOnly };
       const list = el('div', { class: 'qx-news-list' });
       list.appendChild(NI.render(Object.assign({}, base, storyProps(STORIES[0]), { state: cfg.state, image: cfg.showImage ? thumb(STORIES[0].title) : undefined })));
       list.appendChild(NI.render(Object.assign({}, base, storyProps(STORIES[1]), { image: cfg.showImage ? thumb(STORIES[1].title) : undefined })));
@@ -296,6 +297,9 @@
         placement(cfg.showTopic && !off, cfg.topicPosition, [['badge','In badge row'],['top','Own row on top']], 'topicPosition'),
         toggleRow('Sentiment chip', cfg.showSentiment && !off, v => set({ showSentiment: v }), off),
         placement(cfg.showSentiment && !off, cfg.sentimentPosition, [['right','Right'],['badge','Badge row']], 'sentimentPosition'),
+        el('div', { class: 'pg-subctrl pg-place' + (cfg.showSentiment && !off ? '' : ' off') }, [
+          toggleRow('Icon only', cfg.sentimentIconOnly && cfg.showSentiment && !off, v => set({ sentimentIconOnly: v }), !(cfg.showSentiment && !off)),
+        ]),
         toggleRow('AI icon', cfg.showAI && !off, v => set({ showAI: v }), off),
         placement(cfg.showAI && !off, cfg.aiPosition, [['right','Right'],['badge','Badge row']], 'aiPosition'),
       ];

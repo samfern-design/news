@@ -51,6 +51,7 @@ when `metaPosition="right"`) · `Divider` (owned by the list, not the row).
 - `metaPosition`: `'top'` | `'bottom'` | `'right'`.
 
 Sentiment renders as a labelled chip (▲/▼/■ glyph + word + semantic tone token).
+Set `sentimentIconOnly` to drop the word and show a compact glyph-only pill (the accessible label is kept).
 
 Pass **multiple tickers** via `symbols` (`string[]` or `{symbol, change}[]`).
 The chips never wrap: as many as fit on one line show (each with its % change),

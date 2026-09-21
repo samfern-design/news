@@ -50,17 +50,16 @@
   }
   function rect(a) { const r = document.createElementNS(SVGNS, 'rect'); for (const k in a) r.setAttribute(k, a[k]); return r; }
 
-  function sentimentIcon(sentiment) {
+  function sentimentIcon(sentiment, iconOnly) {
     const map = {
       positive: { glyph: '▲', word: 'Positive', label: 'Positive sentiment', cls: 'qx-ni-pos' },
       negative: { glyph: '▼', word: 'Negative', label: 'Negative sentiment', cls: 'qx-ni-neg' },
       neutral:  { glyph: '–', word: 'Neutral',  label: 'Neutral sentiment',  cls: 'qx-ni-neu' },
     };
     const s = map[sentiment] || map.neutral;
-    return el('span', { class: 'qx-ni-sentiment ' + s.cls, role: 'img', 'aria-label': s.label, title: s.label }, [
-      el('span', { class: 'qx-ni-sentiment-glyph', 'aria-hidden': 'true', text: s.glyph }),
-      el('span', { class: 'qx-ni-sentiment-label', text: s.word }),
-    ]);
+    const kids = [el('span', { class: 'qx-ni-sentiment-glyph', 'aria-hidden': 'true', text: s.glyph })];
+    if (!iconOnly) kids.push(el('span', { class: 'qx-ni-sentiment-label', text: s.word }));
+    return el('span', { class: 'qx-ni-sentiment ' + s.cls + (iconOnly ? ' qx-ni-sentiment--icon' : ''), role: 'img', 'aria-label': s.label, title: s.label }, kids);
   }
   function aiSparkle() {
     return svg({ width: 12, height: 12, viewBox: '0 0 24 24', fill: 'currentColor', 'aria-hidden': 'true' },
@@ -263,7 +262,7 @@
       symbolMoreEl = el('span', { class: 'qx-ni-symbol-more', style: 'display:none' });
     }
 
-    const sentimentChip = r.showSentiment ? sentimentIcon(props.sentiment || 'neutral') : null;
+    const sentimentChip = r.showSentiment ? sentimentIcon(props.sentiment || 'neutral', !!props.sentimentIconOnly) : null;
     const aiBtn = r.showAI ? aiIcon(props) : null;
 
     // Left badge row — topic always leads, then symbols, then any
