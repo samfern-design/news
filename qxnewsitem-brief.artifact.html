@@ -1965,6 +1965,8 @@ ul.plain li b{color:var(--sx-ink)}
 }
 .qx-ni-sentiment-glyph { display: inline-flex; align-items: center; padding: 4px 7px; font-size: 10px; }
 .qx-ni-sentiment-label { display: inline-flex; align-items: center; padding: 4px 9px; border-left: 1px solid var(--qx-surface-200, #E3E3E3); color: var(--qx-text-primary, #222222); }
+/* Icon-only: no word, no divider — a compact square chip. Keeps the aria-label. */
+.qx-ni-sentiment--icon .qx-ni-sentiment-glyph { padding: 4px 6px; }
 .qx-ni-sentiment.qx-ni-pos .qx-ni-sentiment-glyph { color: var(--qx-market-up, #2B7F45); }
 .qx-ni-sentiment.qx-ni-neg .qx-ni-sentiment-glyph { color: var(--qx-market-down, #D02A48); }
 .qx-ni-sentiment.qx-ni-neu .qx-ni-sentiment-glyph { color: var(--qx-text-secondary, #575757); font-weight: 700; }
@@ -2092,7 +2094,7 @@ ul.plain li b{color:var(--sx-ink)}
     <span class="nm">QX-NewsItem</span>
     <span class="sp"></span>
     <span class="sx-pill">Draft</span>
-    <a class="sx-open" href="https://claude.ai/code/artifact/d4b4620f-aaba-4ee0-bd79-075aba6f07c6" target="_blank" rel="noopener">Open playground &rarr;</a>
+    <a class="sx-open" href="https://claude.ai/artifact/TGQj5VMwQVDCdVL44thUiZ" target="_blank" rel="noopener">Open playground &rarr;</a>
   </header>
 
   <section style="padding-top:40px">
@@ -2185,7 +2187,7 @@ ul.plain li b{color:var(--sx-ink)}
     <div class="grid2">
       <div class="card"><h3><span class="dot pink"></span>AI summary popover</h3><p>The AI mark is pink &mdash; deliberately off the blue brand so AI-generated content reads as its own thing. It&rsquo;s a real affordance (<code>role="button"</code>, <code>aria-haspopup</code>): click or Enter opens a dialog with key points, a disclaimer, and a last-updated line. Portaled to <code>body</code> so a list&rsquo;s overflow can&rsquo;t clip it.</p></div>
       <div class="card"><h3>Symbols that never wrap</h3><p>A story can name several tickers, each with its % change. A ResizeObserver fits as many chips as the row allows on one line and folds the rest into <code>+N&nbsp;more</code> &mdash; recomputed on every resize, so 3 chips in a wide feed become 1 in a narrow rail.</p></div>
-      <div class="card"><h3><span class="dot up"></span>Sentiment chip</h3><p>A light pill: a coloured direction glyph (&#9650; / &#9660; / &ndash;), a hairline divider, then the word. Shape <em>and</em> word, never colour alone, and drawn from the semantic market up / down / hold tokens.</p></div>
+      <div class="card"><h3><span class="dot up"></span>Sentiment chip</h3><p>A light pill: a coloured direction glyph (&#9650; / &#9660; / &ndash;), a hairline divider, then the word. Shape <em>and</em> word, never colour alone, and drawn from the semantic market up / down / hold tokens. Set <code>sentimentIconOnly</code> for a glyph-only pill.</p></div>
       <div class="card"><h3><span class="dot amber"></span>Signal spine</h3><p>An optional 3px importance edge for breaking / ranked feeds &mdash; amber, blue, or grey by rank. Reads as urgency without stealing the row&rsquo;s colour budget.</p></div>
     </div>
   </section>
@@ -2214,7 +2216,7 @@ ul.plain li b{color:var(--sx-ink)}
   </section>
 
   <div class="foot">
-    <a href="https://claude.ai/code/artifact/d4b4620f-aaba-4ee0-bd79-075aba6f07c6" target="_blank" rel="noopener">Interactive playground &rarr;</a>
+    <a href="https://claude.ai/artifact/TGQj5VMwQVDCdVL44thUiZ" target="_blank" rel="noopener">Interactive playground &rarr;</a>
     <span class="meta"><b>Source</b> samfern-design/news &middot; branch claude/news-articles-playground-o8rqoh</span>
     <span class="meta"><b>Spec</b> QX-NewsItem &middot; Sam Fernandes, Design</span>
   </div>
@@ -2273,17 +2275,16 @@ ul.plain li b{color:var(--sx-ink)}
   }
   function rect(a) { const r = document.createElementNS(SVGNS, 'rect'); for (const k in a) r.setAttribute(k, a[k]); return r; }
 
-  function sentimentIcon(sentiment) {
+  function sentimentIcon(sentiment, iconOnly) {
     const map = {
       positive: { glyph: '▲', word: 'Positive', label: 'Positive sentiment', cls: 'qx-ni-pos' },
       negative: { glyph: '▼', word: 'Negative', label: 'Negative sentiment', cls: 'qx-ni-neg' },
       neutral:  { glyph: '–', word: 'Neutral',  label: 'Neutral sentiment',  cls: 'qx-ni-neu' },
     };
     const s = map[sentiment] || map.neutral;
-    return el('span', { class: 'qx-ni-sentiment ' + s.cls, role: 'img', 'aria-label': s.label, title: s.label }, [
-      el('span', { class: 'qx-ni-sentiment-glyph', 'aria-hidden': 'true', text: s.glyph }),
-      el('span', { class: 'qx-ni-sentiment-label', text: s.word }),
-    ]);
+    const kids = [el('span', { class: 'qx-ni-sentiment-glyph', 'aria-hidden': 'true', text: s.glyph })];
+    if (!iconOnly) kids.push(el('span', { class: 'qx-ni-sentiment-label', text: s.word }));
+    return el('span', { class: 'qx-ni-sentiment ' + s.cls + (iconOnly ? ' qx-ni-sentiment--icon' : ''), role: 'img', 'aria-label': s.label, title: s.label }, kids);
   }
   function aiSparkle() {
     return svg({ width: 12, height: 12, viewBox: '0 0 24 24', fill: 'currentColor', 'aria-hidden': 'true' },
@@ -2486,7 +2487,7 @@ ul.plain li b{color:var(--sx-ink)}
       symbolMoreEl = el('span', { class: 'qx-ni-symbol-more', style: 'display:none' });
     }
 
-    const sentimentChip = r.showSentiment ? sentimentIcon(props.sentiment || 'neutral') : null;
+    const sentimentChip = r.showSentiment ? sentimentIcon(props.sentiment || 'neutral', !!props.sentimentIconOnly) : null;
     const aiBtn = r.showAI ? aiIcon(props) : null;
 
     // Left badge row — topic always leads, then symbols, then any
